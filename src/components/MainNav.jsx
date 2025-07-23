@@ -8,7 +8,7 @@ function MainNav() {
           LOGO
         </Link>
         <Link to="/">Home</Link>
-        <Link to="/about">About</Link>
+        <Link to="/gameplay">Gameplay</Link>
       </div>
 
       <div className="flex gap-4">

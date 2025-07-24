@@ -3,6 +3,5 @@
 	themes: light  --default, dark --prefersdark;
 }
 
-/* :root {
-	--color-primary-DEFAULT:linear-gradient(to right bottom, oklch(0.623 0.214 259.815) 0%, oklch(0.511 0.262 276.966) 100%)
-} */
+
+/* --color-primary-DEFAULT:linear-gradient(to right bottom, oklch(0.623 0.214 259.815) 0%, oklch(0.511 0.262 276.966) 100%) */

@@ -17,7 +17,7 @@ function HomePageFree() {
         </div>
 
         {/* Right Section - Subscription Card */}
-        <div className="bg-white p-6 rounded-xl shadow-lg w-72 text-center">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-72 text-center transition duration-300 ease-in-out transform hover:scale-115 active:scale-100">
           <h3 className="text-xl font-semibold text-black">PRO BASIC</h3>
           <p className="text-2xl font-bold my-2 text-black">119 BATH / MONTH</p>
           <p className="text-xs text-gray-500 mb-4">BILLED MONTHLY</p>
@@ -37,7 +37,7 @@ function HomePageFree() {
             </div>
           </div>
 
-          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-full">
+          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-full cursor-pointer ">
             SUBSCRIPTION
           </button>
         </div>

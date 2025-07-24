@@ -1,32 +1,60 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useApiIsLoaded } from "@vis.gl/react-google-maps";
 
 function StreetView({ position }) {
   const panoramaRef = useRef(null);
   const isLoaded = useApiIsLoaded();
+  const [panorama, setPanorama] = useState(null);
 
+  // This effect runs ONCE to create the StreetView object
   useEffect(() => {
-    if (isLoaded && panoramaRef.current && position) {
-      const streetViewService = new window.google.maps.StreetViewService();
+    if (isLoaded && panoramaRef.current) {
+      const panoramaInstance = new window.google.maps.StreetViewPanorama(
+        panoramaRef.current
+      );
 
-      // Ask Google for the panorama data at the given position
-      streetViewService.getPanorama({ location: position, radius: 50 }, (data, status) => {
-        if (status === "OK") {
-          // If the official panorama is on a road, create the Street View
-          new window.google.maps.StreetViewPanorama(panoramaRef.current, {
-            position: data.location.latLng, // Use the official, road-snapped position
-            pov: { heading: 34, pitch: 10 },
-            disableDefaultUI: false,
-            clickToGo: true,
-            showRoadLabels: false,
-          });
+      // Listener for loading status
+      panoramaInstance.addListener("status_changed", () => {
+        if (panoramaInstance.getStatus() !== "OK") {
+          console.error(
+            "Street View status is not OK:",
+            panoramaInstance.getStatus()
+          );
         } else {
-          // Handle the case where no Street View is found at all
-          console.error("Street View data not found for this location.");
+          console.log("Street View status is OK.");
         }
       });
+
+      // This listener checks for navigation links.
+      panoramaInstance.addListener("links_changed", () => {
+        const links = panoramaInstance.getLinks();
+        if (links && links.length > 0) {
+          console.log("This location IS MOVABLE.");
+        } else {
+          console.log(
+            "This location IS NOT MOVABLE (it's a dead end or photosphere).", links
+          );
+        }
+      });
+
+      setPanorama(panoramaInstance);
     }
-  }, [isLoaded, position]);
+  }, [isLoaded]);
+
+  // This effect runs whenever the 'position' prop changes
+  useEffect(() => {
+    if (panorama && position) {
+      panorama.setOptions({
+        position: position,
+        radius: 50,
+        source: window.google.maps.StreetViewSource.OUTDOOR,
+        disableDefaultUI: false,
+        clickToGo: true,
+        showRoadLabels: false,
+        addressControl: false,
+      });
+    }
+  }, [panorama, position]);
 
   return <div ref={panoramaRef} className="absolute inset-0 w-full h-full" />;
 }

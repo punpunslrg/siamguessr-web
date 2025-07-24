@@ -44,7 +44,7 @@ function Subscription() {
 
         {/* Subscribe Button */}
         <div className="mt-8 text-center">
-          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-full">
+          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 cursor-pointer rounded-full transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
             SUBSCRIPTION
           </button>
         </div>

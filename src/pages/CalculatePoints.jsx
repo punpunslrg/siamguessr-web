@@ -1,5 +1,3 @@
-import React from "react";
-
 function GeoRound() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center px-4 py-10">
@@ -33,7 +31,7 @@ function GeoRound() {
       </div>
 
       {/* Button */}
-      <button className="mt-6 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded transition">
+      <button className="mt-6 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
         START NEXT ROUND
       </button>
     </div>

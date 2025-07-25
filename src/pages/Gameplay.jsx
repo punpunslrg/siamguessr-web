@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import useGameStore from "../store/game-store.js";
+import useGameStore from "../stores/game-store.js";
 import StreetView from "../components/StreetView.jsx";
 import GuessMap from "../components/GuessMap.jsx";
 import { useNavigate } from "react-router";
@@ -17,7 +17,10 @@ function Gameplay() {
   );
   const randomLocation = useGameStore((state) => state.randomLocation);
   console.log(randomLocation);
-  // ---
+
+  const actionCalculateScore = useGameStore(
+    (state) => state.actionCalculateScore
+  );
 
   // Effect to load a random location on initial mount
   useEffect(() => {
@@ -49,7 +52,8 @@ function Gameplay() {
     if (!playerGuess) return;
     console.log("Real Location:", currentLocation);
     console.log("Player Guess:", playerGuess);
-    navigate("/round-score");
+    actionCalculateScore(playerGuess);
+    navigate("/round");
   };
 
   const handleMouseEnter = () => {

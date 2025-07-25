@@ -1,14 +1,6 @@
 import { useState } from "react";
 import { Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 
-const mapStyles = [
-  {
-    featureType: "poi",
-    elementType: "labels.icon",
-    stylers: [{ visibility: "off" }],
-  },
-];
-
 function GuessMap({ onPinPlace }) {
   const [pinPosition, setPinPosition] = useState(null);
 
@@ -28,9 +20,7 @@ function GuessMap({ onPinPlace }) {
       onClick={handleMapClick}
       gestureHandling={"greedy"}
       disableDefaultUI={true}
-      // styles={mapStyles}
-      // Map id
-      mapId="113d733319c2cd6257310524" // e.g., "113d733319c2cd6257310524"
+      mapId="113d733319c2cd6257310524"
     >
       {pinPosition && <AdvancedMarker position={pinPosition} />}
     </Map>

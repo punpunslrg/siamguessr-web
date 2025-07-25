@@ -1,31 +1,98 @@
 import React from "react";
 
-const Lobby = () => {
+// เอา icon crown จาก lucide-react, หรือใช้ emoji ก็ได้
+const Crown = () => <span className="text-yellow-400 text-lg ml-1">👑</span>;
+
+const Lobby = ({
+  host = { name: "Boss", avatar: "https://i.pravatar.cc/150?img=3", status: "ready" },
+  guest = null, // guest ยังไม่ join หรือ guest = { name, avatar, status }
+  roomCode = "A1B2C3",
+  isHost = true,
+  onInvite = () => window.alert("Copy and send: siamguessr.com/join/A1B2C3"),
+  onPlay = () => window.alert("เริ่มเกม!"),
+  onLeave = () => window.alert("ออกจากห้อง"),
+}) => {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-indigo-600">
-      <div className="flex gap-24 items-center space-y-8 row ">
-        <div className="bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl border border-gray-100">
-          {/* Avatar */}
-          <div className="w-32 h-32 rounded-full bg-gray-500 flex items-center justify-center mb-6 shadow-lg border-4 border-white overflow-hidden">
-            <img className="w-full h-full object-cover p-2 rounded-full" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 uppercase tracking-wide">
-            Username
-          </h2>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-400 to-indigo-500 relative">
+      {/* Bar Room Info */}
+      <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-8 py-4 bg-black/40 z-10">
+        <div className="text-white font-semibold text-xl">
+          SiamGuessr
         </div>
-
-        {/* Invite Card */}
-        <div className="bg-gray-200  p-8 rounded-2xl shadow-xl flex flex-col items-center justify-center  transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl border border-gray-300">
-          <button className="bg-lime-500 text-white text-xl font-bold py-4 px-8 rounded-full shadow-lg hover:bg-lime-600 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
-            INVITE
-          </button>
+        <div className="bg-white/80 px-4 py-2 rounded-lg font-mono text-sm tracking-widest">
+          Room Code: <span className="font-bold text-blue-600">{roomCode}</span>
         </div>
+        <button
+          className="text-white underline hover:text-orange-500 text-sm"
+          onClick={onLeave}
+        >
+          Leave Room
+        </button>
       </div>
-
-      {/* Play Button */}
-      <button className="absolute bottom-10 bg-orange-500 text-white text-2xl font-bold py-4 px-16 rounded-full shadow-xl hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
-        PLAY
-      </button>
+      
+      {/* Main lobby */}
+      <div className="flex flex-col items-center justify-center flex-1 w-full">
+        {/* Card */}
+        <div className="flex flex-row items-center space-x-10 my-24">
+          {/* Host Card */}
+          <div className="bg-white w-56 h-64 rounded-2xl shadow-xl flex flex-col items-center justify-center relative">
+            {/* Avatar */}
+            <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center mb-4 shadow">
+              {host.avatar
+                ? <img src={host.avatar} alt="host" className="w-full h-full rounded-full object-cover" />
+                : <span className="text-3xl text-white">👤</span>}
+            </div>
+            <div className="flex items-center">
+              <span className="text-xl font-bold text-gray-700">{host.name}</span>
+              <Crown />
+            </div>
+            <div className="mt-2 text-xs font-semibold text-blue-500 tracking-wide">
+              HOST
+            </div>
+            <div className={`mt-2 text-xs font-bold ${host.status === "ready" ? "text-lime-600" : "text-gray-400"}`}>
+              {host.status === "ready" ? "READY" : "WAITING"}
+            </div>
+          </div>
+          {/* Guest Card */}
+          <div className="bg-gray-100 w-56 h-64 rounded-2xl shadow-xl flex flex-col items-center justify-center">
+            {guest ? (
+              <>
+                <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center mb-4 shadow">
+                  <img src={guest.avatar} alt="guest" className="w-full h-full rounded-full object-cover" />
+                </div>
+                <div className="text-xl font-bold text-gray-700">{guest.name}</div>
+                <div className="mt-2 text-xs font-semibold text-green-500 tracking-wide">
+                  GUEST
+                </div>
+                <div className={`mt-2 text-xs font-bold ${guest.status === "ready" ? "text-lime-600" : "text-gray-400"}`}>
+                  {guest.status === "ready" ? "READY" : "WAITING"}
+                </div>
+              </>
+            ) : (
+              <>
+                <button
+                  className="bg-lime-500 text-white text-lg font-bold py-3 px-8 rounded-full shadow hover:bg-lime-600 transition"
+                  onClick={onInvite}
+                >
+                  INVITE
+                </button>
+                <div className="mt-6 text-sm text-gray-500">Waiting for friend...</div>
+              </>
+            )}
+          </div>
+        </div>
+        {/* Play Button */}
+        {isHost && (
+          <button
+            className="bg-orange-500 text-white text-xl font-bold py-4 px-20 rounded-full shadow hover:bg-orange-600 transition absolute bottom-14"
+            onClick={onPlay}
+            disabled={!guest || host.status !== "ready" || guest.status !== "ready"}
+            style={{ left: "50%", transform: "translateX(-50%)" }}
+          >
+            PLAY
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -2,10 +2,10 @@ function Subscription() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center px-4 py-12">
       {/* Heading */}
-      <h1 className="text-2xl md:text-3xl font-bold mb-2 ">
+      <h1 className="text-2xl text-white md:text-3xl font-bold mb-2 ">
         Choose your preferred plan
       </h1>
-      <p className=" mb-10 text-sm">
+      <p className=" mb-10 text-sm text-white">
         Unlock all game modes. Cancel at any time.
       </p>
 
@@ -44,7 +44,7 @@ function Subscription() {
 
         {/* Subscribe Button */}
         <div className="mt-8 text-center">
-          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-full">
+          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 cursor-pointer rounded-full transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
             SUBSCRIPTION
           </button>
         </div>

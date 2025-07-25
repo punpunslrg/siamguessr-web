@@ -13,7 +13,7 @@ function Home() {
       </header>
       <main className="flex flex-col items-center gap-8 w-full max-w-md">
         <Link href="/game">
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-10 rounded-full text-xl shadow-lg transition-all duration-200 w-full">
+          <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-10 rounded-full text-xl shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 w-full cursor-pointer">
             เริ่มเล่นเกม
           </button>
         </Link>

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import Home from "../pages/Home";
 import Layout from "../layouts/Layout";
 import Gameplay from "../pages/Gameplay";
@@ -10,6 +10,9 @@ import Subscription from "../pages/Subscription";
 import Profile from "../pages/Profile";
 import Lobby from "../pages/Lobby";
 import GameMode from "../pages/GameMode";
+import AdminLayout from "../layouts/AdminLayout";
+import Dashboard from "../pages/admin/Dashboard";
+import LoginAdmin from "../pages/admin/LoginAdmin";
 
 function AppRouter() {
   return (
@@ -25,6 +28,13 @@ function AppRouter() {
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
+      </Route>
+
+      <Route path="/admin/login" element={<LoginAdmin />} />
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
   );

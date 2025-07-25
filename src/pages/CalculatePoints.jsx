@@ -1,10 +1,8 @@
-import React from "react";
-
-function GeoRound() {
+function CalculatePoints() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center px-4 py-10">
       {/* Header */}
-      <h2 className="text-2xl font-bold mb-6">Round 1</h2>
+      <h2 className="text-2xl font-bold mb-6 text-white">Round 1</h2>
 
       {/* Map Image Placeholder */}
       <div className="w-full max-w-3xl h-96 bg-gray-300 mb-6 rounded shadow relative">
@@ -20,24 +18,24 @@ function GeoRound() {
 
       {/* Points Section */}
       <div className="text-center">
-        <h3 className="text-xl font-semibold ">202 points</h3>
+        <h3 className="text-xl font-semibold text-white">202 points</h3>
 
         {/* Progress Bar */}
         <div className="w-64 h-2 bg-blue-100 rounded-full overflow-hidden mx-auto my-3">
           <div className="h-full bg-orange-500" style={{ width: "10%" }}></div>
         </div>
 
-        <p className="text-sm ">
+        <p className="text-sm text-white">
           Your guess was <strong>6,434 KM</strong> from the correct location.
         </p>
       </div>
 
       {/* Button */}
-      <button className="mt-6 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded transition">
+      <button className="mt-6 px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95">
         START NEXT ROUND
       </button>
     </div>
   );
 }
 
-export default GeoRound;
+export default CalculatePoints;

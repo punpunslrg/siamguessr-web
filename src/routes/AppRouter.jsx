@@ -1,15 +1,43 @@
+import { Navigate, Route, Routes } from "react-router";
+import Home from "../pages/Home";
+import Layout from "../layouts/Layout";
+import Gameplay from "../pages/Gameplay";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+// import CalculatePoints from "../pages/CalculatePoints";
+import HomePageFree from "../pages/HomePageForFree";
+import Subscription from "../pages/Subscription";
+import Profile from "../pages/Profile";
+import Lobby from "../pages/Lobby";
+import GameMode from "../pages/GameMode";
+
+import RoundScore from "../pages/RoundScore.jsx";
+
+import AdminLayout from "../layouts/AdminLayout";
+import Dashboard from "../pages/admin/Dashboard";
+import LoginAdmin from "../pages/admin/LoginAdmin";
+
 function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="/round" element={<GeoRound />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/round" element={<RoundScore />} />
         <Route path="/homepagefree" element={<HomePageFree />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/Lobby" element={<Lobby />} />
-        <Route path="/join/:roomCode" element={<Lobby />} />
-        <Route path="gameplay" element={<Gameplay />} />
+        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/gameplay" element={<Gameplay />} />
+        <Route path="/gamemode" element={<GameMode />} />
+      </Route>
+
+      <Route path="/admin/login" element={<LoginAdmin />} />
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
       </Route>
     </Routes>
   );

@@ -3,7 +3,7 @@
 
 @custom-variant dark (&:is(.dark *)); 
 @plugin “daisyui” {
-	themes: light  --default, dark --prefersdark;
+	themes: light  --default;
 } 
 
 @theme inline {

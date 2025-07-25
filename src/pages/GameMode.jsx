@@ -76,13 +76,10 @@ function GameMode() {
           </div>
           <div className="flex gap-2">
             <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
-              Moving
+              Classic
             </button>
             <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
-              No Move
-            </button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
-              Stone
+              Challenge
             </button>
           </div>
           <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer">

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import CountdownTimer from "../components/TimeCountdown";
 
 function HomePageFree() {
   return (
@@ -7,12 +8,12 @@ function HomePageFree() {
         {/* Left Section */}
         <div className="text-center">
           <div className="text-4xl mb-4">⏳</div>
-          <h2 className="text-2xl font-semibold mb-2 ">
+          <h2 className="text-2xl font-semibold mb-2 text-white">
             No free locations left to play today!
           </h2>
-          <p className="text-md font-medium  mb-4">PLAY AGAIN IN</p>
-          <div className="text-2xl font-bold bg-white px-6 py-2 rounded shadow inline-block text-black">
-            01:23:45
+          <p className="text-md font-medium mb-4 text-white">PLAY AGAIN IN</p>
+          <div className="text-2xl font-bold px-6 py-2 inline-block text-black">
+            <CountdownTimer />
           </div>
         </div>
 

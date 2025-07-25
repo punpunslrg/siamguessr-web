@@ -1,4 +1,4 @@
-function GeoRound() {
+function CalculatePoints() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center px-4 py-10">
       {/* Header */}
@@ -38,4 +38,4 @@ function GeoRound() {
   );
 }
 
-export default GeoRound;
+export default CalculatePoints;

@@ -4,15 +4,12 @@ import Layout from "../layouts/Layout";
 import Gameplay from "../pages/Gameplay";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-// import CalculatePoints from "../pages/CalculatePoints";
 import HomePageFree from "../pages/HomePageForFree";
 import Subscription from "../pages/Subscription";
 import Profile from "../pages/Profile";
 import Lobby from "../pages/Lobby";
 import GameMode from "../pages/GameMode";
-
 import RoundScore from "../pages/RoundScore.jsx";
-
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
@@ -28,7 +25,7 @@ function AppRouter() {
         <Route path="/homepagefree" element={<HomePageFree />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/lobby/:roomId" element={<Lobby />} />
         <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
       </Route>

@@ -1,5 +1,57 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import GameModePic from "../assets/bangkok.jpg";
+import { createRoom } from "../api/gameApi.js";
+
 function GameMode() {
+  const navigate = useNavigate();
+  const [selectedMode, setSelectedMode] = useState("single"); // Use values from your schema
+  const [selectedDifficulty, setSelectedDifficulty] = useState("classic");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // --- Placeholder for Authentication ---
+  // Replace this with your actual authentication logic (e.g., from a context)
+  const currentUser = { id: "user_placeholder_id_123" };
+  // ---
+
+  const handlePlay = async () => {
+    if (!currentUser) {
+      console.error("User is not logged in.");
+      // Optionally, redirect to login page
+      // navigate('/login');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const roomData = {
+        mode: selectedMode,
+        difficulty: selectedDifficulty,
+        hostId: currentUser.id,
+      };
+
+      // 2. Call the backend to create the room
+      const newRoom = await createRoom(roomData);
+      console.log("Created room:", newRoom);
+
+      // 3. Navigate based on the selected mode
+      if (selectedMode === "single") {
+        // For single player, go directly to gameplay
+        // You might want to pass the room ID in the state
+        navigate("/gameplay", { state: { roomId: newRoom.id } });
+      } else {
+        // For multiplayer, go to a lobby page with the room ID
+        navigate(`/lobby/${newRoom.id}`);
+      }
+    } catch (error) {
+      console.error("Failed to start game:", error);
+      // Optionally, show an error message to the user
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-6 ">
       <div className="max-w-6xl mx-auto">
@@ -15,7 +67,9 @@ function GameMode() {
             />
             <div className="p-4">
               <h2 className="text-2xl font-semibold">Thailand</h2>
-              <p className="text-sm text-gray-300 mt-2">MODE...</p>
+              <p className="text-sm text-gray-300 mt-2">
+                A tour of the Land of Smiles.
+              </p>
             </div>
           </div>
 
@@ -51,12 +105,6 @@ function GameMode() {
         {/* Slider for Medals */}
         <div className="bg-gray-800 rounded-lg p-4 mt-8 shadow-lg">
           <h2 className="text-xl mb-2">Your Medals</h2>
-          {/* <div
-            defaultValue={[15000]}
-            max={25000}
-            step={1000}
-            className="mb-2"
-          /> */}
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Bronze: 5,000</span>
             <span className="text-gray-400">Silver: 15,000</span>
@@ -67,23 +115,55 @@ function GameMode() {
         {/* Mode and Play Buttons */}
         <div className="mt-8 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-wrap gap-4 items-center justify-between">
           <div className="flex gap-2">
-            <button className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded text-white cursor-pointer">
+            <button
+              onClick={() => setSelectedMode("single")}
+              className={`px-4 py-2 rounded text-white cursor-pointer transition-colors ${
+                selectedMode === "single"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
               Singleplayer
             </button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-white cursor-pointer">
+            <button
+              onClick={() => setSelectedMode("multi")}
+              className={`px-4 py-2 rounded text-white cursor-pointer transition-colors ${
+                selectedMode === "multi"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
               Multiplayer
             </button>
           </div>
           <div className="flex gap-2">
-            <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
-              Classic
+            <button
+              onClick={() => setSelectedDifficulty("classic")}
+              className={`px-3 py-1 rounded text-white cursor-pointer transition-colors ${
+                selectedDifficulty === "classic"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
+              CLASSIC
             </button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
-              Challenge
+            <button
+              onClick={() => setSelectedDifficulty("challenge")}
+              className={`px-3 py-1 rounded text-white cursor-pointer transition-colors ${
+                selectedDifficulty === "challenge"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+            >
+              CHALLENGE
             </button>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer">
-            Play
+          <button
+            onClick={handlePlay}
+            disabled={isLoading}
+            className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Starting..." : "Play"}
           </button>
         </div>
       </div>

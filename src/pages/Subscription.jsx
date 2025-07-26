@@ -2,10 +2,10 @@ function Subscription() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex flex-col items-center justify-center px-4 py-12">
       {/* Heading */}
-      <h1 className="text-2xl md:text-3xl font-bold mb-2 ">
+      <h1 className="text-2xl text-white md:text-3xl font-bold mb-2 ">
         Choose your preferred plan
       </h1>
-      <p className=" mb-10 text-sm">
+      <p className=" mb-10 text-sm text-white">
         Unlock all game modes. Cancel at any time.
       </p>
 

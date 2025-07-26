@@ -1,5 +1,14 @@
+import { useState } from "react";
 import GameModePic from "../assets/bangkok.jpg";
+import useRoomStore from "../stores/roomStore";
 function GameMode() {
+  const [mode, setMode] = useState("single");
+  const [difficulty, setDifficulty] = useState("classic");
+  const createRoom = useRoomStore(state=>state.createRoom)
+  console.log('createRoom', createRoom)
+  const hdlPlay =()=>{
+    alert("play!")
+  }
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-6 ">
       <div className="max-w-6xl mx-auto">
@@ -67,22 +76,47 @@ function GameMode() {
         {/* Mode and Play Buttons */}
         <div className="mt-8 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-wrap gap-4 items-center justify-between">
           <div className="flex gap-2">
-            <button className="bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded text-white cursor-pointer">
+            <button
+              className={`px-4 py-2 rounded text-white cursor-pointer ${
+                mode === "single"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setMode("single")}
+            >
               Singleplayer
             </button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded text-white cursor-pointer">
+            <button
+              className={`px-4 py-2 rounded text-white cursor-pointer ${
+                mode === "multi"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setMode("multi")}
+            >
               Multiplayer
             </button>
           </div>
           <div className="flex gap-2">
-            <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
+            <button className={`px-4 py-2 rounded text-white cursor-pointer ${
+                difficulty === "classic"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setDifficulty("classic")}>
               Classic
             </button>
-            <button className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded text-white cursor-pointer">
+            <button className={`px-4 py-2 rounded text-white cursor-pointer ${
+                difficulty === "challenge"
+                  ? "bg-purple-700 hover:bg-purple-600"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setDifficulty("challenge")}>
               Challenge
             </button>
           </div>
-          <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer">
+          <button className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer"
+          onClick = {hdlPlay}>
             Play
           </button>
         </div>

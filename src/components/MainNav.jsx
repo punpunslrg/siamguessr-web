@@ -33,6 +33,9 @@ function MainNav() {
               <Link to="/profile">Profile</Link>
               <Link to="/lobby">Lobby</Link>
               <Link to="/gamemode">GameMode</Link>
+              <Link to="/leaderboard">Leaderboard</Link>
+              <Link to="/gamebreakdown">GameBreakdown</Link>
+              <Link to="/homepageforsub">HomePageForSub</Link>
             </li>
           </ul>
         </div>
@@ -40,7 +43,7 @@ function MainNav() {
 
       {/* Right */}
       {!user ? (
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center ">
           <Link to="/register">Register</Link>
           <Link to="/login">Login</Link>
         </div>

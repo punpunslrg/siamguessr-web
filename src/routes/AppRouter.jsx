@@ -4,18 +4,19 @@ import Layout from "../layouts/Layout";
 import Gameplay from "../pages/Gameplay";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import GeoRound from "../pages/CalculatePoints";
 import HomePageFree from "../pages/HomePageForFree";
 import Subscription from "../pages/Subscription";
 import Profile from "../pages/Profile";
 import Lobby from "../pages/Lobby";
 import GameMode from "../pages/GameMode";
+import RoundScore from "../pages/RoundScore.jsx";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
 import Leaderboard from "../pages/LeaderBoard";
 import GameBreakdown from "../pages/GameBreakdown";
 import HomePageForSub from "../pages/HomePageForSub";
+import ProtectRoute from "./ProtectRoute";
 
 function AppRouter() {
   return (
@@ -24,11 +25,11 @@ function AppRouter() {
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/round" element={<GeoRound />} />
+        <Route path="/round" element={<RoundScore />} />
         <Route path="/homepagefree" element={<HomePageFree />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/lobby" element={<Lobby />} />
+        <Route path="/lobby/:roomId" element={<Lobby />} />
         <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
@@ -38,7 +39,10 @@ function AppRouter() {
 
       <Route path="/admin/login" element={<LoginAdmin />} />
 
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route
+        path="/admin"
+        element={<ProtectRoute el={<AdminLayout />} allows={["admin"]} />}
+      >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Route>

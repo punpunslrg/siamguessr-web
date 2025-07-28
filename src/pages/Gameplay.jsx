@@ -1,38 +1,62 @@
-import { useEffect, useState, useRef } from "react";
-import useGameStore from "../store/game-store.js";
+import { useEffect, useState, useRef, useCallback } from "react";
+import useGameStore from "../stores/game-store.js";
 import StreetView from "../components/StreetView.jsx";
 import GuessMap from "../components/GuessMap.jsx";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
+import { getRoomDetails } from "../api/gameApi.js"; // Assuming you have this API function
+
+// Configuration for the map sizes
+const mapSizeConfig = {
+  sm: { container: "w-64 h-40", button: "w-64" },
+  md: { container: "w-[32rem] h-80", button: "w-[32rem]" },
+  lg: { container: "w-[40rem] h-[30rem]", button: "w-[40rem]" },
+  xl: { container: "w-[48rem] h-[36rem]", button: "w-[48rem]" },
+};
+// Define the levels available for the EXPANDED map
+const expandedMapSizeLevels = ["md", "lg", "xl"];
 
 function Gameplay() {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [playerGuess, setPlayerGuess] = useState(null);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
+  const [gameDifficulty, setGameDifficulty] = useState("classic");
+  const [expandedMapSize, setExpandedMapSize] = useState("md"); // Default expanded size
   const hoverTimeoutRef = useRef(null);
+  const streetViewRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // --- Re-enabled Game Store Logic ---
   const actionGetRandomLocation = useGameStore(
     (state) => state.actionGetRandomLocation
   );
   const randomLocation = useGameStore((state) => state.randomLocation);
-  console.log(randomLocation);
-  // ---
+  const actionCalculateScore = useGameStore(
+    (state) => state.actionCalculateScore
+  );
 
-  // Effect to load a random location on initial mount
   useEffect(() => {
-    actionGetRandomLocation();
-  }, [actionGetRandomLocation]);
+    const setupGame = async () => {
+      const roomId = location.state?.roomId;
+      if (roomId) {
+        try {
+          const roomDetails = await getRoomDetails(roomId);
+          setGameDifficulty(roomDetails.difficulty);
+        } catch (error) {
+          console.error("Failed to fetch room details:", error);
+        }
+      }
+      actionGetRandomLocation();
+    };
+    setupGame();
+  }, [actionGetRandomLocation, location.state]);
 
-  // Effect to update the view when a new random location is fetched from the store
   useEffect(() => {
     if (randomLocation) {
       setCurrentLocation(randomLocation);
-      setPlayerGuess(null); // Reset player guess for the new round
+      setPlayerGuess(null);
     }
   }, [randomLocation]);
 
-  // Cleanup effect for the hover timer
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
@@ -47,9 +71,8 @@ function Gameplay() {
 
   const handleGuess = () => {
     if (!playerGuess) return;
-    console.log("Real Location:", currentLocation);
-    console.log("Player Guess:", playerGuess);
-    navigate("/round-score");
+    actionCalculateScore(playerGuess);
+    navigate("/round");
   };
 
   const handleMouseEnter = () => {
@@ -63,28 +86,54 @@ function Gameplay() {
     }, 1000);
   };
 
-  const handleMovabilityCheck = (locationData, isMovable) => {
-    if (!isMovable) {
-      // Find the name of the location that was just loaded
-      const locationName = randomLocation?.name || "Unknown Location";
+  const handleMovabilityCheck = useCallback(
+    (locationData, isMovable) => {
+      if (!isMovable) {
+        const locationName = randomLocation?.name || "Unknown Location";
+        console.warn(
+          `🚩 WARNING: Location "${locationName}" is not movable.`,
+          `Coordinates: { lat: ${locationData.lat}, lng: ${locationData.lng} }`,
+          `Please update or remove it from your JSON list.`
+        );
+      }
+    },
+    [randomLocation]
+  );
 
-      console.warn(
-        `🚩 WARNING: Location "${locationName}" is not movable.`,
-        `Coordinates: { lat: ${locationData.lat}, lng: ${locationData.lng} }`,
-        `Please update or remove it from your JSON list.`
-      );
+  // Handlers to control the EXPANDED map size
+  const handleIncreaseMapSize = (e) => {
+    e.stopPropagation(); // Prevent hover state from flickering
+    const currentIndex = expandedMapSizeLevels.indexOf(expandedMapSize);
+    if (currentIndex < expandedMapSizeLevels.length - 1) {
+      setExpandedMapSize(expandedMapSizeLevels[currentIndex + 1]);
     }
-  }; // <-- THE CLOSING BRACE WAS MOVED HERE
+  };
 
-  // The main return statement is now correctly in the component body
+  const handleDecreaseMapSize = (e) => {
+    e.stopPropagation();
+    const currentIndex = expandedMapSizeLevels.indexOf(expandedMapSize);
+    if (currentIndex > 0) {
+      setExpandedMapSize(expandedMapSizeLevels[currentIndex - 1]);
+    }
+  };
+
+  // Determine the current size classes based on hover state
+  const currentContainerClass = isMapExpanded
+    ? mapSizeConfig[expandedMapSize].container
+    : mapSizeConfig.sm.container;
+  const currentButtonClass = isMapExpanded
+    ? mapSizeConfig[expandedMapSize].button
+    : mapSizeConfig.sm.button;
+
   return (
     <div className="w-full h-full">
       <div className="relative w-full h-full overflow-hidden">
         {currentLocation ? (
-          // Pass the new function as a prop to StreetView
           <StreetView
+            ref={streetViewRef}
             position={currentLocation}
             onMovabilityCheck={handleMovabilityCheck}
+            difficulty={gameDifficulty}
           />
         ) : (
           <div className="text-white text-center">Loading Location...</div>
@@ -100,15 +149,17 @@ function Gameplay() {
           <div className="flex-grow"></div>
 
           <div className="flex justify-between items-end -mb-2">
-            <button className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto">
-              Leave
-            </button>
-            <button
-              onClick={() => changeMap()}
-              className="btn btn-neutral btn-sm shadow-lg text-white pointer-events-auto"
-            >
-              Change
-            </button>
+            <div className="flex items-end gap-2">
+              <button className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto">
+                Leave
+              </button>
+              <button
+                onClick={() => changeMap()}
+                className="btn btn-neutral btn-sm shadow-lg text-white pointer-events-auto"
+              >
+                Change
+              </button>
+            </div>
 
             <div
               className="flex flex-col items-end space-y-2 mr-10"
@@ -119,20 +170,42 @@ function Gameplay() {
                 className={`relative overflow-hidden transition-all duration-300 ease-in-out bg-white rounded-lg shadow-xl pointer-events-auto 
                 ${
                   isMapExpanded
-                    ? "w-[32rem] h-80 opacity-100"
-                    : "w-64 h-40 opacity-50"
+                    ? currentContainerClass + " opacity-100"
+                    : currentContainerClass + " opacity-50"
                 }`}
               >
-                <div className="absolute bottom-0 right-0 w-[32rem] h-80">
+                {/* Size Control Buttons - visible only when expanded */}
+                <div
+                  className={`absolute top-2 left-2 z-10 flex flex-col gap-1 transition-opacity duration-300 ${
+                    isMapExpanded ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <button
+                    onClick={handleIncreaseMapSize}
+                    disabled={expandedMapSize === "xl"}
+                    className="btn btn-xs btn-circle btn-neutral disabled:opacity-50 pointer-events-auto"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={handleDecreaseMapSize}
+                    disabled={expandedMapSize === "md"}
+                    className="btn btn-xs btn-circle btn-neutral disabled:opacity-50 pointer-events-auto"
+                  >
+                    -
+                  </button>
+                </div>
+
+                <div className="absolute bottom-0 right-0 w-full h-full">
                   <GuessMap onPinPlace={setPlayerGuess} />
                 </div>
               </div>
-              
+
               <div className="h-12">
                 {!playerGuess ? (
                   <div
                     className={`h-full flex items-center justify-center bg-[rgba(0,0,0,0.5)] text-white rounded-lg text-center text-sm font-semibold p-2 pointer-events-none select-none transition-all duration-300 ease-in-out 
-                    ${isMapExpanded ? "w-[32rem]" : "w-64"}`}
+                    ${currentButtonClass}`}
                   >
                     PLACE YOUR PIN ON THE MAP
                   </div>
@@ -140,7 +213,7 @@ function Gameplay() {
                   <button
                     onClick={handleGuess}
                     className={`btn btn-success pointer-events-auto transition-all duration-300 ease-in-out font-bold 
-                    ${isMapExpanded ? "w-[32rem]" : "w-64"}`}
+                    ${currentButtonClass}`}
                   >
                     GUESS
                   </button>

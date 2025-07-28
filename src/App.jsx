@@ -5,7 +5,7 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 
 function App() {
   return (
-    <APIProvider apiKey="AIzaSyCUgweKR0PyiDRD0gIOpIYnqfQiQjiQccM">
+    <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <AppRouter />
       <ToastContainer position="top-right" style={{ zIndex: 9999 }} />
     </APIProvider>

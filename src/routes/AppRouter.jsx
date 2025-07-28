@@ -13,6 +13,9 @@ import GameMode from "../pages/GameMode";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
+import Leaderboard from "../pages/LeaderBoard";
+import GameBreakdown from "../pages/GameBreakdown";
+import HomePageForSub from "../pages/HomePageForSub";
 
 function AppRouter() {
   return (
@@ -28,6 +31,9 @@ function AppRouter() {
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/gamebreakdown" element={<GameBreakdown />} />
+        <Route path="/homepageforsub" element={<HomePageForSub />} />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

@@ -13,6 +13,7 @@ import GameMode from "../pages/GameMode";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
+import ProtectRoute from "./ProtectRoute";
 
 function AppRouter() {
   return (
@@ -32,7 +33,7 @@ function AppRouter() {
 
       <Route path="/admin/login" element={<LoginAdmin />} />
 
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={<ProtectRoute el={<AdminLayout />} allows={["admin"]} />}>
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Route>

@@ -13,8 +13,10 @@ import { registerSchema } from "../utils/validator";
 import { actionRegister } from "../api/authApi";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
+import { useNavigate } from "react-router";
 
 function Register() {
+  const navigate = useNavigate()
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(registerSchema),
   });
@@ -25,6 +27,7 @@ function Register() {
       const res = await actionRegister(value);
       toast.success("Register Successfully!");
       reset();
+      navigate("/login")
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message;
       toast.error(errMsg);
@@ -49,7 +52,7 @@ function Register() {
                 <Label>Name</Label>
                 <FormInput
                   register={register}
-                  name="name"
+                  name="username"
                   errors={errors}
                 />
               </div>

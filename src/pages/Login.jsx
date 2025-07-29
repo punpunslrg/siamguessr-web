@@ -70,7 +70,7 @@ function Login() {
                 />
               </div>
             </div>
-            <CardFooter className="flex-col gap-2">
+            <CardFooter className="flex-col gap-2 mt-4">
               <Button type="submit" className="w-full">
                 Login
               </Button>

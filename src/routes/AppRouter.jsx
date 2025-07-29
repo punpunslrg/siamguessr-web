@@ -17,6 +17,8 @@ import Leaderboard from "../pages/LeaderBoard";
 import GameBreakdown from "../pages/GameBreakdown";
 import HomePageForSub from "../pages/HomePageForSub";
 import ProtectRoute from "./ProtectRoute";
+import CalculatePoints from "../pages/CalculatePoints";
+import SingleScore from "../pages/SingleScore";
 
 function AppRouter() {
   return (
@@ -35,6 +37,8 @@ function AppRouter() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/gamebreakdown" element={<GameBreakdown />} />
         <Route path="/homepageforsub" element={<HomePageForSub />} />
+        <Route path="/calculatepoints" element={<CalculatePoints />} />
+        <Route path="/singlescore" element={<SingleScore />} />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

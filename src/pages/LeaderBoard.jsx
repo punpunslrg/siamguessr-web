@@ -2,7 +2,7 @@ import Crown from "../icons";
 
 export default function Leaderboard() {
   return (
-    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen p-4 flex flex-col items-center text-white font-bold">
+    <div className=" min-h-screen p-4 flex flex-col items-center text-white font-bold">
       <h1 className="text-3xl mb-24 mt-2">LEADERBOARD</h1>
 
       {/* Top 3 podium */}

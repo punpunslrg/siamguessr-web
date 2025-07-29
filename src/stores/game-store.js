@@ -1,63 +1,137 @@
 import { create } from "zustand";
-import { getRandomLocation } from "../api/gameApi.js";
-import { calculateDistance } from "../utils/calculate-distance.js";
+import { persist } from "zustand/middleware";
+import { calculateDistance } from "../utils/calculate-distance";
 
-const useGameStore = create((set, get) => ({
-  randomLocation: null,
-  distance: null,
-  roundScore: 0,
-  totalScore: 0,
-  currentRound: 1,
-  lastPlayerGuess: null,
-  actionGetRandomLocation: async () => {
-    const resp = await getRandomLocation();
-    // console.log(resp)
-    set({
-      randomLocation: resp.data,
-      distance: null,
-      roundScore: 0,
-      lastPlayerGuess: null,
-    });
-    return resp;
-  },
-  actionCalculateScore: (playerGuess) => {
-    const { randomLocation } = get();
-    if (!randomLocation || !playerGuess) return;
+const useGameStore = create(
+  persist(
+    (set, get) => ({
+      room: null,
+      currentRoundIndex: 0,
+      guesses: [],
+      gameState: "idle",
 
-    const distanceInKm = calculateDistance(
-      randomLocation.lat,
-      randomLocation.lng,
-      playerGuess.lat,
-      playerGuess.lng
-    );
+      actionStartNewGame: async () => {
+        const mockRoom = {
+          id: "room_cuid_123",
+          mode: "single",
+          mode: "multi",
+          difficulty: "classic",
+          status: "waiting",
+          maxPlayers: 2,
+          hostId: "user_cuid_abc",
+          // players: [{ userId: "user_cuid_abc", isHost: true }],
+          players: [
+            { userId: "user_cuid_abc", isHost: true },
+            { userId: "user_cuid_def", isHost: false },
+          ],
+          rounds: [
+            {
+              id: "r1",
+              roundNumber: 1,
+              location: { lat: 13.7569, lng: 100.5025 },
+            },
+            {
+              id: "r2",
+              roundNumber: 2,
+              location: { lat: 20.352, lng: 100.0805 },
+            },
+            {
+              id: "r3",
+              roundNumber: 3,
+              location: { lat: 14.0428, lng: 99.5037 },
+            },
+            {
+              id: "r4",
+              roundNumber: 4,
+              location: { lat: 18.7909, lng: 98.9873 },
+            },
+            {
+              id: "r5",
+              roundNumber: 5,
+              location: { lat: 7.8286, lng: 98.3121 },
+            },
+          ],
+        };
 
-    let score = 0;
+        set({
+          room: mockRoom,
+          currentRoundIndex: 0,
+          guesses: [],
+          gameState: "playing",
+        });
 
-    // Rule 1: More than 500km away is still 0 points.
-    if (distanceInKm > 500) {
-      score = 0;
+        return mockRoom;
+      },
+      actionSubmitGuess: (playerGuess) => {
+        const { room, currentRoundIndex, guesses } = get();
+        if (!room || room.rounds.length <= currentRoundIndex) return;
+
+        const currentRound = room.rounds[currentRoundIndex];
+        const actualLocation = currentRound.location;
+
+        // No guess made
+        if (!playerGuess) {
+          set({
+            guesses: [...guesses, { guess: null, distance: null, score: 0 }],
+            gameState: "round-results",
+          });
+          return;
+        }
+
+        const distanceInKm = calculateDistance(
+          actualLocation.lat,
+          actualLocation.lng,
+          playerGuess.lat,
+          playerGuess.lng
+        );
+
+        let score = 0;
+        if (distanceInKm <= 10) {
+          score = 5000;
+        } else if (distanceInKm >= 1000) {
+          score = 0;
+        } else {
+          const normalized = (distanceInKm - 10) / (1000 - 10); // smoother drop-off
+          score = Math.round(5000 * (1 - normalized));
+          score = Math.max(0, score); // just to be extra safe
+        }
+
+        set({
+          guesses: [
+            ...guesses,
+            { guess: playerGuess, distance: distanceInKm, score },
+          ],
+          gameState: "round-results",
+        });
+      },
+
+      actionNextRound: () => {
+        const index = get().currentRoundIndex;
+        if (index < 4) {
+          set({ currentRoundIndex: index + 1, gameState: "playing" });
+        } else {
+          set({ gameState: "game-over" });
+        }
+      },
+
+      actionResetGame: () => {
+        set({
+          room: null,
+          currentRoundIndex: 0,
+          guesses: [],
+          gameState: "idle",
+        });
+      },
+
+      actionGetTotalScore: () => {
+        return get().guesses.reduce((total, g) => total + (g.score || 0), 0);
+      },
+    }),
+    {
+      name: "siamguessr-game",
+      onRehydrateStorage: () => console.log("rehydrating store"),
     }
-    // Rule 2: Less than or equal to 20km is still a perfect 5000 points.
-    else if (distanceInKm <= 10) {
-      score = 5000;
-    }
-    // Rule 3: For distances between 20km and 500km, use a steeper, cubic scale.
-    else {
-      const normalizedDistance = (distanceInKm - 10) / (500 - 20);
-
-      // THIS IS THE CHANGE:
-      // Using a cubic falloff (** 3) makes the score drop much faster.
-      score = Math.round(5000 * (1 - normalizedDistance));
-    }
-
-    set((state) => ({
-      distance: distanceInKm,
-      roundScore: score,
-      totalScore: state.totalScore + score,
-      currentRound: state.currentRound + 1,
-      lastPlayerGuess: playerGuess,
-    }));
-  },
-}));
+  )
+);
 
 export default useGameStore;

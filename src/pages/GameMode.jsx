@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import GameModePic from "../assets/bangkok.jpg";
 import { createRoom } from "../api/gameApi.js";
+import useGameStore from "../stores/game-store.js";
 
 function GameMode() {
   const navigate = useNavigate();
@@ -10,35 +11,34 @@ function GameMode() {
   const [isLoading, setIsLoading] = useState(false);
 
   // --- Placeholder for Authentication ---
-  // Replace this with your actual authentication logic (e.g., from a context)
   const currentUser = { id: "user_placeholder_id_123" };
   // ---
+
+  const actionStartNewGame = useGameStore((state) => state.actionStartNewGame);
 
   const handlePlay = async () => {
     if (!currentUser) {
       console.error("User is not logged in.");
-      // Optionally, redirect to login page
-      // navigate('/login');
+      navigate("/login");
       return;
     }
-
+    localStorage.removeItem("roundStartTimestamp");
     setIsLoading(true);
 
     try {
       const roomData = {
         mode: selectedMode,
         difficulty: selectedDifficulty,
+        maxPlayers: selectedMode === "multi" ? 2 : 1,
         hostId: currentUser.id,
       };
 
       // 2. Call the backend to create the room
-      const newRoom = await createRoom(roomData);
+      const newRoom = await actionStartNewGame(roomData);
       console.log("Created room:", newRoom);
 
       // 3. Navigate based on the selected mode
       if (selectedMode === "single") {
-        // For single player, go directly to gameplay
-        // You might want to pass the room ID in the state
         navigate("/gameplay", { state: { roomId: newRoom.id } });
       } else {
         // For multiplayer, go to a lobby page with the room ID

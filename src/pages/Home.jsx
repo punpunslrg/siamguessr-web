@@ -1,6 +1,7 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 function Home() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col items-center justify-center b text-white font-sans">
       <header className="mb-10 flex flex-col items-center">
@@ -12,11 +13,12 @@ function Home() {
         </p>
       </header>
       <main className="flex flex-col items-center gap-8 w-full max-w-md">
-        <Link href="/game">
-          <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-10 rounded-full text-xl shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 w-full cursor-pointer">
-            เริ่มเล่นเกม
-          </button>
-        </Link>
+        <button
+          onClick={() => navigate("/gamemode")}
+          className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-10 rounded-full text-xl shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 w-full cursor-pointer"
+        >
+          เริ่มเล่นเกม
+        </button>
         <div className="mt-8 text-center text-sky-100 text-base md:text-lg">
           <p>ล็อกอินด้วย Google เพื่อบันทึกคะแนนและดู Leaderboard</p>
         </div>

@@ -13,6 +13,10 @@ import RoundScore from "../pages/RoundScore.jsx";
 import AdminLayout from "../layouts/AdminLayout";
 import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
+import Leaderboard from "../pages/LeaderBoard";
+import GameBreakdown from "../pages/GameBreakdown";
+import HomePageForSub from "../pages/HomePageForSub";
+import ProtectRoute from "./ProtectRoute";
 
 function AppRouter() {
   return (
@@ -28,11 +32,17 @@ function AppRouter() {
         <Route path="/lobby/:roomId" element={<Lobby />} />
         <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/gamebreakdown" element={<GameBreakdown />} />
+        <Route path="/homepageforsub" element={<HomePageForSub />} />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />
 
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route
+        path="/admin"
+        element={<ProtectRoute el={<AdminLayout />} allows={["admin"]} />}
+      >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
       </Route>

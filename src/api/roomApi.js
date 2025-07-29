@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export const roomApi = axios.create({
-  baseURL: "http://localhost:8890/api/rooms",
+export const createRoomApi = axios.create({
+  baseURL:"http://localhost:8890/api/rooms"
+})
+
+const addToken = (token) => ({
+  headers: { Authorization: `Bearer ${token}` },
 });
 
-export const createRoom = (roomData) => roomApi.post("/", roomData);
+export const createRoom = (body, token) => createRoomApi.post("/", body, addToken(token));

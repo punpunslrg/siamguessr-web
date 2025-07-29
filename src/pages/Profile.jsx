@@ -1,26 +1,46 @@
+import { useEffect, useState } from "react";
+import useUserStore from "../stores/userStore";
+import { Pencil } from "lucide-react";
+import EditProfileModal from "../components/form/EditProfileModal";
+
 const Profile = () => {
+  const user = useUserStore((state) => state.user);
+  const getProfile = useUserStore((state) => state.getProfile);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // เรียก getProfile() เมื่อ component ถูก render ครั้งแรก
+  // เพื่อให้แน่ใจว่าเราได้ข้อมูล user ล่าสุดเสมอ
+  useEffect(() => {
+    getProfile();
+  }, [getProfile]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8 pb-8 border-b border-gray-200">
+          {/* Profile Image */}
           <div className="relative w-36 h-36 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border-4 border-gray-300 shadow-md">
-            <span className="text-gray-500 text-sm">150x150</span>
+            {user?.image ? (
+              <img
+                src={user.image}
+                alt={`${user.username}'s profile`}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-gray-500 text-sm">No Image</span>
+            )}
           </div>
 
           {/* Username and Edit Profile */}
           <div className="flex flex-col items-center md:items-start mt-4 md:mt-0">
             <h1 className="text-4xl font-extrabold text-gray-800 mb-2">
-              Username
+              {user?.username || "Loading..."}
             </h1>
-            <button className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 ease-in-out shadow-md hover:shadow-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zm-3.109 4.887l-.462 2.651 2.651-.462c.115-.66.309-1.296.58-1.896-.28-.27-.58-.52-.89-.75l-.46-.46zm-2.121 2.121l-3.536 3.536A2 2 0 015 17.071V15h2.071l3.536-3.536-2.121-2.121z" />
-              </svg>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-300 ease-in-out shadow-md hover:shadow-lg"
+            >
+              <Pencil />
               <span>Edit Profile</span>
             </button>
           </div>
@@ -125,6 +145,12 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      <EditProfileModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        user={user}
+      />
     </div>
   );
 };

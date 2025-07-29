@@ -2,7 +2,7 @@ import { Link } from "react-router";
 
 function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-sans">
+    <div className="min-h-screen flex flex-col items-center justify-center b text-white font-sans">
       <header className="mb-10 flex flex-col items-center">
         <h1 className="text-4xl md:text-6xl font-bold drop-shadow-lg tracking-tight mb-2">
           SiamGuessr

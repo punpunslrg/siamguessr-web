@@ -3,7 +3,7 @@ import CountdownTimer from "../components/TimeCountdown";
 
 function HomePageFree() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center px-4">
+    <div className="min-h-screen  flex items-center justify-center px-4">
       <div className="flex flex-col md:flex-row items-center justify-between gap-12">
         {/* Left Section */}
         <div className="text-center">
@@ -38,9 +38,7 @@ function HomePageFree() {
             </div>
           </div>
 
-          <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-full cursor-pointer ">
-            SUBSCRIPTION
-          </button>
+          <button className="btn-secondary">SUBSCRIPTION</button>
         </div>
       </div>
     </div>

@@ -53,7 +53,7 @@ function GameMode() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-6 ">
+    <div className=" text-white p-6">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">Classic Maps</h1>
 
@@ -161,7 +161,7 @@ function GameMode() {
           <button
             onClick={handlePlay}
             disabled={isLoading}
-            className="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded text-white font-bold cursor-pointer disabled:bg-gray-500 disabled:cursor-not-allowed"
+            className="btn-primary disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
             {isLoading ? "Starting..." : "Play"}
           </button>

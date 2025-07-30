@@ -14,7 +14,7 @@ const HomePageForSub = () => {
         <img src="" alt="" />
         {/* ปุ่มเมนู */}
         <div className=" flex gap-4">
-          <button className="btn-primary  w-48 text-lg "> Play</button>
+          <button className="btn-primary py-4 px-30 text-2xl "> Play</button>
         </div>
       </div>
       <div>

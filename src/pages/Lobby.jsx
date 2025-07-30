@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import { getRoomDetails } from "../api/gameApi.js";
 
 // A component for displaying each player card
 const PlayerCard = ({ player }) => (
@@ -39,7 +38,6 @@ function Lobby() {
     const fetchRoom = async () => {
       try {
         setIsLoading(true);
-        const roomData = await getRoomDetails(roomId);
         setRoom(roomData);
       } catch (error) {
         console.error("Failed to fetch room data.", error);

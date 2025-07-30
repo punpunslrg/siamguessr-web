@@ -42,11 +42,15 @@ export const getRoomDetails = async (roomId) => {
             userId: "user_placeholder_id_123",
             username: "Player 1",
             image: "https://placehold.co/100x100/7e22ce/white?text=P1",
+            isHost: true,
+            status: "ready"
           },
           {
             userId: "user_placeholder_id_456",
             username: "Player 2",
             image: "https://placehold.co/100x100/1e40af/white?text=P2",
+            isHost: false,
+            status: "waitiing"
           },
         ],
       },

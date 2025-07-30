@@ -3,28 +3,49 @@ import { useParams, useNavigate } from "react-router";
 import { getRoomDetails } from "../api/gameApi.js";
 
 // A component for displaying each player card
-const PlayerCard = ({ player }) => (
-  <div className="bg-white p-6 rounded-2xl shadow-lg flex flex-col items-center w-48 text-center">
-    <div className="w-24 h-24 rounded-full bg-gray-300 mb-4 shadow-inner overflow-hidden">
-      {player.image ? (
-        <img
-          src={player.image}
-          alt={player.username}
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div className="w-full h-full bg-gray-400"></div>
+const PlayerCard = ({ player }) => {
+  // กำหนดสี border ตามสถานะ
+  const borderColor = player.status === "ready" ? "border-green-500" : "border-red-500";
+
+  return (
+    <div className="relative bg-white p-6 gap-4 rounded-2xl shadow-lg flex flex-col items-center w-48 text-center">
+      {player.isHost && (
+        <div className="absolute -top-15 left-1/2 -translate-x-1/2 z-10 text-5xl drop-shadow select-none pointer-events-none">
+          👑
+        </div>
       )}
+      <div
+        className={`w-28 h-28 rounded-full mb-4 shadow-inner overflow-hidden border-8 ${borderColor} flex items-center justify-center transition-colors duration-300`}
+      >
+        {player.image ? (
+          <img
+            src={player.image}
+            alt={player.username}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-400"></div>
+        )}
+      </div>
+      <h2 className="text-lg font-bold text-gray-800 truncate w-full">
+        {player.username}
+      </h2>
+      <span
+        className={`mt-2 text-sm font-semibold flex flex-col gap-2 ${
+          player.status === "ready" ? "text-green-500" : "text-red-500"
+        }`}
+      >
+        {player.status === "ready" ? "READY" : "WAITING. . ."}
+        <button className="btn">{player.status === "ready" ? "unready" : "ready"}</button>
+      </span>
     </div>
-    <h2 className="text-lg font-bold text-gray-800 truncate w-full">
-      {player.username}
-    </h2>
-  </div>
-);
+  );
+};
 
 // A component for displaying an empty slot
 const EmptySlot = () => (
-  <div className="bg-gray-200 bg-opacity-50 p-6 rounded-2xl shadow-inner flex flex-col items-center justify-center w-48 h-48 border-2 border-dashed border-gray-400">
+  <div className="bg-gray-200 bg-opacity-50 p-6 rounded-2xl shadow-inner flex flex-col items-center justify-center w-48 h-48 border-2 border-dashed border-gray-400 gap-4">
+    <button className="btn btn-secondary border-0">Invite</button>
     <span className="text-gray-500 text-lg">Waiting...</span>
   </div>
 );
@@ -96,29 +117,24 @@ function Lobby() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 ">
-      <h1 className="text-4xl font-bold text-white mb-2">LOBBY</h1>
-      <p className="text-white mb-8">
-        Room Code:{" "}
-        <span className="font-mono bg-black/30 px-2 py-1 rounded">
-          {room.code}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
+      {/* Room Code */}
+      <div className="absolute top-8 left-0 w-full flex justify-center">
+        <span className="bg-white bg-opacity-80 px-6 py-2 rounded-xl text-gray-800 text-lg font-mono tracking-widest shadow-md">
+          Room Code: <span className="font-bold">{room.code}</span>
         </span>
-      </p>
+      </div>
 
-      <div className="flex flex-wrap justify-center gap-8 mb-16">
+      {/* Player Slots */}
+      <div className="flex flex-row justify-center items-center gap-8 mb-16 mt-28">
         {playerSlots}
       </div>
 
-      <div className="absolute bottom-10 flex gap-4">
-        <button
-          onClick={handleInvite}
-          className="bg-lime-500 text-white text-xl font-bold py-4 px-8 rounded-full shadow-lg hover:bg-lime-600 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-        >
-          INVITE
-        </button>
+      {/* PLAY button */}
+      <div className="absolute bottom-16 w-full flex justify-center">
         <button
           onClick={handlePlay}
-          className="bg-orange-500 text-white text-2xl font-bold py-4 px-16 rounded-full shadow-xl hover:bg-orange-600 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+          className="bg-orange-500 hover:bg-orange-600 text-white text-2xl font-bold px-20 py-4 rounded-full shadow-2xl transition-all"
         >
           PLAY
         </button>

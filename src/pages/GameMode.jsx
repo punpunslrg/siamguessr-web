@@ -161,7 +161,7 @@ function GameMode() {
           <button
             onClick={handlePlay}
             disabled={isLoading}
-            className="btn-primary disabled:bg-gray-500 disabled:cursor-not-allowed"
+            className="btn-primary px-8 py-2 disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
             {isLoading ? "Starting..." : "Play"}
           </button>

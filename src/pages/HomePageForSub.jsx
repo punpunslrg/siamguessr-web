@@ -5,8 +5,8 @@ import PicsSide from "../components/PicsSide";
 
 const HomePageForSub = () => {
   return (
-    <div>
-      <div className="min-h-screen text-white flex flex-col items-center justify-center p-8 space-y-8 relative overflow-hidden">
+    <div className="bg-primary">
+      <div className="min-h-screen text-white flex flex-col items-center justify-center space-y-8  ">
         {/* Logo / Game Name */}
         <div className=" animate-pulse">
           <img src={Logo7} />

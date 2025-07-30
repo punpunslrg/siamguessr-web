@@ -1,6 +1,6 @@
 function Subscription() {
   return (
-    <div className=" flex flex-col items-center justify-center mt-8 ">
+    <div className="bg-primary flex flex-col items-center justify-center h-full">
       {/* Heading */}
       <h1 className="text-3xl text-white  font-bold mb-2 ">
         Choose your preferred plan

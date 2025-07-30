@@ -123,10 +123,10 @@
 }
 
 .bg-primary {
-  @apply bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen h-full;
+  @apply bg-gradient-to-br from-blue-500 to-indigo-600 h-[928px];
 }
 .bg-secondary {
-  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white min-h-screen h-full;
+  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white h-[928px];
 }
 .btn-primary {
   @apply bg-orange-500 hover:bg-orange-600  rounded-2xl text-white font-bold cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95

@@ -22,8 +22,16 @@ function RoundScore() {
   // Get the results of the most recent guess
   const lastGuess = guesses[currentRoundIndex];
   const currentRound = room?.rounds?.[currentRoundIndex];
-  const actualLocation = currentRound?.location;
+  const nextRound = room?.rounds?.[currentRoundIndex + 1];
+  const actualLocation = currentRound?.location
+    ? {
+        ...currentRound.location,
+        lat: Number(currentRound.location.lat),
+        lng: Number(currentRound.location.lng),
+      }
+    : undefined;
 
+    console.log(currentRoundIndex)
   // This effect handles the case where the user navigates here directly
   useEffect(() => {
     if (!room || !lastGuess) {
@@ -33,14 +41,7 @@ function RoundScore() {
   }, [room, lastGuess, navigate]);
 
   const handleNext = () => {
-    localStorage.removeItem("roundStartTimestamp");
-
-    if (gameState === "game-over") {
-      navigate("/game-summary");
-    } else {
-      actionNextRound();
-      navigate("/gameplay");
-    }
+    actionNextRound(nextRound.id)
   };
 
   if (!room || !lastGuess) {

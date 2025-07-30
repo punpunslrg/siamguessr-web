@@ -1,6 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { calculateDistance } from "../utils/calculate-distance";
+import { createRoom } from "../api/roomApi.js";
+import useUserStore from "./userStore.js";
+import { submitGuess } from "../api/guessApi.js";
+import { nextRound } from "../api/roundApi.js";
 
 const useGameStore = create(
   persist(
@@ -10,59 +14,21 @@ const useGameStore = create(
       guesses: [],
       gameState: "idle",
 
-      actionStartNewGame: async () => {
-        const mockRoom = {
-          id: "room_cuid_123",
-          mode: "single",
-          mode: "multi",
-          difficulty: "classic",
-          status: "waiting",
-          maxPlayers: 2,
-          hostId: "user_cuid_abc",
-          // players: [{ userId: "user_cuid_abc", isHost: true }],
-          players: [
-            { userId: "user_cuid_abc", isHost: true },
-            { userId: "user_cuid_def", isHost: false },
-          ],
-          rounds: [
-            {
-              id: "r1",
-              roundNumber: 1,
-              location: { lat: 13.7569, lng: 100.5025 },
-            },
-            {
-              id: "r2",
-              roundNumber: 2,
-              location: { lat: 20.352, lng: 100.0805 },
-            },
-            {
-              id: "r3",
-              roundNumber: 3,
-              location: { lat: 14.0428, lng: 99.5037 },
-            },
-            {
-              id: "r4",
-              roundNumber: 4,
-              location: { lat: 18.7909, lng: 98.9873 },
-            },
-            {
-              id: "r5",
-              roundNumber: 5,
-              location: { lat: 7.8286, lng: 98.3121 },
-            },
-          ],
-        };
+      actionStartNewGame: async (roomData) => {
+        let token = useUserStore.getState().token;
+        const res = await createRoom(roomData, token);
 
         set({
-          room: mockRoom,
+          room: res.data.room,
           currentRoundIndex: 0,
           guesses: [],
-          gameState: "playing",
+          gameState: res.data.room.status,
         });
 
-        return mockRoom;
+        return res.data.room;
       },
-      actionSubmitGuess: (playerGuess) => {
+      actionSubmitGuess: async (playerGuess) => {
+        let token = useUserStore.getState().token;
         const { room, currentRoundIndex, guesses } = get();
         if (!room || room.rounds.length <= currentRoundIndex) return;
 
@@ -103,12 +69,36 @@ const useGameStore = create(
           ],
           gameState: "round-results",
         });
+
+        try {
+          const res = await submitGuess(
+            {
+              roundId: currentRound.id,
+              guess: {
+                lat: playerGuess.lat,
+                lng: playerGuess.lng,
+              },
+              distance: distanceInKm,
+              score,
+            },
+            token
+          );
+
+          return res;
+        } catch (error) {
+          console.error("Failed to submit guess", error);
+          // You could set an error state here if needed
+        }
       },
 
-      actionNextRound: () => {
+      actionNextRound: async (roundId) => {
+        let token = useUserStore.getState().token;
+        console.log(roundId)
         const index = get().currentRoundIndex;
         if (index < 4) {
           set({ currentRoundIndex: index + 1, gameState: "playing" });
+          const res = await nextRound({roundId}, token)
+          return res
         } else {
           set({ gameState: "game-over" });
         }
@@ -129,7 +119,6 @@ const useGameStore = create(
     }),
     {
       name: "siamguessr-game",
-      onRehydrateStorage: () => console.log("rehydrating store"),
     }
   )
 );

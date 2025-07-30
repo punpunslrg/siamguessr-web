@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function RealtimeCountdown() {
   const calculateTimeLeft = () => {
@@ -36,16 +36,6 @@ function RealtimeCountdown() {
 
   return (
     <div className="grid grid-flow-col gap-5 text-center auto-cols-max ">
-      {/* วัน (ถ้ามี) */}
-      {timeLeft.days > 0 && (
-        <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-          <span className="countdown font-mono text-5xl">
-            <span style={{ "--value": timeLeft.days }}></span>
-          </span>
-          days
-        </div>
-      )}
-
       {/* ชั่วโมง */}
       <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
         <span className="countdown font-mono text-5xl">

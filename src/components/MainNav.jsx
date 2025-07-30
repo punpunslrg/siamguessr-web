@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import useUserStore from "../stores/userStore";
-import Logo from "../assets/Logo3.png";
+import Logo7 from "../assets/Logo7.png";
 function MainNav() {
   const navigate = useNavigate();
   const logout = useUserStore((state) => state.logout);
@@ -10,10 +10,10 @@ function MainNav() {
     navigate("/login");
   };
   return (
-    <div className="flex justify-between bg-[#112D4E] text-white px-12 py-2">
-      <div className="flex gap-4 items-center">
+    <div className="flex justify-between bg-[#112D4E] text-white px-12 py-2 ">
+      <div className="flex gap-4 items-center ">
         <Link to="/" className="font-bold ">
-          <img src={Logo} className="w-12" />
+          <img src={Logo7} className="w-40" />
         </Link>
         <Link to="/">Home</Link>
         <Link to="/gameplay">Gameplay</Link>
@@ -37,6 +37,7 @@ function MainNav() {
               <Link to="/gamebreakdown">GameBreakdown</Link>
               <Link to="/homepageforsub">HomePageForSub</Link>
               <Link to="/gamehistory">GameHistory</Link>
+              <Link to="/singlescore">SingleScore</Link>
             </li>
           </ul>
         </div>

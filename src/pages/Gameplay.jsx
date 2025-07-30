@@ -2,8 +2,15 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import useGameStore from "../stores/game-store.js";
 import StreetView from "../components/StreetView.jsx";
 import GuessMap from "../components/GuessMap.jsx";
-import { useNavigate, useLocation } from "react-router";
-import { getRoomDetails } from "../api/gameApi.js"; // Assuming you have this API function
+import { useNavigate } from "react-router";
+
+const ROUND_DURATION_SECONDS = 30;
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
 
 // Configuration for the map sizes
 const mapSizeConfig = {
@@ -16,62 +23,97 @@ const mapSizeConfig = {
 const expandedMapSizeLevels = ["md", "lg", "xl"];
 
 function Gameplay() {
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [playerGuess, setPlayerGuess] = useState(null);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
-  const [gameDifficulty, setGameDifficulty] = useState("classic");
-  const [expandedMapSize, setExpandedMapSize] = useState("md"); // Default expanded size
+  const [expandedMapSize, setExpandedMapSize] = useState("md");
   const hoverTimeoutRef = useRef(null);
   const streetViewRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const actionGetRandomLocation = useGameStore(
-    (state) => state.actionGetRandomLocation
-  );
-  const randomLocation = useGameStore((state) => state.randomLocation);
-  const actionCalculateScore = useGameStore(
-    (state) => state.actionCalculateScore
-  );
+  // --- New Store Integration ---
+  const room = useGameStore((state) => state.room);
+  const currentRoundIndex = useGameStore((state) => state.currentRoundIndex);
+  const actionStartNewGame = useGameStore((state) => state.actionStartNewGame);
+  const actionSubmitGuess = useGameStore((state) => state.actionSubmitGuess);
 
-  useEffect(() => {
-    const setupGame = async () => {
-      const roomId = location.state?.roomId;
-      if (roomId) {
-        try {
-          const roomDetails = await getRoomDetails(roomId);
-          setGameDifficulty(roomDetails.difficulty);
-        } catch (error) {
-          console.error("Failed to fetch room details:", error);
-        }
-      }
-      actionGetRandomLocation();
-    };
-    setupGame();
-  }, [actionGetRandomLocation, location.state]);
+  // Derive the current round and location from the store's state
+  const currentRound = room?.rounds?.[currentRoundIndex];
+  const currentLocation = currentRound?.location;
 
-  useEffect(() => {
-    if (randomLocation) {
-      setCurrentLocation(randomLocation);
-      setPlayerGuess(null);
+  const getInitialTimeLeft = () => {
+    const savedStart = localStorage.getItem("roundStartTimestamp");
+    if (savedStart) {
+      const elapsed = Math.floor((Date.now() - Number(savedStart)) / 1000);
+      return Math.max(ROUND_DURATION_SECONDS - elapsed, 0);
     }
-  }, [randomLocation]);
-
-  useEffect(() => {
-    return () => {
-      if (hoverTimeoutRef.current) {
-        clearTimeout(hoverTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const changeMap = async () => {
-    await actionGetRandomLocation();
+    return ROUND_DURATION_SECONDS;
   };
 
+  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
+  const setRoundStartTime = () => {
+    localStorage.setItem("roundStartTimestamp", Date.now().toString());
+  };
+
+  // timer
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentRoundIndex]);
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      handleTimeout();
+    }
+  }, [timeLeft]);
+
+  // This effect runs once to start the game with the mock data
+  useEffect(() => {
+    const initGame = async () => {
+      const hasStartTime = localStorage.getItem("roundStartTimestamp");
+      if (!room) {
+        await actionStartNewGame();
+      }
+      if (!hasStartTime) {
+        setRoundStartTime();
+      }
+    };
+    initGame();
+  }, [room, actionStartNewGame]);
+
+  console.log("currentLocation", currentLocation);
+  console.log("Rendering Gameplay: currentRoundIndex =", currentRoundIndex);
+
+  // Effect to reset the player's guess when the round changes
+  useEffect(() => {
+    setPlayerGuess(null);
+
+    const hasStartTime = localStorage.getItem("roundStartTimestamp");
+    if (!hasStartTime) {
+      const newStart = Date.now();
+      localStorage.setItem("roundStartTimestamp", newStart.toString());
+      const elapsed = Math.floor((Date.now() - newStart) / 1000);
+      setTimeLeft(Math.max(ROUND_DURATION_SECONDS - elapsed, 0));
+    } else {
+      const elapsed = Math.floor((Date.now() - Number(hasStartTime)) / 1000);
+      setTimeLeft(Math.max(ROUND_DURATION_SECONDS - elapsed, 0));
+    }
+  }, [currentRoundIndex]);
+
   const handleGuess = () => {
-    if (!playerGuess) return;
-    actionCalculateScore(playerGuess);
+    if (!playerGuess) {
+      console.warn("No guess made. Skipping this round.");
+      actionSubmitGuess(null); // Optional: handle skipped round
+    } else {
+      actionSubmitGuess(playerGuess);
+    }
+    navigate("/round");
+  };
+
+  const handleTimeout = () => {
+    actionSubmitGuess(playerGuess ?? null);
     navigate("/round");
   };
 
@@ -79,45 +121,25 @@ function Gameplay() {
     clearTimeout(hoverTimeoutRef.current);
     setIsMapExpanded(true);
   };
-
   const handleMouseLeave = () => {
     hoverTimeoutRef.current = setTimeout(() => {
       setIsMapExpanded(false);
     }, 1000);
   };
-
-  const handleMovabilityCheck = useCallback(
-    (locationData, isMovable) => {
-      if (!isMovable) {
-        const locationName = randomLocation?.name || "Unknown Location";
-        console.warn(
-          `🚩 WARNING: Location "${locationName}" is not movable.`,
-          `Coordinates: { lat: ${locationData.lat}, lng: ${locationData.lng} }`,
-          `Please update or remove it from your JSON list.`
-        );
-      }
-    },
-    [randomLocation]
-  );
-
-  // Handlers to control the EXPANDED map size
   const handleIncreaseMapSize = (e) => {
-    e.stopPropagation(); // Prevent hover state from flickering
-    const currentIndex = expandedMapSizeLevels.indexOf(expandedMapSize);
-    if (currentIndex < expandedMapSizeLevels.length - 1) {
-      setExpandedMapSize(expandedMapSizeLevels[currentIndex + 1]);
-    }
+    e.stopPropagation();
+    const i = expandedMapSizeLevels.indexOf(expandedMapSize);
+    if (i < expandedMapSizeLevels.length - 1)
+      setExpandedMapSize(expandedMapSizeLevels[i + 1]);
   };
-
   const handleDecreaseMapSize = (e) => {
     e.stopPropagation();
-    const currentIndex = expandedMapSizeLevels.indexOf(expandedMapSize);
-    if (currentIndex > 0) {
-      setExpandedMapSize(expandedMapSizeLevels[currentIndex - 1]);
-    }
+    const i = expandedMapSizeLevels.indexOf(expandedMapSize);
+    if (i > 0) setExpandedMapSize(expandedMapSizeLevels[i - 1]);
   };
 
-  // Determine the current size classes based on hover state
+  const handleMovabilityCheck = useCallback(() => {}, []);
+
   const currentContainerClass = isMapExpanded
     ? mapSizeConfig[expandedMapSize].container
     : mapSizeConfig.sm.container;
@@ -133,17 +155,26 @@ function Gameplay() {
             ref={streetViewRef}
             position={currentLocation}
             onMovabilityCheck={handleMovabilityCheck}
-            difficulty={gameDifficulty}
+            difficulty={room?.difficulty || "classic"}
           />
         ) : (
           <div className="text-white text-center">Loading Location...</div>
         )}
 
         <div className="absolute inset-0 flex flex-col justify-between p-4 md:p-8 z-10 pointer-events-none">
-          <div className="flex justify-center">
-            <div className="bg-blue-800 text-white px-6 py-2 rounded-full shadow-lg text-lg font-bold">
-              01:23
-            </div>
+          <div className="absolute top-4 right-16 bg-blue-800 text-white px-4 py-2 rounded-full shadow-lg text-sm font-bold z-10">
+            Round {currentRoundIndex + 1} / {room?.rounds?.length || 5}
+          </div>
+
+          {/* Timer centered at top */}
+          <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white px-6 py-2 rounded-full shadow-lg text-xl font-bold z-10">
+            <span
+              className={`${
+                timeLeft < 10 ? "text-red-500" : "text-yellow-300"
+              }`}
+            >
+              {formatTime(timeLeft)}
+            </span>
           </div>
 
           <div className="flex-grow"></div>
@@ -152,12 +183,6 @@ function Gameplay() {
             <div className="flex items-end gap-2">
               <button className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto">
                 Leave
-              </button>
-              <button
-                onClick={() => changeMap()}
-                className="btn btn-neutral btn-sm shadow-lg text-white pointer-events-auto"
-              >
-                Change
               </button>
             </div>
 
@@ -174,7 +199,6 @@ function Gameplay() {
                     : currentContainerClass + " opacity-50"
                 }`}
               >
-                {/* Size Control Buttons - visible only when expanded */}
                 <div
                   className={`absolute top-2 left-2 z-10 flex flex-col gap-1 transition-opacity duration-300 ${
                     isMapExpanded ? "opacity-100" : "opacity-0"

@@ -25,7 +25,7 @@ const GameBreakdown = () => {
           </table>
         </div>
       </div>
-      <div className="w-90 absolute top-24 right-18 ">
+      <div className="w-90 absolute top-24 right-18">
         <img src={Cartoon} />
         {/* หน้า Profile User Friend */}
         <div className="bg-gray-500  w-28 h-28 rounded-full absolute top-16 right-26"></div>

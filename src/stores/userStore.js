@@ -30,7 +30,9 @@ const userStore = (set, get) => ({
 
   getProfile: async () => {
     const { token } = get(); // ดึง token จาก state ปัจจุบัน
-    if (!token) return; // ถ้าไม่มี token ก็ไม่ต้องทำอะไร
+    if (!token) {
+      return { success: false, message: "Not authenticated" };
+    }
 
     try {
       const res = await getMe(token);

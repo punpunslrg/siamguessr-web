@@ -17,6 +17,7 @@ import Leaderboard from "../pages/LeaderBoard";
 import GameBreakdown from "../pages/GameBreakdown";
 import HomePageForSub from "../pages/HomePageForSub";
 import ProtectRoute from "./ProtectRoute";
+import GameHistory from "../pages/GameHistory";
 
 function AppRouter() {
   return (
@@ -35,6 +36,7 @@ function AppRouter() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/gamebreakdown" element={<GameBreakdown />} />
         <Route path="/homepageforsub" element={<HomePageForSub />} />
+        <Route path="/gamehistory" element={<GameHistory />} />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

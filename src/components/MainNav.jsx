@@ -36,6 +36,7 @@ function MainNav() {
               <Link to="/leaderboard">Leaderboard</Link>
               <Link to="/gamebreakdown">GameBreakdown</Link>
               <Link to="/homepageforsub">HomePageForSub</Link>
+              <Link to="/gamehistory">GameHistory</Link>
             </li>
           </ul>
         </div>

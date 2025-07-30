@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 function Home() {
   const navigate = useNavigate();
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-sans">
+    <div className="min-h-screen flex flex-col items-center justify-center b text-white font-sans">
       <header className="mb-10 flex flex-col items-center">
         <h1 className="text-4xl md:text-6xl font-bold drop-shadow-lg tracking-tight mb-2">
           SiamGuessr
@@ -15,9 +15,9 @@ function Home() {
       <main className="flex flex-col items-center gap-8 w-full max-w-md">
         <button
           onClick={() => navigate("/gamemode")}
-          className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-4 px-10 rounded-full text-xl shadow-lg transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 w-full cursor-pointer"
+          className="bg-orange-500 btn-primary  py-4 px-20 rounded-full text-xl shadow-lg "
         >
-          เริ่มเล่นเกม
+          START
         </button>
         <div className="mt-8 text-center text-sky-100 text-base md:text-lg">
           <p>ล็อกอินด้วย Google เพื่อบันทึกคะแนนและดู Leaderboard</p>

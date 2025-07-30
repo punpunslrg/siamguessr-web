@@ -15,8 +15,8 @@ const Profile = () => {
   }, [getProfile]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 md:p-8">
+    <div className=" flex justify-center items-center background h-full">
+      <div className="w-fit h-fit mx-auto bg-white rounded-lg shadow-lg mt-8 p-6 md:p-8 ">
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8 pb-8 border-b border-gray-200">
           {/* Profile Image */}
           <div className="relative w-36 h-36 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border-4 border-gray-300 shadow-md">

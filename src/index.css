@@ -121,3 +121,40 @@
     @apply bg-background text-foreground;
 	}
 }
+
+.bg-primary {
+  @apply bg-gradient-to-br from-blue-500 to-indigo-600 min-h-screen h-full;
+}
+.bg-secondary {
+  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white min-h-screen h-full;
+}
+.btn-primary {
+  @apply bg-orange-500 hover:bg-orange-600  rounded-2xl text-white font-bold cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95
+}
+.btn-secondary {
+  @apply bg-green-500 hover:bg-green-600 text-white font-bold cursor-pointer  px-4 py-2   rounded-full transition duration-300 ease-in-out transform hover:scale-105 active:scale-95
+}
+.btn-round {
+  @apply mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95
+}
+
+
+
+
+
+
+
+
+/* PicsSide */
+.marquee-container:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+ @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-200%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }

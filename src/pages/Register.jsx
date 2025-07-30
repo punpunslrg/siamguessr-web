@@ -16,7 +16,7 @@ import FormInput from "../components/form/FormInput";
 import { useNavigate } from "react-router";
 
 function Register() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(registerSchema),
   });
@@ -27,7 +27,7 @@ function Register() {
       const res = await actionRegister(value);
       toast.success("Register Successfully!");
       reset();
-      navigate("/login")
+      navigate("/login");
     } catch (err) {
       const errMsg = err.response?.data?.error || err.message;
       toast.error(errMsg);
@@ -58,24 +58,34 @@ function Register() {
               </div>
               <div className="grid gap-2">
                 <Label>Password</Label>
-                <FormInput register={register} name="password" errors={errors} type="password" />
+                <FormInput
+                  register={register}
+                  name="password"
+                  errors={errors}
+                  type="password"
+                />
               </div>
               <div className="grid gap-2">
                 <Label>Confirm Password</Label>
-                <FormInput register={register} name="confirmPassword" errors={errors} type="password" />
+                <FormInput
+                  register={register}
+                  name="confirmPassword"
+                  errors={errors}
+                  type="password"
+                />
               </div>
             </div>
-        <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
-            Sign Up
-          </Button>
-          <Button variant="outline" className="w-full">
-            Continue with Google
-          </Button>
-          <Button variant="outline" className="w-full">
-            Continue with Facebook
-          </Button>
-        </CardFooter>
+            <CardFooter className="flex-col gap-2 mt-4">
+              <Button type="submit" className="w-full">
+                Sign Up
+              </Button>
+              <Button variant="outline" className="w-full">
+                Continue with Google
+              </Button>
+              <Button variant="outline" className="w-full">
+                Continue with Facebook
+              </Button>
+            </CardFooter>
           </form>
         </CardContent>
       </Card>

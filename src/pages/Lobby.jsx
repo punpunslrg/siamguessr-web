@@ -94,7 +94,7 @@ function Lobby() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-blue-500 to-indigo-600">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 ">
       <h1 className="text-4xl font-bold text-white mb-2">LOBBY</h1>
       <p className="text-white mb-8">
         Room Code:{" "}

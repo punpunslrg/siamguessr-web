@@ -22,8 +22,16 @@ function RoundScore() {
   // Get the results of the most recent guess
   const lastGuess = guesses[currentRoundIndex];
   const currentRound = room?.rounds?.[currentRoundIndex];
-  const actualLocation = currentRound?.location;
+  const nextRound = room?.rounds?.[currentRoundIndex + 1];
+  const actualLocation = currentRound?.location
+    ? {
+        ...currentRound.location,
+        lat: Number(currentRound.location.lat),
+        lng: Number(currentRound.location.lng),
+      }
+    : undefined;
 
+    console.log(currentRoundIndex)
   // This effect handles the case where the user navigates here directly
   useEffect(() => {
     if (!room || !lastGuess) {
@@ -33,14 +41,7 @@ function RoundScore() {
   }, [room, lastGuess, navigate]);
 
   const handleNext = () => {
-    localStorage.removeItem("roundStartTimestamp");
-
-    if (gameState === "game-over") {
-      navigate("/game-summary");
-    } else {
-      actionNextRound();
-      navigate("/gameplay");
-    }
+    actionNextRound(nextRound.id)
   };
 
   if (!room || !lastGuess) {
@@ -55,7 +56,7 @@ function RoundScore() {
   const totalScore = actionGetTotalScore();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4 py-10">
+    <div className=" bg-secondary flex flex-col items-center justify-center px-4 py-10">
       <div className="flex justify-center w-full max-w-3xl mb-4">
         <h2 className="text-3xl font-bold">
           Round {currentRoundIndex + 1} of {room.rounds.length}
@@ -101,10 +102,7 @@ function RoundScore() {
         </p>
       </div>
 
-      <button
-        onClick={handleNext}
-        className="mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-      >
+      <button onClick={handleNext} className="btn-round">
         {gameState === "game-over" ? "VIEW FINAL RESULTS" : "START NEXT ROUND"}
       </button>
     </div>

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import GameModePic from "../assets/bangkok.jpg";
-import { createRoom } from "../api/gameApi.js";
 import useGameStore from "../stores/game-store.js";
+import useUserStore from "../stores/userStore.js";
 
 function GameMode() {
   const navigate = useNavigate();
@@ -10,19 +10,15 @@ function GameMode() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("classic");
   const [isLoading, setIsLoading] = useState(false);
 
-  // --- Placeholder for Authentication ---
-  const currentUser = { id: "user_placeholder_id_123" };
-  // ---
-
+  const user = useUserStore((state) => state.user)
   const actionStartNewGame = useGameStore((state) => state.actionStartNewGame);
 
   const handlePlay = async () => {
-    if (!currentUser) {
+    if (!user) {
       console.error("User is not logged in.");
       navigate("/login");
       return;
     }
-    localStorage.removeItem("roundStartTimestamp");
     setIsLoading(true);
 
     try {
@@ -30,7 +26,7 @@ function GameMode() {
         mode: selectedMode,
         difficulty: selectedDifficulty,
         maxPlayers: selectedMode === "multi" ? 2 : 1,
-        hostId: currentUser.id,
+        hostId: user.id,
       };
 
       // 2. Call the backend to create the room
@@ -46,7 +42,6 @@ function GameMode() {
       }
     } catch (error) {
       console.error("Failed to start game:", error);
-      // Optionally, show an error message to the user
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +156,7 @@ function GameMode() {
           <button
             onClick={handlePlay}
             disabled={isLoading}
-            className="btn-primary disabled:bg-gray-500 disabled:cursor-not-allowed"
+            className="btn-primary px-8 py-2 disabled:bg-gray-500 disabled:cursor-not-allowed"
           >
             {isLoading ? "Starting..." : "Play"}
           </button>

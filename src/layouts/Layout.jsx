@@ -3,7 +3,7 @@ import MainNav from "../components/MainNav";
 
 function Layout() {
   return (
-    <div className="flex flex-col h-screen background">
+    <div className="flex flex-col h-screen bg-primary">
       {/* Navbar will take its natural height */}
       <header>
         <MainNav />

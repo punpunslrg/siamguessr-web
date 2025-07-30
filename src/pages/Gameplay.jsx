@@ -4,14 +4,6 @@ import StreetView from "../components/StreetView.jsx";
 import GuessMap from "../components/GuessMap.jsx";
 import { useNavigate } from "react-router";
 
-const ROUND_DURATION_SECONDS = 30;
-
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-}
-
 // Configuration for the map sizes
 const mapSizeConfig = {
   sm: { container: "w-64 h-40", button: "w-64" },
@@ -40,80 +32,29 @@ function Gameplay() {
   const currentRound = room?.rounds?.[currentRoundIndex];
   const currentLocation = currentRound?.location;
 
-  const getInitialTimeLeft = () => {
-    const savedStart = localStorage.getItem("roundStartTimestamp");
-    if (savedStart) {
-      const elapsed = Math.floor((Date.now() - Number(savedStart)) / 1000);
-      return Math.max(ROUND_DURATION_SECONDS - elapsed, 0);
-    }
-    return ROUND_DURATION_SECONDS;
-  };
-
-  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft());
-  const setRoundStartTime = () => {
-    localStorage.setItem("roundStartTimestamp", Date.now().toString());
-  };
-
-  // timer
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [currentRoundIndex]);
-
-  useEffect(() => {
-    if (timeLeft === 0) {
-      handleTimeout();
-    }
-  }, [timeLeft]);
-
   // This effect runs once to start the game with the mock data
   useEffect(() => {
     const initGame = async () => {
-      const hasStartTime = localStorage.getItem("roundStartTimestamp");
       if (!room) {
         await actionStartNewGame();
-      }
-      if (!hasStartTime) {
-        setRoundStartTime();
       }
     };
     initGame();
   }, [room, actionStartNewGame]);
 
-  console.log("currentLocation", currentLocation);
-  console.log("Rendering Gameplay: currentRoundIndex =", currentRoundIndex);
-
+  console.log(room);
   // Effect to reset the player's guess when the round changes
   useEffect(() => {
     setPlayerGuess(null);
-
-    const hasStartTime = localStorage.getItem("roundStartTimestamp");
-    if (!hasStartTime) {
-      const newStart = Date.now();
-      localStorage.setItem("roundStartTimestamp", newStart.toString());
-      const elapsed = Math.floor((Date.now() - newStart) / 1000);
-      setTimeLeft(Math.max(ROUND_DURATION_SECONDS - elapsed, 0));
-    } else {
-      const elapsed = Math.floor((Date.now() - Number(hasStartTime)) / 1000);
-      setTimeLeft(Math.max(ROUND_DURATION_SECONDS - elapsed, 0));
-    }
   }, [currentRoundIndex]);
 
   const handleGuess = () => {
     if (!playerGuess) {
-      console.warn("No guess made. Skipping this round.");
       actionSubmitGuess(null); // Optional: handle skipped round
     } else {
+      console.log(playerGuess)
       actionSubmitGuess(playerGuess);
     }
-    navigate("/round");
-  };
-
-  const handleTimeout = () => {
-    actionSubmitGuess(playerGuess ?? null);
     navigate("/round");
   };
 
@@ -153,7 +94,10 @@ function Gameplay() {
         {currentLocation ? (
           <StreetView
             ref={streetViewRef}
-            position={currentLocation}
+            position={{
+              lat: parseFloat(currentLocation.lat),
+              lng: parseFloat(currentLocation.lng),
+            }}
             onMovabilityCheck={handleMovabilityCheck}
             difficulty={room?.difficulty || "classic"}
           />
@@ -168,13 +112,13 @@ function Gameplay() {
 
           {/* Timer centered at top */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white px-6 py-2 rounded-full shadow-lg text-xl font-bold z-10">
-            <span
+            {/* <span
               className={`${
                 timeLeft < 10 ? "text-red-500" : "text-yellow-300"
               }`}
             >
               {formatTime(timeLeft)}
-            </span>
+            </span> */}
           </div>
 
           <div className="flex-grow"></div>

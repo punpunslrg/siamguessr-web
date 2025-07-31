@@ -1,10 +1,10 @@
 const Hero = () => {
   return (
-    <div>
-      <div className="hero bg-base-200 ">
+    <div className="bg-secondary">
+      <div className="hero  ">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <img
-            src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+            src="https://picsum.photos/id/77/200/300"
             className="max-w-sm rounded-lg shadow-2xl"
           />
           <div>
@@ -14,14 +14,14 @@ const Hero = () => {
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
               et a id nisi.
             </p>
-            <button className="btn btn-primary">Get Started</button>
+            <button className=" btn-primary py-4 px-12">Get Started</button>
           </div>
         </div>
       </div>
       <div className="hero background">
         <div className="hero-content flex-col lg:flex-row text-white">
           <img
-            src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
+            src="https://picsum.photos/id/84/200/300"
             className="max-w-sm rounded-lg shadow-2xl"
           />
           <div>
@@ -31,7 +31,7 @@ const Hero = () => {
               excepturi exercitationem quasi. In deleniti eaque aut repudiandae
               et a id nisi.
             </p>
-            <button className="btn btn-primary">Get Started</button>
+            <button className="btn-primary py-4 px-12">Get Started</button>
           </div>
         </div>
       </div>

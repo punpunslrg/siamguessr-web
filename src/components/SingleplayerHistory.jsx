@@ -1,4 +1,4 @@
-import { Trophy, Calendar } from "lucide-react";
+import { Trophy, Calendar, Swords } from "lucide-react";
 import useGameHistoryStore from "../stores/gameHistoryStore";
 import { useEffect } from "react";
 
@@ -40,9 +40,15 @@ const SingleplayerHistory = () => {
           <HistoryCard key={game.id}>
             <div className="flex flex-col sm:flex-row justify-between sm:items-center">
               <div className="flex-grow mb-4 sm:mb-0">
-                <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 capitalize">
                   {game.room.difficulty} Mode
                 </h3>
+                <InfoLine
+                  icon={<Swords className="w-4 h-4 mr-2 text-gray-500" />}
+                  label="Difficulty"
+                  value={game.room.difficulty}
+                  valueClassName="capitalize"
+                />
                 <InfoLine
                   icon={<Trophy className="w-4 h-4 mr-2 text-yellow-500" />}
                   label="Score"
@@ -55,9 +61,6 @@ const SingleplayerHistory = () => {
                   value={new Date(game.playedAt).toLocaleDateString()}
                 />
               </div>
-              <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 w-full sm:w-auto">
-                View Details
-              </button>
             </div>
           </HistoryCard>
         ))

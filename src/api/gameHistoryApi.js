@@ -11,7 +11,7 @@ export const actionGetSingleHistory = async (token) => {
   );
 };
 
-export const actionGetMultiHistory = async () => {
+export const actionGetMultiHistory = async (token) => {
   return await axios.get(
     "http://localhost:8890/api/game/game-history/multiplayer",
     {

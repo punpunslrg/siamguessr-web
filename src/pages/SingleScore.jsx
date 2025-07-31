@@ -1,7 +1,7 @@
 import Cartoon from "../assets/cartoon.png";
 const SingleScore = () => {
   return (
-    <div className=" px-4 py-8  bg-secondary  ">
+    <div className=" px-4 py-8  bg-secondary  flex items-center">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* LEFT: Avatar + Game mode */}
         <div className="flex flex-col items-center">

@@ -1,7 +1,5 @@
 import Logo7 from "../assets/Logo7.png";
-import Bg1 from "../assets/bg1.png";
 import Hero from "../components/Hero";
-import PicsSide from "../components/PicsSide";
 
 const HomePageForSub = () => {
   return (

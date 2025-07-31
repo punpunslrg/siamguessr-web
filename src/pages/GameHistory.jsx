@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { MapPin, Users } from 'lucide-react';
-import SingleplayerHistory from '../components/SingleplayerHistory';
-import MultiplayerHistory from '../components/MultiplayerHistory';
+import React, { useState } from "react";
+import { MapPin, Users } from "lucide-react";
+import SingleplayerHistory from "../components/SingleplayerHistory";
+import MultiplayerHistory from "../components/MultiplayerHistory";
 
 export default function GameHistory() {
   const [activeTab, setActiveTab] = useState("multiplayer");
@@ -21,7 +21,7 @@ export default function GameHistory() {
   );
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans p-4 sm:p-8">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans p-4 sm:p-8 ">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6">
           <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">

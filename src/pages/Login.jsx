@@ -40,8 +40,8 @@ function Login() {
     }
   };
   return (
-    <div className="h-screen flex items-center justify-center">
-      <Card className="w-full max-w-sm">
+    <div className=" flex items-center justify-center bg-primary">
+      <Card className="w-full max-w-sm ">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Login</CardTitle>
         </CardHeader>
@@ -71,7 +71,7 @@ function Login() {
               </div>
             </div>
             <CardFooter className="flex-col gap-2 mt-4">
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full  ">
                 Login
               </Button>
               <Button variant="outline" className="w-full">

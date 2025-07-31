@@ -89,7 +89,7 @@ function Gameplay() {
     : mapSizeConfig.sm.button;
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-screen h-screen">
       <div className="relative w-full h-full overflow-hidden">
         {currentLocation ? (
           <StreetView

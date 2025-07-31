@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import useUserStore from "../stores/userStore";
 import Logo7 from "../assets/Logo7.png";
+import { useEffect } from "react";
 function MainNav() {
   const navigate = useNavigate();
   const logout = useUserStore((state) => state.logout);
@@ -9,10 +10,14 @@ function MainNav() {
     logout();
     navigate("/login");
   };
+  const getProfile = useUserStore((state) => state.getProfile);
+  useEffect(() => {
+    getProfile();
+  }, [getProfile]);
   return (
     <>
       <></>
-      <div className="flex justify-between bg-[#112D4E] text-white px-12 py-2 sticky top-0 z-1000">
+      <div className="flex justify-between bg-navbar px-12 py-2 sticky top-0 z-1000">
         <div className="flex gap-4 items-center ">
           <Link to="/" className="font-bold ">
             <img src={Logo7} className="w-40" />
@@ -26,7 +31,7 @@ function MainNav() {
             </div>
             <ul
               tabIndex={0}
-              className="dropdown-content menu bg-black text-white rounded-box z-1 w-52 p-2 shadow-sm"
+              className="dropdown-content menu bg-navbar rounded-box z-1 w-52 p-2 shadow-sm"
             >
               <li>
                 <Link to="/round">Round</Link>
@@ -52,12 +57,37 @@ function MainNav() {
             <Link to="/login">Login</Link>
           </div>
         ) : (
-          <button
-            className="bg-red-500 text-white font-semibold rounded-full hover:bg-red-400"
-            onClick={hdlLogout}
-          >
-            Log out
-          </button>
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0}>
+              <img
+                src={user.image}
+                alt={`${user.username}'s profile`}
+                className="w-12 h-12 object-cover"
+              />
+            </div>
+            <ul
+              tabIndex={0}
+              className="bg-navbar gap-1 dropdown-content menu  rounded-box z-1 w-52 p-2 mt-2 shadow-sm "
+            >
+              <div className="pl-4 mb-2">
+                {user?.username || "Loading..."} <br />
+                <p className="text-gray-400">{user?.email}</p>
+              </div>
+              <hr className="border-gray-400" />
+              <li>
+                <Link to="/profile">Profile</Link>
+              </li>
+              <li>
+                <Link to="/gamehistory">GameHistory</Link>
+              </li>
+              <button
+                className="btn-primary font-semibold mt-2"
+                onClick={hdlLogout}
+              >
+                Log out
+              </button>
+            </ul>
+          </div>
         )}
       </div>
     </>

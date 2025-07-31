@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CountdownTimer from "../components/TimeCountdown";
+import { Link } from "react-router";
 
 function HomePageFree() {
   return (
@@ -18,17 +19,17 @@ function HomePageFree() {
         </div>
 
         {/* Right Section - Subscription Card */}
-        <div className="bg-white p-8 rounded-xl shadow-lg flex-col items-center h-100 text-center transition duration-300 ease-in-out transform hover:scale-115 active:scale-100">
+        <div className="bg-card-subscription">
           <h3 className="text-xl font-semibold text-black">PRO BASIC</h3>
           <p className="text-2xl font-bold my-2 text-black">119 BATH / MONTH</p>
           <p className="text-xs text-gray-500 mb-4">BILLED MONTHLY</p>
 
-          <div className="text-left space-y-3 mb-6">
-            <div className="flex items-center gap-2 text-black">
+          <div className="text-left space-y-3 mb-14">
+            <div className="flex items-center gap-2 text-black mb-4">
               <span>🌍</span>
               <span>SINGLEPLAYER</span>
             </div>
-            <div className="flex items-center gap-2 text-black">
+            <div className="flex items-center gap-2 text-black mb-4">
               <span>🏆</span>
               <span>MULTIPLAYER</span>
             </div>
@@ -38,7 +39,9 @@ function HomePageFree() {
             </div>
           </div>
 
-          <button className="btn-secondary">SUBSCRIPTION</button>
+          <button className="btn-secondary ">
+            <Link to="/subscription">Subscription</Link>
+          </button>
         </div>
       </div>
     </div>

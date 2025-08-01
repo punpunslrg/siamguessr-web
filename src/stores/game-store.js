@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { calculateDistance } from "../utils/calculate-distance";
-import { createRoom, getRoomResult } from "../api/roomApi.js";
+import { createRoom, getLobby,getRoomResult } from "../api/roomApi.js";
 import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
 import { nextRound } from "../api/roundApi.js";
@@ -176,6 +176,13 @@ const useGameStore = create(
         }
 
         return room;
+      },
+
+      actionGetLobby: async (id, token) => {
+        const tkn = useUserStore.getState().token;
+        const resp = await getLobby(id, tkn);
+        set({ room: resp.data.room });
+        return resp.data.room;
       },
     }),
     {

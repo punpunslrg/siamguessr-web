@@ -20,6 +20,7 @@ import ProtectRoute from "./ProtectRoute";
 import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
+import TestLatLng from "../pages/TestLatLng.jsx";
 
 function AppRouter() {
   return (
@@ -41,6 +42,9 @@ function AppRouter() {
         <Route path="/gamehistory" element={<GameHistory />} />
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
+
+        {/* only for testing lat lng */}
+        {/* <Route path="/test" element={<TestLatLng />} /> */}
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

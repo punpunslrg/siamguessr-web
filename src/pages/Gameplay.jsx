@@ -3,6 +3,7 @@ import useGameStore from "../stores/game-store.js";
 import StreetView from "../components/StreetView.jsx";
 import GuessMap from "../components/GuessMap.jsx";
 import { useNavigate } from "react-router";
+import RoundTimer from "../components/RoundTimer.jsx";
 
 // Configuration for the map sizes
 const mapSizeConfig = {
@@ -18,8 +19,8 @@ function Gameplay() {
   const [playerGuess, setPlayerGuess] = useState(null);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [expandedMapSize, setExpandedMapSize] = useState("md");
+  const [streetViewPosition, setStreetViewPosition] = useState(null);
   const hoverTimeoutRef = useRef(null);
-  const streetViewRef = useRef(null);
   const navigate = useNavigate();
 
   // --- New Store Integration ---
@@ -27,35 +28,60 @@ function Gameplay() {
   const currentRoundIndex = useGameStore((state) => state.currentRoundIndex);
   const actionStartNewGame = useGameStore((state) => state.actionStartNewGame);
   const actionSubmitGuess = useGameStore((state) => state.actionSubmitGuess);
+  const actionForfeitGame = useGameStore((state) => state.actionForfeitGame);
+  const actionGetRoomResult = useGameStore(
+    (state) => state.actionGetRoomResult
+  );
 
-  // Derive the current round and location from the store's state
+  // Get the current round and location from the store's state
   const currentRound = room?.rounds?.[currentRoundIndex];
   const currentLocation = currentRound?.location;
 
-  // This effect runs once to start the game with the mock data
+  const isLeavingRef = useRef(false);
+
   useEffect(() => {
     const initGame = async () => {
-      if (!room) {
+      if (!room && !isLeavingRef.current) {
         await actionStartNewGame();
       }
     };
     initGame();
   }, [room, actionStartNewGame]);
 
+  useEffect(() => {
+    if (currentLocation && !streetViewPosition) {
+      setStreetViewPosition({
+        lat: parseFloat(currentLocation.lat),
+        lng: parseFloat(currentLocation.lng),
+      });
+    }
+  }, [currentLocation, streetViewPosition]);
+
   console.log(room);
-  // Effect to reset the player's guess when the round changes
   useEffect(() => {
     setPlayerGuess(null);
   }, [currentRoundIndex]);
 
-  const handleGuess = () => {
+  const handleStreetViewPositionChange = (newPos) => {
+    setStreetViewPosition(newPos);
+  };
+
+  const handleGuess = async () => {
     if (!playerGuess) {
-      actionSubmitGuess(null); // Optional: handle skipped round
+      await actionSubmitGuess(null);
     } else {
-      console.log(playerGuess)
-      actionSubmitGuess(playerGuess);
+      await actionSubmitGuess(playerGuess);
     }
     navigate("/round");
+  };
+
+  const handleLeave = async () => {
+    isLeavingRef.current = true;
+    const resultRoom = await actionForfeitGame();
+    if (resultRoom?.id) {
+      await actionGetRoomResult(resultRoom.id);
+    }
+    navigate("/singlescore");
   };
 
   const handleMouseEnter = () => {
@@ -89,17 +115,14 @@ function Gameplay() {
     : mapSizeConfig.sm.button;
 
   return (
-    <div className="w-full h-full">
+    <div className="w-screen h-screen">
       <div className="relative w-full h-full overflow-hidden">
-        {currentLocation ? (
+        {streetViewPosition ? (
           <StreetView
-            ref={streetViewRef}
-            position={{
-              lat: parseFloat(currentLocation.lat),
-              lng: parseFloat(currentLocation.lng),
-            }}
+            position={streetViewPosition}
             onMovabilityCheck={handleMovabilityCheck}
             difficulty={room?.difficulty || "classic"}
+            onPositionChange={handleStreetViewPositionChange}
           />
         ) : (
           <div className="text-white text-center">Loading Location...</div>
@@ -112,20 +135,17 @@ function Gameplay() {
 
           {/* Timer centered at top */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white px-6 py-2 rounded-full shadow-lg text-xl font-bold z-10">
-            {/* <span
-              className={`${
-                timeLeft < 10 ? "text-red-500" : "text-yellow-300"
-              }`}
-            >
-              {formatTime(timeLeft)}
-            </span> */}
+            <RoundTimer />
           </div>
 
           <div className="flex-grow"></div>
 
           <div className="flex justify-between items-end -mb-2">
             <div className="flex items-end gap-2">
-              <button className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto">
+              <button
+                className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto"
+                onClick={handleLeave}
+              >
                 Leave
               </button>
             </div>

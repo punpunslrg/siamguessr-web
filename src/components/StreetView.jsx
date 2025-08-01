@@ -2,21 +2,11 @@ import { useEffect, useRef, useState, useImperativeHandle, forwardRef } from "re
 import { useApiIsLoaded } from "@vis.gl/react-google-maps";
 
 // Wrap the component in forwardRef to pass the ref from Gameplay
-const StreetView = forwardRef(({ position, onMovabilityCheck, difficulty = "classic" }, ref) => {
+const StreetView = (({ position, onMovabilityCheck, difficulty = "classic" }) => {
   const panoramaRef = useRef(null);
   const isLoaded = useApiIsLoaded();
   const [panorama, setPanorama] = useState(null);
   const startLocationRef = useRef(null); // Ref to store the initial location data
-
-  // Expose a 'returnToStart' function to the parent component (Gameplay)
-  useImperativeHandle(ref, () => ({
-    returnToStart() {
-      if (panorama && startLocationRef.current) {
-        panorama.setPosition(startLocationRef.current.position);
-        panorama.setPov(startLocationRef.current.pov);
-      }
-    },
-  }));
 
   // This effect runs ONCE to create the StreetView object
   useEffect(() => {

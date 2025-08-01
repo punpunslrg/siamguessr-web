@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 
 function GuessMap({ onPinPlace }) {
@@ -26,7 +26,7 @@ function GuessMap({ onPinPlace }) {
       disableDefaultUI={true}
       mapId="113d733319c2cd6257310524"
       options={{
-        clickableIcons: false, 
+        clickableIcons: false,
         styles: [
           {
             featureType: "poi",

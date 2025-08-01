@@ -1,9 +1,9 @@
 import Cartoon from "../assets/cartoon.png";
 const GameBreakdown = () => {
   return (
-    <div>
-      <div className="text-center mt-8 p-4 flex flex-col items-center">
-        <h1 className="text-5xl font-bold text-white tracking-tight mb-8">
+    <div className="bg-primary">
+      <div className="text-center flex flex-col items-center">
+        <h1 className="text-5xl font-bold text-white tracking-tight mb-8 mt-12">
           Game Breakdown
         </h1>
         <div className="overflow-x-auto ">
@@ -25,12 +25,12 @@ const GameBreakdown = () => {
           </table>
         </div>
       </div>
-      <div className="w-90 absolute top-24 right-18">
+      <div className="w-90 absolute top-24 right-80">
         <img src={Cartoon} />
         {/* หน้า Profile User Friend */}
         <div className="bg-gray-500  w-28 h-28 rounded-full absolute top-16 right-26"></div>
       </div>
-      <div className="w-90 absolute top-23 left-18 transform scale-x-[-1]">
+      <div className="w-90 absolute top-23 left-80 transform scale-x-[-1]">
         <img src={Cartoon} />
         {/* หน้า Profile User Me */}
 

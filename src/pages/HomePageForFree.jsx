@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from "react";
 import CountdownTimer from "../components/TimeCountdown";
+import { Link } from "react-router";
 
 function HomePageFree() {
   return (
-    <div className="min-h-screen  flex items-center justify-center px-4">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+    <div className="bg-primary  flex items-center justify-center">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-32">
         {/* Left Section */}
         <div className="text-center">
-          <div className="text-4xl mb-4">⏳</div>
-          <h2 className="text-2xl font-semibold mb-2 text-white">
+          <div className="text-7xl mb-4">⏳</div>
+          <h2 className="text-4xl font-semibold mb-2 text-white">
             No free locations left to play today!
           </h2>
-          <p className="text-md font-medium mb-4 text-white">PLAY AGAIN IN</p>
+          <p className="text-3xl font-medium mb-4 text-white">PLAY AGAIN IN</p>
           <div className="text-2xl font-bold px-6 py-2 inline-block text-black">
             <CountdownTimer />
           </div>
         </div>
 
         {/* Right Section - Subscription Card */}
-        <div className="bg-white p-6 rounded-xl shadow-lg w-72 text-center transition duration-300 ease-in-out transform hover:scale-115 active:scale-100">
+        <div className="bg-card-subscription">
           <h3 className="text-xl font-semibold text-black">PRO BASIC</h3>
           <p className="text-2xl font-bold my-2 text-black">119 BATH / MONTH</p>
           <p className="text-xs text-gray-500 mb-4">BILLED MONTHLY</p>
 
-          <div className="text-left space-y-3 mb-6">
-            <div className="flex items-center gap-2 text-black">
+          <div className="text-left space-y-3 mb-14">
+            <div className="flex items-center gap-2 text-black mb-4">
               <span>🌍</span>
               <span>SINGLEPLAYER</span>
             </div>
-            <div className="flex items-center gap-2 text-black">
+            <div className="flex items-center gap-2 text-black mb-4">
               <span>🏆</span>
               <span>MULTIPLAYER</span>
             </div>
@@ -38,7 +39,9 @@ function HomePageFree() {
             </div>
           </div>
 
-          <button className="btn-secondary">SUBSCRIPTION</button>
+          <button className="btn-secondary ">
+            <Link to="/subscription">Subscription</Link>
+          </button>
         </div>
       </div>
     </div>

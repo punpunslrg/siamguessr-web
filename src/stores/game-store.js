@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { calculateDistance } from "../utils/calculate-distance";
-import { createRoom } from "../api/roomApi.js";
+import { createRoom, getLobby } from "../api/roomApi.js";
 import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
 import { nextRound } from "../api/roundApi.js";
@@ -93,12 +93,12 @@ const useGameStore = create(
 
       actionNextRound: async (roundId) => {
         let token = useUserStore.getState().token;
-        console.log(roundId)
+        console.log(roundId);
         const index = get().currentRoundIndex;
         if (index < 4) {
           set({ currentRoundIndex: index + 1, gameState: "playing" });
-          const res = await nextRound({roundId}, token)
-          return res
+          const res = await nextRound({ roundId }, token);
+          return res;
         } else {
           set({ gameState: "game-over" });
         }
@@ -115,6 +115,13 @@ const useGameStore = create(
 
       actionGetTotalScore: () => {
         return get().guesses.reduce((total, g) => total + (g.score || 0), 0);
+      },
+
+      actionGetLobby: async (id, token) => {
+        const tkn = useUserStore.getState().token;
+        const resp = await getLobby(id, tkn);
+        set({ room: resp.data.room });
+        return resp.data.room;
       },
     }),
     {

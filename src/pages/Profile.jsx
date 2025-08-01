@@ -15,7 +15,7 @@ const Profile = () => {
   }, [getProfile]);
 
   return (
-    <div className=" flex justify-center items-center background h-full">
+    <div className=" flex justify-center items-center bg-primary">
       <div className="w-fit h-fit mx-auto bg-white rounded-lg shadow-lg mt-8 p-6 md:p-8 ">
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-8 pb-8 border-b border-gray-200">
           {/* Profile Image */}

@@ -20,6 +20,8 @@ import ProtectRoute from "./ProtectRoute";
 import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
+import TestLatLng from "../pages/TestLatLng.jsx";
+import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
 
 function AppRouter() {
   return (
@@ -28,12 +30,10 @@ function AppRouter() {
         <Route index element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/round" element={<RoundScore />} />
         <Route path="/homepagefree" element={<HomePageFree />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/lobby/:roomId" element={<Lobby />} />
-        <Route path="/gameplay" element={<Gameplay />} />
         <Route path="/gamemode" element={<GameMode />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/gamebreakdown" element={<GameBreakdown />} />
@@ -41,6 +41,14 @@ function AppRouter() {
         <Route path="/gamehistory" element={<GameHistory />} />
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
+
+        {/* only for testing lat lng */}
+        {/* <Route path="/test" element={<TestLatLng />} /> */}
+      </Route>
+
+      <Route path="/" element={<LayoutWithoutNav />}>
+        <Route path="/gameplay" element={<Gameplay />} />
+        <Route path="/round" element={<RoundScore />} />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

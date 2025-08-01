@@ -34,7 +34,7 @@ function Register() {
     }
   };
   return (
-    <div className="h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center bg-primary">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl text-center">

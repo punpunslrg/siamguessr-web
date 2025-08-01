@@ -1,23 +1,21 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import useGameStore from "../stores/game-store.js";
 import { Map } from "@vis.gl/react-google-maps";
 import ResultsMap from "../components/ResultMap.jsx";
+import { LoaderCircle } from "lucide-react";
 
 // A helper component to render the map and fit the bounds
 
 function RoundScore() {
   const navigate = useNavigate();
+  const [isMapReady, setIsMapReady] = useState(false);
 
   // Get data and actions from the redesigned store
   const room = useGameStore((state) => state.room);
   const currentRoundIndex = useGameStore((state) => state.currentRoundIndex);
   const guesses = useGameStore((state) => state.guesses);
-  const gameState = useGameStore((state) => state.gameState);
   const actionNextRound = useGameStore((state) => state.actionNextRound);
-  const actionGetTotalScore = useGameStore(
-    (state) => state.actionGetTotalScore
-  );
 
   // Get the results of the most recent guess
   const lastGuess = guesses[currentRoundIndex];
@@ -31,17 +29,19 @@ function RoundScore() {
       }
     : undefined;
 
-    console.log(currentRoundIndex)
   // This effect handles the case where the user navigates here directly
   useEffect(() => {
     if (!room || !lastGuess) {
-      console.log("No round data found, navigating back to gameplay.");
       navigate("/gameplay");
     }
   }, [room, lastGuess, navigate]);
 
   const handleNext = () => {
-    actionNextRound(nextRound.id)
+    if (currentRoundIndex === 4) {
+      navigate("/singlescore");
+    } else {
+      actionNextRound(nextRound.id);
+    }
   };
 
   if (!room || !lastGuess) {
@@ -53,7 +53,6 @@ function RoundScore() {
   }
 
   const progress = (lastGuess.score / 5000) * 100;
-  const totalScore = actionGetTotalScore();
 
   return (
     <div className=" bg-secondary flex flex-col items-center justify-center px-4 py-10">
@@ -64,12 +63,21 @@ function RoundScore() {
       </div>
 
       <div className="w-full max-w-3xl h-96 bg-gray-800 mb-6 rounded-lg shadow-lg overflow-hidden">
+        {/* หน้ากาก Loading จะแสดงอยู่ด้านบนสุด */}
+        {!isMapReady && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-800 z-10">
+            <LoaderCircle className="animate-spin w-6 h-6 text-white" />
+          </div>
+        )}
+
+        {/* แผนที่จะถูกเรนเดอร์ตามปกติอยู่ข้างใต้ */}
         <Map
           defaultCenter={{ lat: 13.75, lng: 100.5 }}
           defaultZoom={3}
           gestureHandling={"greedy"}
           disableDefaultUI={true}
           mapId="113d733319c2cd6257310524"
+          onTilesLoaded={() => setIsMapReady(true)}
         >
           <ResultsMap
             actualLocation={actualLocation}
@@ -103,7 +111,7 @@ function RoundScore() {
       </div>
 
       <button onClick={handleNext} className="btn-round">
-        {gameState === "game-over" ? "VIEW FINAL RESULTS" : "START NEXT ROUND"}
+        {currentRoundIndex === 4 ? "VIEW FINAL RESULTS" : "START NEXT ROUND"}
       </button>
     </div>
   );

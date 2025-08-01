@@ -10,4 +10,8 @@ const addToken = (token) => ({
 
 export const createRoom = (body, token) => createRoomApi.post("/", body, addToken(token));
 
+<<<<<<< HEAD
 export const getLobby = (id, token) => createRoomApi.get(`/${id}`,addToken(token))
+=======
+export const getRoomResult = (roomId, token) => createRoomApi.get(`/${roomId}/results`, addToken(token))
+>>>>>>> dev

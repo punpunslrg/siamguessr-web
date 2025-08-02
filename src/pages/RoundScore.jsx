@@ -4,18 +4,23 @@ import useGameStore from "../stores/game-store.js";
 import { Map } from "@vis.gl/react-google-maps";
 import ResultsMap from "../components/ResultMap.jsx";
 import { LoaderCircle } from "lucide-react";
+import { useSocketStore } from "../stores/socketStore.js";
 
 // A helper component to render the map and fit the bounds
 
 function RoundScore() {
   const navigate = useNavigate();
   const [isMapReady, setIsMapReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Get data and actions from the redesigned store
   const room = useGameStore((state) => state.room);
   const currentRoundIndex = useGameStore((state) => state.currentRoundIndex);
   const guesses = useGameStore((state) => state.guesses);
   const actionNextRound = useGameStore((state) => state.actionNextRound);
+  const roundScore = useGameStore((state) => state.roundScore);
+  const actionListenEvents = useGameStore((state) => state.actionListenEvents);
+  const actionRemoveEvents = useGameStore((state) => state.actionRemoveEvents);
 
   // Get the results of the most recent guess
   const lastGuess = guesses[currentRoundIndex];
@@ -29,12 +34,41 @@ function RoundScore() {
       }
     : undefined;
 
+  // console.log('roundScore', roundScore)
+
+  const { isConnected, connect, disconnect, isCallingToConnect } =
+    useSocketStore();
+
+  useEffect(() => {
+    if (!isConnected && !isCallingToConnect) {
+      connect();
+    }
+    // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
+    return () => {
+      if (isConnected && !isCallingToConnect) {
+        disconnect();
+      }
+    };
+  }, [isConnected, connect, disconnect, isCallingToConnect]);
+
   // This effect handles the case where the user navigates here directly
   useEffect(() => {
     if (!room || !lastGuess) {
       navigate("/gameplay");
     }
   }, [room, lastGuess, navigate]);
+
+  useEffect(() => {
+    if (isConnected && room) {
+      actionListenEvents();
+      setIsLoading(false);
+    }
+    return () => {
+      if (isConnected && room) {
+        actionRemoveEvents();
+      }
+    };
+  }, [isConnected, room]);
 
   const handleNext = () => {
     if (currentRoundIndex === 4) {

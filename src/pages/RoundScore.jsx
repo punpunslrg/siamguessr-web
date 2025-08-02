@@ -4,12 +4,15 @@ import useGameStore from "../stores/game-store.js";
 import { Map } from "@vis.gl/react-google-maps";
 import ResultsMap from "../components/ResultMap.jsx";
 import { LoaderCircle } from "lucide-react";
+import useUserStore from "../stores/userStore.js";
 
 // A helper component to render the map and fit the bounds
 
 function RoundScore() {
   const navigate = useNavigate();
   const [isMapReady, setIsMapReady] = useState(false);
+
+  const user = useUserStore(state => state.user)
 
   // Get data and actions from the redesigned store
   const room = useGameStore((state) => state.room);
@@ -82,6 +85,7 @@ function RoundScore() {
           <ResultsMap
             actualLocation={actualLocation}
             guessLocation={lastGuess.guess}
+            userImage ={user?.image}
           />
         </Map>
       </div>

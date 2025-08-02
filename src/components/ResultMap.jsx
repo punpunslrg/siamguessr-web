@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 
-function ResultsMap({ actualLocation, guessLocation }) {
+function ResultsMap({ actualLocation, guessLocation, userImage }) {
   const map = useMap();
 
   // Fit bounds to include actualLocation and guessLocation if available
@@ -35,10 +35,22 @@ function ResultsMap({ actualLocation, guessLocation }) {
     const path = [actualLocation, guessLocation];
     const polyline = new window.google.maps.Polyline({
       path: path,
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
+      strokeOpacity: 0,
       strokeWeight: 2,
+      icons: [
+        {
+          icon: {
+            path: "M 0,-1 0,1",
+            strokeOpacity: 1,
+            scale: 4,
+          },
+          offset: "0",
+          repeat: "17px",
+        },
+      ],
+      strokeColor: "#FF0000",
     });
+
     polyline.setMap(map);
 
     return () => polyline.setMap(null);
@@ -57,20 +69,29 @@ function ResultsMap({ actualLocation, guessLocation }) {
       {/* Show Guess marker only if guessLocation exists */}
       {guessLocation && (
         <AdvancedMarker position={guessLocation} title="Your Guess">
-          <span className="text-blue-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              stroke="white"
-              strokeWidth="1.5"
-            >
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-          </span>
+          {userImage ? (
+            <img
+              src={userImage}
+              alt="Your Marker"
+              title="You"
+              className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+            />
+          ) : (
+            <span className="text-blue-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="white"
+                strokeWidth="1.5"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </span>
+          )}
         </AdvancedMarker>
       )}
     </>

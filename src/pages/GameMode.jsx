@@ -28,7 +28,7 @@ function GameMode() {
         maxPlayers: selectedMode === "multi" ? 2 : 1,
         hostId: user.id,
       };
-
+      
       // 2. Call the backend to create the room
       const newRoom = await actionStartNewGame(roomData);
       console.log("Created room:", newRoom);

@@ -28,6 +28,7 @@ export const useSocketStore = create((set) => ({
         token: token,
       },
     });
+    console.log('socket token', socket.auth.token)
 
     // ✅ 1) connect: Fired เมื่อเชื่อมต่อสำเร็จ
     socket.on(SOCKET_EVENTS.CONNECT, () => {

@@ -1,23 +1,33 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { calculateDistance } from "../utils/calculate-distance";
-import { createRoom, getRoomResult } from "../api/roomApi.js";
+import { createRoom, getLobby, getRoomResult } from "../api/roomApi.js";
 import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
 import { nextRound } from "../api/roundApi.js";
+import { useSocketStore } from "./socketStore";
 
 const useGameStore = create(
   persist(
     (set, get) => ({
+      //
       room: null,
       currentRoundIndex: 0,
       guesses: [],
       gameState: "idle",
       roomResult: null,
-
-      actionStartNewGame: async (roomData) => {
+      //
+      //---------------------------- multi-------------------------------------
+      playersData: null,
+      statusError: null,
+      isJoined: false,
+      isJoining: false,
+      isListening: false,
+      //---------------------------- multi-------------------------------------
+      //
+      actionStartNewGame: async (room) => {
         let token = useUserStore.getState().token;
-        const res = await createRoom(roomData, token);
+        const res = await createRoom(room, token);
 
         set({
           room: res.data.room,
@@ -177,6 +187,76 @@ const useGameStore = create(
 
         return room;
       },
+
+      actionGetLobby: async (id, token) => {
+        const tkn = useUserStore.getState().token;
+        const resp = await getLobby(id, tkn);
+        set({ room: resp.data.room });
+        return resp.data.room;
+      },
+      //
+      //---------------------------- multi-------------------------------------
+      actionListenEvents: () => {
+        const { socket, isConnected } = useSocketStore.getState();
+        if (!isConnected || !socket) {
+          return;
+        }
+        socket.on("playersData", (data) => {
+          set({ playersData: data });
+          // console.log("data", data);
+        });
+        socket.on("leaveRoom", () => {
+          window.location = "/gamemode";
+        });
+        socket.on("gameStarted", (updatedRoom) => {
+          set({ room: updatedRoom });
+          window.location = "/gameplay";
+        });
+      },
+
+      actionRemoveEvents: () => {
+        const { socket } = useSocketStore.getState();
+        if (!socket) return;
+        console.log("🔊 Stopping event listeners...");
+      },
+
+      actionJoin: (roomName) => {
+        const { socket } = useSocketStore.getState();
+        const { room } = get();
+        console.log("room at gamestore", room);
+        if (!socket) return;
+        socket.emit("joinRoom", { roomName, room });
+        // console.log("join")
+      },
+
+      actionLeave: () => {
+        const { socket } = useSocketStore.getState();
+        const { room } = get();
+        // console.log("room", room);
+        socket.emit("leaveRoom", room);
+      },
+
+      actionSendMessage: (data) => {
+        const { socket } = useSocketStore.getState();
+        if (!socket) return;
+        // socket.emit(CHAT_ACTIONS.SEND_MESSAGE, data);
+      },
+      actionChangeStatus: (isReady) => {
+        // console.log('isReady', isReady)
+        const { socket } = useSocketStore.getState();
+        const { room } = get();
+        socket.emit("changeStatus", {
+          status: isReady == "waiting" ? "ready" : "waiting",
+          roomName: room.code,
+        });
+      },
+      actionPlay: () => {
+        const { socket } = useSocketStore.getState();
+        const { room } = get();
+        if (!socket || !room) return;
+        socket.emit("startgame", room);
+      },
+      //---------------------------- multi-------------------------------------
     }),
     {
       name: "siamguessr-game",

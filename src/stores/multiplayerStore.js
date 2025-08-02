@@ -8,6 +8,7 @@ export const useMultiplayerStore = create((set) => ({
   isJoined: false,
   isJoining: false,
   isListening: false,
+  roomData:null,
 
   listenEvents: () => {
     const { socket, isConnected } = useSocketStore.getState();
@@ -16,7 +17,14 @@ export const useMultiplayerStore = create((set) => ({
     }
     socket.on("playersData", (data) => {
       set({ playersData: data });
-      console.log("data", data);
+      // console.log("data", data);
+    });
+    socket.on("leaveRoom", () => {
+      window.location = "/gamemode";
+    });
+    socket.on("gameStarted", (updatedRoom) => {
+      set({roomData: updatedRoom})
+      window.location = "/gameplay";
     });
   },
 
@@ -28,16 +36,17 @@ export const useMultiplayerStore = create((set) => ({
 
   join: (roomName) => {
     const { socket } = useSocketStore.getState();
-    const room = useGameStore.getState().room
+    const room = useGameStore.getState().room;
     if (!socket) return;
     socket.emit("joinRoom", { roomName, room });
     // console.log("join")
   },
 
-  leave: (roomName) => {
+  leave: () => {
     const { socket } = useSocketStore.getState();
-    // socket.emit(CHAT_ACTIONS.LEAVE_CHAT, {roomName})
-    // set({messages:[]})
+    const room = useGameStore.getState().room;
+    // console.log("room", room);
+    socket.emit("leaveRoom", room);
   },
 
   sendMessage: (data) => {
@@ -46,14 +55,21 @@ export const useMultiplayerStore = create((set) => ({
     // socket.emit(CHAT_ACTIONS.SEND_MESSAGE, data);
   },
   changeStatus: (isReady) => {
+    // console.log('isReady', isReady)
     const { socket } = useSocketStore.getState();
-    const room = useGameStore.getState().room
+    const room = useGameStore.getState().room;
     socket.emit("changeStatus", {
       status: isReady == "waiting" ? "ready" : "waiting",
-      roomName: room.code
+      roomName: room.code,
     });
-    console.log('room', room)
   },
+  play: () => {
+    const { socket } = useSocketStore.getState();
+    const room = useGameStore.getState().room;
+    if (!socket || !room) return;
+    socket.emit("startgame", room);
+  },
+
   // clearMessages: () => set({ messages: [] }),
   // clearStatus: () => set({ status : null, statusError: null }),
 }));

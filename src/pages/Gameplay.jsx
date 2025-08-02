@@ -16,12 +16,13 @@ const mapSizeConfig = {
 const expandedMapSizeLevels = ["md", "lg", "xl"];
 
 function Gameplay() {
+  const navigate = useNavigate()
+
   const [playerGuess, setPlayerGuess] = useState(null);
   const [isMapExpanded, setIsMapExpanded] = useState(false);
   const [expandedMapSize, setExpandedMapSize] = useState("md");
   const [streetViewPosition, setStreetViewPosition] = useState(null);
   const hoverTimeoutRef = useRef(null);
-  const navigate = useNavigate();
 
   // --- New Store Integration ---
   const room = useGameStore((state) => state.room);
@@ -32,6 +33,9 @@ function Gameplay() {
   const actionGetRoomResult = useGameStore(
     (state) => state.actionGetRoomResult
   );
+  const actionPlay = useGameStore(state => state.actionPlay)
+  const actionListenEvents = useGameStore(state => state.actionListenEvents)
+  const actionConnectSocket = useGameStore(state => state.actionConnectSocket)
 
   // Get the current round and location from the store's state
   const currentRound = room?.rounds?.[currentRoundIndex];
@@ -40,13 +44,23 @@ function Gameplay() {
   const isLeavingRef = useRef(false);
 
   useEffect(() => {
-    const initGame = async () => {
-      if (!room && !isLeavingRef.current) {
-        await actionStartNewGame();
-      }
-    };
-    initGame();
+    // const initGame = async () => {
+    //   if (!room && !isLeavingRef.current) {
+    //     await actionStartNewGame();
+    //   }
+    // };
+    // initGame();
   }, [room, actionStartNewGame]);
+
+  useEffect(() => {
+        // สำหรับ Multiplayer เราต้องจัดการ Socket ด้วย
+        // actionConnectSocket();
+        actionListenEvents(navigate); // ถ้าจะให้ Store จัดการ navigate
+
+        return () => {
+            // ... (ถ้ามี cleanup ที่จำเป็นสำหรับ Gameplay)
+        };
+    }, [navigate]);
 
   useEffect(() => {
     if (currentLocation && !streetViewPosition) {

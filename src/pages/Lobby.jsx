@@ -3,16 +3,19 @@ import { useParams, useNavigate } from "react-router";
 import useGameStore from "../stores/game-store";
 import useUserStore from "../stores/userStore";
 import { useSocketStore } from "../stores/socketStore";
-import { useMultiplayerStore } from "../stores/multiplayerStore";
+// import { useMultiplayerStore } from "../stores/multiplayerStore";
 
 const PlayerCard = ({ player }) => {
-  const { changeStatus } = useMultiplayerStore();
-  const user = useUserStore(state=>state.user)
+  const user = useUserStore((state) => state.user);
+  const { actionChangeStatus } = useGameStore();
   const borderColor =
     player.status === "ready" ? "border-green-500" : "border-red-500";
+
   const hdlReady = () => {
-    changeStatus(player.status);
+    actionChangeStatus(player.status);
   };
+
+  console.log("player", player);
 
   return (
     <div className="relative bg-white p-6 gap-4 rounded-2xl shadow-lg flex flex-col items-center w-48 text-center">
@@ -24,18 +27,14 @@ const PlayerCard = ({ player }) => {
       <div
         className={`w-28 h-28 rounded-full mb-4 shadow-inner overflow-hidden border-8 ${borderColor} flex items-center justify-center transition-colors duration-300`}
       >
-        {player.image ? (
-          <img
-            src={player.image}
-            alt={player.username}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-400"></div>
-        )}
+        <img
+          src={player?.user?.image}
+          alt={`${user.username}'s profile`}
+          className="w-full h-full object-cover"
+        />
       </div>
       <h2 className="text-lg font-bold text-gray-800 truncate w-full">
-        {player.username}
+        {player?.user?.username}
       </h2>
       <span
         className={`mt-2 text-sm font-semibold flex flex-col gap-2 ${
@@ -43,11 +42,11 @@ const PlayerCard = ({ player }) => {
         }`}
       >
         {player.status === "ready" ? "READY" : "WAITING. . ."}
-        {player.userId === user.id &&
+        {player.userId === user.id && (
           <button className="btn" onClick={() => hdlReady()}>
             {player.status === "ready" ? "UNREADY" : "READY"}
           </button>
-        }
+        )}
       </span>
     </div>
   );
@@ -55,25 +54,29 @@ const PlayerCard = ({ player }) => {
 
 function Lobby() {
   const { roomId } = useParams();
+  console.log("roomId", roomId);
   const navigate = useNavigate();
-  const room = useGameStore((state) => state.room);
+
   const [isLoading, setIsLoading] = useState(true);
-  const actionGetLobby = useGameStore((state) => state.actionGetLobby);
-  const token = useUserStore((state) => state.token);
-  const { isConnected, connect, disconnect, isCallingToConnect, socket } =
+
+  const { token, user } = useUserStore();
+  const {
+    room,
+    actionGetLobby,
+    actionLeave,
+    actionPlay,
+    actionJoin,
+    actionListenEvents,
+    isJoined,
+    isListening,
+    actionRemoveEvents,
+    playersData,
+  } = useGameStore();
+  const { isConnected, connect, disconnect, isCallingToConnect } =
     useSocketStore();
-  const { listenEvents, join, removeEvents, playersData } =
-    useMultiplayerStore();
-  useEffect(() => {
-    if (!isConnected && !isCallingToConnect) {
-      connect();
-    }
-    return () => {
-      if (isConnected && !isCallingToConnect) {
-        disconnect();
-      }
-    };
-  }, [isConnected, connect, disconnect, isCallingToConnect]);
+
+  // const { listenEvents, join, removeEvents, playersData, leave, play } =
+  //   useMultiplayerStore();
 
   // A component for displaying an empty slot
   const EmptySlot = () => (
@@ -88,44 +91,144 @@ function Lobby() {
     </div>
   );
 
+  // useEffect(() => {
+  //   // 1. ตรวจสอบผู้ใช้
+  //   if (!user) {
+  //     navigate("/login");
+  //     return;
+  //   }
+
+  //   // 2. จัดการการเชื่อมต่อ Socket
+  //   if (!isConnected && !isCallingToConnect) {
+  //     connect();
+  //     return; // รอให้เชื่อมต่อสำเร็จ
+  //   }
+
+  //   // 3. จัดการการดึงข้อมูล Lobby และเข้าร่วมห้อง Socket
+  //   if (isConnected && !room) {
+  //     const fetchRoom = async () => {
+  //       try {
+  //         setIsLoading(true);
+  //         const fetchedRoom = await actionGetLobby(roomId, token);
+  //         if (fetchedRoom) {
+  //           // เมื่อดึงข้อมูลได้สำเร็จ actionGetLobby จะเรียก actionJoinRoom เองแล้ว
+  //           // เราแค่ต้องตั้งค่า listener
+  //           if (!isListening) {
+  //             actionListenEvents(navigate);
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error("Failed to fetch room data.", error);
+  //         navigate("/gamemode");
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     };
+  //     fetchRoom();
+  //   }
+
+  //   // Cleanup function: จะทำงานเมื่อ component unmounts
+  //   return () => {
+  //     if (room) {
+  //       actionLeave(room.code); // ส่ง room.code ให้ leave action
+  //     }
+  //     if (isConnected && !isCallingToConnect) {
+  //       disconnect();
+  //     }
+  //     // ใน useGameStore, actionListenEvents() จะจัดการ off() ให้แล้ว
+  //   };
+
+  //   // Dependency array
+  // }, [
+  //   isConnected,
+  //   isCallingToConnect,
+  //   room,
+  //   isListening,
+  //   user,
+  //   roomId,
+  //   token,
+  //   navigate,
+  //   connect,
+  //   disconnect,
+  //   actionGetLobby,
+  //   actionLeave,
+  //   actionListenEvents,
+  // ]);
+
   useEffect(() => {
-    if (isConnected) {
-      listenEvents();
-      join(room.code);
+    if (!isConnected && !isCallingToConnect) {
+      connect();
+    }
+    // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
+    return () => {
+      if (isConnected && !isCallingToConnect) {
+        disconnect();
+      }
+    };
+  }, [isConnected, connect, disconnect, isCallingToConnect]);
+
+  useEffect(() => {
+    if (isConnected && room) {
+      actionListenEvents();
+      setIsLoading(false);
     }
     return () => {
-      if (isConnected) {
-        removeEvents();
+      if (isConnected && room) {
+        actionRemoveEvents();
       }
     };
-  }, [isConnected]);
+  }, [isConnected, room]);
+
+  const fetchAndJoin = async () => {
+    const newRoom = await actionGetLobby(roomId, token); // รอห้องใหม่ได้จริง
+    actionJoin(newRoom.code); // ใช้ code/room ใหม่แน่นอน
+  };
+  useEffect(() => {
+    if (isConnected) {
+      fetchAndJoin();
+    }
+  }, [isConnected, roomId]);
 
   useEffect(() => {
-    const fetchRoom = async () => {
-      try {
-        setIsLoading(true);
-        await actionGetLobby(roomId, token);
-      } catch (error) {
-        console.error("Failed to fetch room data.", error);
-        // Optional: Redirect if the room doesn't exist
-        // navigate('/game-modes');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (!user) {
+      navigate("/login");
+      return;
+    }
 
-    fetchRoom();
-  }, [roomId, actionGetLobby, token]);
+    if (isConnected && !room) {
+      // เมื่อ Socket เชื่อมต่อแล้ว และยังไม่มีข้อมูล Lobby ให้ดึงข้อมูลมา
+      const fetchRoom = async () => {
+        try {
+          setIsLoading(true);
+          await actionGetLobby(roomId, token);
+        } catch (error) {
+          console.error("Failed to fetch room data.", error);
+          navigate("/gamemode");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      fetchRoom();
+    }
+  }, [roomId, token, user, isConnected, room, actionGetLobby, navigate]);
+
+  useEffect(() => {
+    if (isConnected) {
+      actionListenEvents(navigate);
+    }
+  }, [isConnected, actionListenEvents, navigate]);
 
   const handlePlay = () => {
-    // Logic to start the game. This would likely involve a backend call
-    // and then navigating all players in the room to the gameplay screen.
-    navigate("/gameplay", { state: { roomId: room.id } });
+    actionPlay(roomId);
+  };
+
+  const handleLeave = () => {
+    actionLeave(roomId);
   };
 
   const hdlInvite = () => {
     // Simple copy to clipboard functionality
-    const inviteLink = `${window.location.origin}/lobby/${roomId}`;
+    const inviteLink = `${window.location.origin}/lobby/${room.id}`;
     navigator.clipboard.writeText(inviteLink).then(() => {
       alert("Invite link copied to clipboard!");
     });
@@ -147,23 +250,15 @@ function Lobby() {
     );
   }
 
-  // Create an array of player cards and empty slots
-  // const playerSlots = [];
-  // for (let i = 0; i < room.maxPlayers; i++) {
-  //   if (i < room.players.length) {
-  //     playerSlots.push(
-  //       <PlayerCard key={room.players[i].userId} player={room.players[i]} />
-  //     );
-  //   } else {
-  //     playerSlots.push(<EmptySlot key={`empty-${i}`} />);
-  //   }
-  // }
+  // const playersData = room.players
   console.log("playerData", playersData);
+  console.log("room", room);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
       {/* Room Code */}
       <div className="absolute top-8 left-0 w-full flex justify-center">
-        <span className="bg-white bg-opacity-80 px-6 py-2 rounded-xl text-gray-800 text-lg font-mono tracking-widest shadow-md">
+        <span className="bg-white bg-opacity-80 px-6 py-2 rounded-xl text-gray-800 text-lg font-mono tracking-widest shadow-md mt-50">
           Room Code: <span className="font-bold">{room.code}</span>
         </span>
       </div>
@@ -178,12 +273,27 @@ function Lobby() {
       </div>
 
       {/* PLAY button */}
-      <div className="absolute bottom-16 w-full flex justify-center">
+      <div className="absolute bottom-16 w-50 flex flex-col justify-center text-center gap-5">
+        {room.hostId === user.id && (
+          <button
+            onClick={handlePlay}
+            disabled={
+              !(playersData || []).every((player) => player.status === "ready")
+            }
+            className={`${
+              !(playersData || []).every((player) => player.status === "ready")
+                ? "bg-gray-500 hover:cursor-not-allowed"
+                : "bg-orange-500  hover:bg-orange-600 hover:cursor-pointer"
+            }  text-white text-2xl font-bold px-10 py-4 rounded-full shadow-2xl transition-all`}
+          >
+            PLAY
+          </button>
+        )}
         <button
-          onClick={handlePlay}
-          className="bg-orange-500 hover:bg-orange-600 text-white text-2xl font-bold px-20 py-4 rounded-full shadow-2xl transition-all"
+          onClick={handleLeave}
+          className="bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white text-2xl font-bold px-10 py-2 rounded-full shadow-2xl transition-all"
         >
-          PLAY
+          Leave
         </button>
       </div>
     </div>

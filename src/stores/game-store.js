@@ -6,6 +6,7 @@ import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
 import { nextRound } from "../api/roundApi.js";
 import { useSocketStore } from "./socketStore";
+import RoundScore from "../pages/RoundScore";
 
 const useGameStore = create(
   persist(
@@ -23,6 +24,7 @@ const useGameStore = create(
       isJoined: false,
       isJoining: false,
       isListening: false,
+      roundScore: null,
       //---------------------------- multi-------------------------------------
       //
       actionStartNewGame: async (room) => {
@@ -112,6 +114,21 @@ const useGameStore = create(
             },
             token
           );
+
+          const { socket } = useSocketStore.getState();
+          if (socket && room) {
+            socket.emit("playerGuessed", {
+              roomCode: room.code,
+              playerId: useUserStore.getState().user.id,
+              roundId: currentRound.id,
+              guess: {
+                lat: playerGuess.lat,
+                lng: playerGuess.lng,
+              },
+              distance: distanceInKm,
+              score,
+            });
+          }
 
           return res;
         } catch (error) {
@@ -203,7 +220,7 @@ const useGameStore = create(
         }
         socket.on("playersData", (data) => {
           set({ playersData: data });
-          // console.log("data", data);
+          console.log("data", data);
         });
         socket.on("leaveRoom", () => {
           window.location = "/gamemode";
@@ -212,6 +229,13 @@ const useGameStore = create(
           set({ room: updatedRoom });
           window.location = "/gameplay";
         });
+        socket.on("roundResults", (results) => {
+          console.log("results", results);
+          set({ roundScore: results });
+        });
+        socket.on("allGuessed", (allGuessed)=>{
+          console.log('allGuessed', allGuessed)
+        })
       },
 
       actionRemoveEvents: () => {
@@ -223,7 +247,7 @@ const useGameStore = create(
       actionJoin: (roomName) => {
         const { socket } = useSocketStore.getState();
         const { room } = get();
-        console.log("room at gamestore", room);
+        // console.log("room at gamestore", room);
         if (!socket) return;
         socket.emit("joinRoom", { roomName, room });
         // console.log("join")

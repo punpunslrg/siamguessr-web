@@ -20,6 +20,7 @@ import ProtectRoute from "./ProtectRoute";
 import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
+import TestLatLng from "../pages/TestLatLng.jsx";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
 import SelectMode from "../pages/SelectMode";
 
@@ -42,6 +43,9 @@ function AppRouter() {
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
         <Route path="/selectmode" element={<SelectMode />} />
+
+        {/* only for testing lat lng */}
+        {/* <Route path="/test" element={<TestLatLng />} /> */}
       </Route>
 
       <Route path="/" element={<LayoutWithoutNav />}>

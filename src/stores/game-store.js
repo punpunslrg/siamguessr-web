@@ -25,6 +25,7 @@ const useGameStore = create(
       isJoining: false,
       isListening: false,
       roundScore: null,
+      allGuessed: null,
       //---------------------------- multi-------------------------------------
       //
       actionStartNewGame: async (room) => {
@@ -35,6 +36,7 @@ const useGameStore = create(
           room: res.data.room,
           currentRoundIndex: 0,
           guesses: [],
+          allGuessed: [],
           gameState: res.data.room.status,
         });
 
@@ -42,6 +44,8 @@ const useGameStore = create(
       },
       actionSubmitGuess: async (playerGuess) => {
         let token = useUserStore.getState().token;
+        const user = useUserStore.getState().user;
+
         const { room, currentRoundIndex, guesses } = get();
         if (!room || room.rounds.length <= currentRoundIndex) return;
 
@@ -84,22 +88,42 @@ const useGameStore = create(
         let score = 0;
         if (distanceInKm <= 5) {
           score = 5000;
-        } else if (distanceInKm >= 1200) {
+        } else if (distanceInKm >= 2000) {
           score = 0;
         } else {
-          // Stricter scoring with logarithmic curve
-          const factor = Math.log(distanceInKm - 4) / Math.log(991);
-          score = Math.round(5000 * (1 - factor));
-          score = Math.max(0, score);
+          const maxDistance = 2000;
+          const dropoff = Math.pow(
+            (maxDistance - distanceInKm) / maxDistance,
+            2
+          ); // smoother curve
+          score = Math.round(5000 * dropoff);
         }
 
-        set({
-          guesses: [
-            ...guesses,
-            { guess: playerGuess, distance: distanceInKm, score },
-          ],
+        const newGuessData = {
+          guessedLat: playerGuess.lat,
+          guessedLng: playerGuess.lng,
+          distance: distanceInKm,
+          score,
+        };
+
+        // console.log("newGuessData", newGuessData);
+
+        // Set guesses + allGuessed for singleplayer
+        set((state) => ({
+          guesses: [...state.guesses, newGuessData],
           gameState: "round-results",
-        });
+          allGuessed:
+            room?.mode !== "multi"
+              ? [
+                  ...(state.allGuessed || []),
+                  {
+                    userId: user.id,
+                    roundId: currentRound.id,
+                    ...newGuessData,
+                  },
+                ]
+              : state.allGuessed,
+        }));
 
         try {
           const res = await submitGuess(
@@ -116,7 +140,7 @@ const useGameStore = create(
           );
 
           const { socket } = useSocketStore.getState();
-          if (socket && room) {
+          if (socket && room.mode === "multi") {
             socket.emit("playerGuessed", {
               roomCode: room.code,
               playerId: useUserStore.getState().user.id,
@@ -136,16 +160,15 @@ const useGameStore = create(
         }
       },
 
-      actionNextRound: async (roundId) => {
+      actionNextRound: async (roundId, navigate) => {
         const token = useUserStore.getState().token;
         const { room, currentRoundIndex } = get();
+        const { socket } = useSocketStore.getState();
 
-        // Call backend to update and get the latest round info
         const res = await nextRound({ roundId }, token);
-        const updatedRound = res.data.round; // ← ensure backend returns this!
+        const updatedRound = res.data.round;
 
         if (room && updatedRound) {
-          // Replace the specific round in the room's rounds array
           const updatedRounds = [...room.rounds];
           updatedRounds[currentRoundIndex + 1] = updatedRound;
 
@@ -153,30 +176,48 @@ const useGameStore = create(
             room: { ...room, rounds: updatedRounds },
             currentRoundIndex: currentRoundIndex + 1,
             gameState: "playing",
+            allGuessed: [],
           });
+          if (socket && room?.mode === "multi") {
+            socket.emit("nextRoundStarted", {
+              roomCode: room.code,
+              round: updatedRound,
+              currentRoundIndex: currentRoundIndex + 1,
+            });
+          }
         } else {
           set({ gameState: "game-over" });
         }
       },
 
-      actionResetGame: () => {
-        set({
-          room: null,
-          currentRoundIndex: 0,
+      actionResetGame: () =>
+        set(() => ({
           guesses: [],
-          gameState: "idle",
-        });
-      },
+          allGuessed: [],
+          currentRoundIndex: 0,
+          gameState: "waiting",
+          roomResult: null,
+          roundScore: null,
+        })),
 
       actionGetRoomResult: async (roomId) => {
         let token = useUserStore.getState().token;
+        const room = useGameStore.getState().room;
+        const { socket } = useSocketStore.getState();
+
+        console.log("roomId from actionGetRoomResult", roomId);
         const res = await getRoomResult(roomId, token);
         set({ roomResult: res.data.results });
+        if (room?.mode === "multi") {
+          socket?.emit("gamebreakdown", { room, roomResult: res.data.results });
+        }
       },
 
       actionForfeitGame: async () => {
         const token = useUserStore.getState().token;
-        const { room, currentRoundIndex } = get();
+        const { currentRoundIndex } = get();
+        const room = useGameStore.getState().room;
+        set({ gameState: "idle" });
 
         if (!room) return;
 
@@ -202,6 +243,11 @@ const useGameStore = create(
           }
         }
 
+        if (room?.mode === "multi") {
+          console.log("leave from single mode");
+          useGameStore.getState().actionLeave(room);
+        }
+
         return room;
       },
 
@@ -213,28 +259,65 @@ const useGameStore = create(
       },
       //
       //---------------------------- multi-------------------------------------
-      actionListenEvents: () => {
+      actionListenEvents: (navigate) => {
         const { socket, isConnected } = useSocketStore.getState();
         if (!isConnected || !socket) {
           return;
         }
         socket.on("playersData", (data) => {
           set({ playersData: data });
-          console.log("data", data);
         });
         socket.on("leaveRoom", () => {
-          window.location = "/gamemode";
+          const room = useGameStore.getState().room;
+          if (room) {
+            console.log("leave room from actionListenEvents");
+            useGameStore.getState().actionLeave(room);
+          }
+          navigate("/gamemode");
         });
         socket.on("gameStarted", (updatedRoom) => {
           set({ room: updatedRoom });
-          window.location = "/gameplay";
+          navigate("/gameplay");
         });
         socket.on("roundResults", (results) => {
-          console.log("results", results);
           set({ roundScore: results });
         });
-        socket.on("allGuessed", (allGuessed)=>{
-          console.log('allGuessed', allGuessed)
+        socket.on("allGuessed", (data) => {
+          const currentRoundIndex = get().currentRoundIndex;
+          const currentRound = get().room?.rounds?.[currentRoundIndex];
+
+          if (!currentRound) return;
+
+          const filtered = data.filter(
+            (guess) => guess.roundId === currentRound.id
+          );
+
+          set({ allGuessed: filtered });
+        });
+        // socket.on("playerDisconnected", ({ userId }) => {
+        //   console.log(`⚡ Player with userId ${userId} disconnected`);
+        // });
+        socket.on("nextRoundStarted", ({ round, currentRoundIndex }) => {
+          const { room } = get();
+          const updatedRounds = [...room.rounds];
+          updatedRounds[currentRoundIndex] = round;
+
+          set({
+            room: { ...room, rounds: updatedRounds },
+            currentRoundIndex,
+            gameState: "playing",
+            allGuessed: [],
+          });
+          navigate("/gameplay");
+        });
+        socket.on("playerDisconnected", () => {
+          const room = useGameStore.getState().room;
+          console.log("Leave room from disconnect");
+          useGameStore.getState().actionLeave(room);
+        });
+        socket.on("game-finished", ({ data }) => {
+          set({roomResult: data})
+          navigate("/gamebreakdown")
         })
       },
 
@@ -247,17 +330,36 @@ const useGameStore = create(
       actionJoin: (roomName) => {
         const { socket } = useSocketStore.getState();
         const { room } = get();
-        // console.log("room at gamestore", room);
         if (!socket) return;
         socket.emit("joinRoom", { roomName, room });
-        // console.log("join")
       },
 
-      actionLeave: () => {
+      actionLeave: (roomOverride) => {
         const { socket } = useSocketStore.getState();
-        const { room } = get();
-        // console.log("room", room);
-        socket.emit("leaveRoom", room);
+        const roomToLeave = roomOverride || useGameStore.getState().room;
+
+        // console.log("roomToLeave", roomToLeave);
+
+        if (!roomToLeave?.code) {
+          console.warn("🚨 Tried to leave room, but no room was set.");
+          return;
+        }
+
+        socket?.emit("leaveRoom", roomToLeave);
+        set({
+          room: null,
+          currentRoundIndex: 0,
+          guesses: [],
+          gameState: "idle",
+          roomResult: null,
+          playersData: null,
+          statusError: null,
+          isJoined: false,
+          isJoining: false,
+          isListening: false,
+          roundScore: null,
+          allGuessed: null,
+        });
       },
 
       actionSendMessage: (data) => {
@@ -274,9 +376,8 @@ const useGameStore = create(
           roomName: room.code,
         });
       },
-      actionPlay: () => {
+      actionPlay: (room) => {
         const { socket } = useSocketStore.getState();
-        const { room } = get();
         if (!socket || !room) return;
         socket.emit("startgame", room);
       },

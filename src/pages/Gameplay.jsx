@@ -51,29 +51,29 @@ function Gameplay() {
   const { isConnected, connect, disconnect, isCallingToConnect } =
     useSocketStore();
 
-  useEffect(() => {
-    if (!isConnected && !isCallingToConnect) {
-      connect();
-    }
-    // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
-    return () => {
-      if (isConnected && !isCallingToConnect) {
-        disconnect();
-      }
-    };
-  }, [isConnected, connect, disconnect, isCallingToConnect]);
+  // useEffect(() => {
+  //   if (!isConnected && !isCallingToConnect) {
+  //     connect();
+  //   }
+  //   // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
+  //   return () => {
+  //     if (isConnected && !isCallingToConnect) {
+  //       disconnect();
+  //     }
+  //   };
+  // }, [isConnected, connect, disconnect, isCallingToConnect]);
 
-  useEffect(() => {
-    if (isConnected && room) {
-      actionListenEvents();
-      setIsLoading(false);
-    }
-    return () => {
-      if (isConnected && room) {
-        actionRemoveEvents();
-      }
-    };
-  }, [isConnected, room]);
+  // useEffect(() => {
+  //   if (isConnected && room) {
+  //     actionListenEvents();
+  //     setIsLoading(false);
+  //   }
+  //   return () => {
+  //     if (isConnected && room) {
+  //       actionRemoveEvents();
+  //     }
+  //   };
+  // }, [isConnected, room]);
 
   useEffect(() => {
     if (currentLocation && !streetViewPosition) {
@@ -84,7 +84,7 @@ function Gameplay() {
     }
   }, [currentLocation, streetViewPosition]);
 
-  console.log(room);
+  // console.log(room);
   useEffect(() => {
     setPlayerGuess(null);
   }, [currentRoundIndex]);
@@ -94,21 +94,28 @@ function Gameplay() {
   };
 
   const handleGuess = async () => {
+    console.log("Submitting guess...");
     if (!playerGuess) {
       await actionSubmitGuess(null);
     } else {
       await actionSubmitGuess(playerGuess);
     }
+    console.log("Navigating to /round");
     navigate("/round");
   };
 
   const handleLeave = async () => {
     isLeavingRef.current = true;
     const resultRoom = await actionForfeitGame();
+    console.log("resultRoom", resultRoom.id)
     if (resultRoom?.id) {
       await actionGetRoomResult(resultRoom.id);
     }
-    navigate("/singlescore");
+    if (room.mode === "single") {
+      navigate("/singlescore");
+    } else {
+      navigate("/gamebreakdown");
+    }
   };
 
   const handleMouseEnter = () => {
@@ -226,7 +233,7 @@ function Gameplay() {
                   </div>
                 ) : (
                   <button
-                    onClick={handleGuess}
+                    onClick={() => handleGuess()}
                     className={`btn btn-success pointer-events-auto transition-all duration-300 ease-in-out font-bold 
                     ${currentButtonClass}`}
                   >

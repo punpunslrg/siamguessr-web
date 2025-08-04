@@ -31,7 +31,7 @@ function GameMode() {
       
       // 2. Call the backend to create the room
       const newRoom = await actionStartNewGame(roomData);
-      console.log("Created room:", newRoom);
+      // console.log("Created room:", newRoom);
 
       // 3. Navigate based on the selected mode
       if (selectedMode === "single") {

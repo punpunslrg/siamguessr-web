@@ -11,7 +11,7 @@ const HomePageForSub = () => {
         <div className="">
           <img src={Logo7} />
         </div>
-        <img src="" alt="" />
+        {/* <img src="" alt="" /> */}
         {/* ปุ่มเมนู */}
         <div className="flex gap-4">
           <div>

@@ -159,7 +159,14 @@ const useGameStore = create(
           console.error("Failed to submit guess", error);
         }
       },
+      endRound: () =>{
+            const { socket } = useSocketStore.getState();
 
+            const {room, roomResult}= get()
+            console.log({room, roomResult})
+            socket.emit("gamebreakdown",  {room, roomResult})
+      
+      } ,
       actionNextRound: async (roundId, navigate) => {
         const token = useUserStore.getState().token;
         const { room, currentRoundIndex } = get();
@@ -315,8 +322,9 @@ const useGameStore = create(
           console.log("Leave room from disconnect");
           useGameStore.getState().actionLeave(room);
         });
-        socket.on("game-finished", ({ data }) => {
-          set({roomResult: data})
+        socket.on("game-finished", ({ roomResult }) => {
+          console.log("------------------------------------------------------------------------------------------------------",roomResult)
+          set({roomResult: roomResult})
           navigate("/gamebreakdown")
         })
       },

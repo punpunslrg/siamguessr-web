@@ -114,7 +114,7 @@ function Gameplay() {
     if (room.mode === "single") {
       navigate("/singlescore");
     } else {
-      navigate("/gamebreakdown");
+      navigate("/gamemode");
     }
   };
 

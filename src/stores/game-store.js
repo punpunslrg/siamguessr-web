@@ -7,6 +7,7 @@ import { submitGuess } from "../api/guessApi.js";
 import { nextRound } from "../api/roundApi.js";
 import { useSocketStore } from "./socketStore";
 import RoundScore from "../pages/RoundScore";
+import { toast } from "react-toastify";
 
 const useGameStore = create(
   persist(

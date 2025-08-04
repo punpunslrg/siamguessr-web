@@ -15,7 +15,7 @@ const PlayerCard = ({ player }) => {
     actionChangeStatus(player.status);
   };
 
-  console.log("player", player);
+  // console.log("player", player);
 
   return (
     <div className="relative bg-white p-6 gap-4 rounded-2xl shadow-lg flex flex-col items-center w-48 text-center">
@@ -54,7 +54,7 @@ const PlayerCard = ({ player }) => {
 
 function Lobby() {
   const { roomId } = useParams();
-  console.log("roomId", roomId);
+  // console.log("roomId", roomId);
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -67,16 +67,13 @@ function Lobby() {
     actionPlay,
     actionJoin,
     actionListenEvents,
-    isJoined,
-    isListening,
     actionRemoveEvents,
     playersData,
+    actionResetGame,
   } = useGameStore();
+
   const { isConnected, connect, disconnect, isCallingToConnect } =
     useSocketStore();
-
-  // const { listenEvents, join, removeEvents, playersData, leave, play } =
-  //   useMultiplayerStore();
 
   // A component for displaying an empty slot
   const EmptySlot = () => (
@@ -92,31 +89,73 @@ function Lobby() {
   );
 
   // useEffect(() => {
-  //   // 1. ตรวจสอบผู้ใช้
+  //   if (!isConnected && !isCallingToConnect) {
+  //     connect();
+  //   }
+  //   // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
+  //   return () => {
+  //     if (isConnected && !isCallingToConnect) {
+  //       disconnect();
+  //     }
+  //   };
+  // }, [isConnected, connect, disconnect, isCallingToConnect]);
+
+  // useEffect(() => {
+  //   if (isConnected && room) {
+  //     actionListenEvents(navigate);
+  //     setIsLoading(false);
+  //   }
+  //   return () => {
+  //     if (isConnected && room) {
+  //       actionRemoveEvents();
+  //     }
+  //   };
+  // }, [isConnected, room]);
+
+  const getLobby = async (roomId) => {
+    try {
+      await actionGetLobby(roomId);
+    } catch (error) {
+      console.error("Failed to fetch and join lobby:", err);
+    }
+  };
+
+  useEffect(() => {
+    getLobby(roomId);
+  }, []);
+
+  const fetchAndJoin = async () => {
+    try {
+      actionResetGame();
+
+      const newRoom = await actionGetLobby(roomId, token);
+      actionJoin(newRoom.code);
+    } catch (err) {
+      console.error("Failed to fetch and join lobby:", err);
+      navigate("/gamemode");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isConnected) {
+      fetchAndJoin();
+    }
+  }, [isConnected, roomId]);
+
+  // useEffect(() => {
   //   if (!user) {
   //     navigate("/login");
   //     return;
   //   }
 
-  //   // 2. จัดการการเชื่อมต่อ Socket
-  //   if (!isConnected && !isCallingToConnect) {
-  //     connect();
-  //     return; // รอให้เชื่อมต่อสำเร็จ
-  //   }
-
-  //   // 3. จัดการการดึงข้อมูล Lobby และเข้าร่วมห้อง Socket
   //   if (isConnected && !room) {
+  //     // เมื่อ Socket เชื่อมต่อแล้ว และยังไม่มีข้อมูล Lobby ให้ดึงข้อมูลมา
   //     const fetchRoom = async () => {
   //       try {
   //         setIsLoading(true);
-  //         const fetchedRoom = await actionGetLobby(roomId, token);
-  //         if (fetchedRoom) {
-  //           // เมื่อดึงข้อมูลได้สำเร็จ actionGetLobby จะเรียก actionJoinRoom เองแล้ว
-  //           // เราแค่ต้องตั้งค่า listener
-  //           if (!isListening) {
-  //             actionListenEvents(navigate);
-  //           }
-  //         }
+  //         await actionGetLobby(roomId, token);
   //       } catch (error) {
   //         console.error("Failed to fetch room data.", error);
   //         navigate("/gamemode");
@@ -126,104 +165,20 @@ function Lobby() {
   //     };
   //     fetchRoom();
   //   }
+  // }, [roomId, token, user, isConnected, room, actionGetLobby, navigate]);
 
-  //   // Cleanup function: จะทำงานเมื่อ component unmounts
-  //   return () => {
-  //     if (room) {
-  //       actionLeave(room.code); // ส่ง room.code ให้ leave action
-  //     }
-  //     if (isConnected && !isCallingToConnect) {
-  //       disconnect();
-  //     }
-  //     // ใน useGameStore, actionListenEvents() จะจัดการ off() ให้แล้ว
-  //   };
-
-  //   // Dependency array
-  // }, [
-  //   isConnected,
-  //   isCallingToConnect,
-  //   room,
-  //   isListening,
-  //   user,
-  //   roomId,
-  //   token,
-  //   navigate,
-  //   connect,
-  //   disconnect,
-  //   actionGetLobby,
-  //   actionLeave,
-  //   actionListenEvents,
-  // ]);
-
-  useEffect(() => {
-    if (!isConnected && !isCallingToConnect) {
-      connect();
-    }
-    // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
-    return () => {
-      if (isConnected && !isCallingToConnect) {
-        disconnect();
-      }
-    };
-  }, [isConnected, connect, disconnect, isCallingToConnect]);
-
-  useEffect(() => {
-    if (isConnected && room) {
-      actionListenEvents();
-      setIsLoading(false);
-    }
-    return () => {
-      if (isConnected && room) {
-        actionRemoveEvents();
-      }
-    };
-  }, [isConnected, room]);
-
-  const fetchAndJoin = async () => {
-    const newRoom = await actionGetLobby(roomId, token); // รอห้องใหม่ได้จริง
-    actionJoin(newRoom.code); // ใช้ code/room ใหม่แน่นอน
-  };
-  useEffect(() => {
-    if (isConnected) {
-      fetchAndJoin();
-    }
-  }, [isConnected, roomId]);
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    if (isConnected && !room) {
-      // เมื่อ Socket เชื่อมต่อแล้ว และยังไม่มีข้อมูล Lobby ให้ดึงข้อมูลมา
-      const fetchRoom = async () => {
-        try {
-          setIsLoading(true);
-          await actionGetLobby(roomId, token);
-        } catch (error) {
-          console.error("Failed to fetch room data.", error);
-          navigate("/gamemode");
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchRoom();
-    }
-  }, [roomId, token, user, isConnected, room, actionGetLobby, navigate]);
-
-  useEffect(() => {
-    if (isConnected) {
-      actionListenEvents(navigate);
-    }
-  }, [isConnected, actionListenEvents, navigate]);
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     actionListenEvents(navigate);
+  //   }
+  // }, [isConnected, actionListenEvents, navigate]);
 
   const handlePlay = () => {
-    actionPlay(roomId);
+    actionPlay(room);
   };
 
   const handleLeave = () => {
-    actionLeave(roomId);
+    actionLeave(room);
   };
 
   const hdlInvite = () => {
@@ -251,8 +206,8 @@ function Lobby() {
   }
 
   // const playersData = room.players
-  console.log("playerData", playersData);
-  console.log("room", room);
+  // console.log("playerData", playersData);
+  // console.log("room", room);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
@@ -278,9 +233,11 @@ function Lobby() {
           <button
             onClick={handlePlay}
             disabled={
+              playersData?.length !== 2 ||
               !(playersData || []).every((player) => player.status === "ready")
             }
             className={`${
+              playersData?.length !== 2 ||
               !(playersData || []).every((player) => player.status === "ready")
                 ? "bg-gray-500 hover:cursor-not-allowed"
                 : "bg-orange-500  hover:bg-orange-600 hover:cursor-pointer"

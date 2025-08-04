@@ -9,7 +9,7 @@ const HomePageForSub = () => {
         <div className=" animate-pulse">
           <img src={Logo7} />
         </div>
-        <img src="" alt="" />
+        {/* <img src="" alt="" /> */}
         {/* ปุ่มเมนู */}
         <div className=" flex gap-4">
           <button className="btn-primary py-4 px-30 text-2xl "> Play</button>

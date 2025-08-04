@@ -9,7 +9,7 @@ function HomePageFree() {
         {/* Left Section */}
         <div className="text-center">
           <div className="text-7xl mb-4">⏳</div>
-          <h2 className="text-4xl font-semibold mb-2 text-white">
+          <h2 className="text-4xl text-yellow-400 font-bold mb-2 ">
             No free locations left to play today!
           </h2>
           <p className="text-3xl font-medium mb-4 text-white">PLAY AGAIN IN</p>

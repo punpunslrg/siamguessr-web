@@ -23,6 +23,7 @@ import SingleScore from "../pages/SingleScore";
 import TestLatLng from "../pages/TestLatLng.jsx";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
 import GameLayout from "../layouts/GameLayout.jsx";
+import SelectMode from "../pages/SelectMode";
 
 function AppRouter() {
   return (
@@ -41,6 +42,7 @@ function AppRouter() {
         <Route path="/gamehistory" element={<GameHistory />} />
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
+        <Route path="/selectmode" element={<SelectMode />} />
 
         <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
 

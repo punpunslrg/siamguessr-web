@@ -55,9 +55,9 @@ const GameBreakdown = () => {
   // console.log("guest", guest);
 
   return (
-    <div className="bg-primary min-h-screen text-white">
-      <div className="text-center flex flex-col items-center">
-        <h1 className="text-5xl font-bold tracking-tight mb-8 mt-12">
+    <div className="bg-primary ">
+      <div className="text-center flex flex-col items-center p-36">
+        <h1 className="text-5xl text-yellow-400 font-bold  mb-8 mt-12">
           Game Breakdown
         </h1>
 

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Cartoon from "../assets/cartoon.png";
+import useUserStore from "../stores/userStore";
 import useGameStore from "../stores/game-store.js";
-import useUserStore from "../stores/userStore.js";
 import { useNavigate } from "react-router";
 
 const SingleScore = () => {
@@ -27,8 +27,12 @@ const SingleScore = () => {
     await actionResetGame();
     navigate("/gamemode");
   };
+  const getProfile = useUserStore((state) => state.getProfile);
+  useEffect(() => {
+    getProfile();
+  }, [getProfile]);
   return (
-    <div className=" px-4 py-8  bg-secondary  flex items-center">
+    <div className=" px-4 py-8  bg-secondary h-[928px] flex items-center">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* LEFT: Avatar + Game mode */}
         <div className="flex flex-col items-center">
@@ -38,6 +42,13 @@ const SingleScore = () => {
               alt="Avatar"
               className="transform scale-x-[-1]"
             />
+            <div className="bg-amber-400 w-38 h-38 absolute top-23 right-50 rounded-full">
+              <img
+                src={user.image}
+                alt={`${user.username}'s profile`}
+                className="w-38 h-38"
+              />
+            </div>
           </div>
           <div className="flex gap-2 mt-6">
             <button

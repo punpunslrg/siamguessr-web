@@ -19,6 +19,7 @@ const GameBreakdown = () => {
   const roomResult = useGameStore((state) => state.roomResult);
   // const actionForfeitGame = useGameStore((state) => state.actionForfeitGame);
   const actionLeave = useGameStore((state) => state.actionLeave);
+  console.log(roomResult)
 
   const handleLeave = async () => {
     actionLeave(room);
@@ -27,10 +28,12 @@ const GameBreakdown = () => {
 
   useEffect(() => {
     const fetchResult = async () => {
+      console.log(room.id)
       if (!room?.id) return;
 
       setLoading(true);
       try {
+        console.log("rrrr")
         await actionGetRoomResult(room.id);
       } catch (err) {
         console.error("Failed to fetch result:", err);
@@ -38,7 +41,7 @@ const GameBreakdown = () => {
       setLoading(false);
     };
 
-    fetchResult();
+    // fetchResult();
   }, [room?.id]);
 
   const me = roomResult?.find((r) => r.userId === user?.id);

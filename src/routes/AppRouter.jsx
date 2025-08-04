@@ -21,6 +21,7 @@ import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
+import SelectMode from "../pages/SelectMode";
 
 function AppRouter() {
   return (
@@ -40,6 +41,7 @@ function AppRouter() {
         <Route path="/gamehistory" element={<GameHistory />} />
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
+        <Route path="/selectmode" element={<SelectMode />} />
       </Route>
 
       <Route path="/" element={<LayoutWithoutNav />}>

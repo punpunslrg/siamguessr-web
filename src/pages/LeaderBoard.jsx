@@ -2,8 +2,10 @@ import Crown from "../icons";
 
 export default function Leaderboard() {
   return (
-    <div className="p-12 flex flex-col items-center text-white font-bold bg-primary h-full">
-      <h1 className="text-3xl mb-24 mt-2">LEADERBOARD</h1>
+    <div className="p-36 flex flex-col items-center text-white font-bold bg-primary h-full">
+      <h1 className="text-5xl text-yellow-400 font-bold  mb-24 mt-2">
+        LEADERBOARD
+      </h1>
 
       {/* Top 3 podium */}
       <div className="flex justify-center items-end mb-6 gap-8 ">
@@ -20,9 +22,9 @@ export default function Leaderboard() {
 
         {/* 1st */}
         <div className="flex flex-col items-center">
-          <Crown className="absolute top-46"></Crown>
           {/* ProfilePic */}
           <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400" />
+          <Crown className="absolute top-73"></Crown>
           <p className="mt-1 text-xs">USERNAME</p>
           <div className="bg-orange-500 w-16 text-center rounded-t-md py-1 mt-1">
             10000
@@ -41,7 +43,7 @@ export default function Leaderboard() {
         </div>
       </div>
       {/* table */}
-      <div className="overflow-x-auto ">
+      <div>
         <table className="border-separate border-spacing-y-2">
           <thead>
             <tr className="text-sm uppercase  text-left ">

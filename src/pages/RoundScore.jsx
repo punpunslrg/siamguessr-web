@@ -34,6 +34,7 @@ function RoundScore() {
       }
     : undefined;
 
+  console.log(currentRoundIndex);
   // console.log('roundScore', roundScore)
 
   const { isConnected, connect, disconnect, isCallingToConnect } =
@@ -71,6 +72,7 @@ function RoundScore() {
   }, [isConnected, room]);
 
   const handleNext = () => {
+    actionNextRound(nextRound.id);
     if (currentRoundIndex === 4) {
       navigate("/singlescore");
     } else {
@@ -89,7 +91,7 @@ function RoundScore() {
   const progress = (lastGuess.score / 5000) * 100;
 
   return (
-    <div className=" bg-secondary flex flex-col items-center justify-center px-4 py-10">
+    <div className=" bg-secondary h-screen flex flex-col items-center justify-center px-4 py-10">
       <div className="flex justify-center w-full max-w-3xl mb-4">
         <h2 className="text-3xl font-bold">
           Round {currentRoundIndex + 1} of {room.rounds.length}

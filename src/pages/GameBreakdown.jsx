@@ -1,9 +1,12 @@
 import Cartoon from "../assets/cartoon.png";
+import useUserStore from "../stores/userStore";
+
 const GameBreakdown = () => {
+  const user = useUserStore((state) => state.user);
   return (
-    <div className="bg-primary">
-      <div className="text-center flex flex-col items-center">
-        <h1 className="text-5xl font-bold text-white tracking-tight mb-8 mt-12">
+    <div className="bg-primary ">
+      <div className="text-center flex flex-col items-center p-36">
+        <h1 className="text-5xl text-yellow-400 font-bold  mb-8 mt-12">
           Game Breakdown
         </h1>
         <div className="overflow-x-auto ">
@@ -25,16 +28,18 @@ const GameBreakdown = () => {
           </table>
         </div>
       </div>
-      <div className="w-90 absolute top-24 right-80">
+      <div className="w-90 absolute top-70 right-80 max-2xl:right-50 max-xl:hidden">
         <img src={Cartoon} />
         {/* หน้า Profile User Friend */}
-        <div className="bg-gray-500  w-28 h-28 rounded-full absolute top-16 right-26"></div>
+        <div className="bg-green-500  w-29 h-29 rounded-full absolute top-16 right-26"></div>
       </div>
-      <div className="w-90 absolute top-23 left-80 transform scale-x-[-1]">
+      <div className="w-90 absolute top-68 left-80 transform scale-x-[-1] max-2xl:left-50 max-xl:hidden">
         <img src={Cartoon} />
         {/* หน้า Profile User Me */}
 
-        <div className="bg-black  w-28 h-28 rounded-full absolute top-16 right-26"></div>
+        <div className="w-29 h-29 bg-orange-400 rounded-full absolute top-16 right-26">
+          <img src={user.image} />
+        </div>
       </div>
     </div>
   );

@@ -45,6 +45,7 @@ function MainNav() {
                 <Link to="/homepageforsub">HomePageForSub</Link>
                 <Link to="/gamehistory">GameHistory</Link>
                 <Link to="/singlescore">SingleScore</Link>
+                <Link to="/selectmode">SelectMode</Link>
               </li>
             </ul>
           </div>
@@ -57,13 +58,17 @@ function MainNav() {
             <Link to="/login">Login</Link>
           </div>
         ) : (
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end cursor-pointer">
             <div tabIndex={0}>
               <img
                 src={user.image}
                 alt={`${user.username}'s profile`}
                 className="w-12 h-12 object-cover"
               />
+              <div
+                aria-label="success"
+                className="status status-success w-4 h-4 absolute bottom-0 right-0 border-[#112D4E] border-2 "
+              ></div>
             </div>
             <ul
               tabIndex={0}

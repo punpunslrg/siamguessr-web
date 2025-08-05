@@ -1,78 +1,137 @@
 import { useEffect } from "react";
 import { AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+import useGameStore from "../stores/game-store.js";
+import useUserStore from "../stores/userStore.js";
 
-function ResultsMap({ actualLocation, guessLocation }) {
+function ResultsMap({ actualLocation, allGuesses = [] }) {
   const map = useMap();
+  const room = useGameStore((state) => state.room);
+  const user = useUserStore((state) => state.user);
 
-  // Fit bounds to include actualLocation and guessLocation if available
+  const validGuesses = allGuesses.filter(
+    (guess) => guess.guessedLat !== null && guess.guessedLng !== null
+  );
+
+  // Fit bounds to include actual location and only valid guesses
   useEffect(() => {
     if (!map || !actualLocation) return;
+
+    if (validGuesses.length === 0) {
+      // If no guesses, just center and zoom out a bit
+      map.setCenter(actualLocation);
+      map.setZoom(8);
+      return;
+    }
 
     const bounds = new window.google.maps.LatLngBounds();
     bounds.extend(new window.google.maps.LatLng(actualLocation));
 
-    if (guessLocation) {
-      bounds.extend(new window.google.maps.LatLng(guessLocation));
-    } else {
-      const offset = 0.004; // tweak this value for more or less zoom out
-      bounds.extend({
-        lat: actualLocation.lat + offset,
-        lng: actualLocation.lng + offset,
-      });
-      bounds.extend({
-        lat: actualLocation.lat - offset,
-        lng: actualLocation.lng - offset,
-      });
-    }
+    validGuesses.forEach((guess) => {
+      bounds.extend(
+        new window.google.maps.LatLng({
+          lat: parseFloat(guess.guessedLat),
+          lng: parseFloat(guess.guessedLng),
+        })
+      );
+    });
 
     map.fitBounds(bounds, 100);
-  }, [map, actualLocation, guessLocation]);
+  }, [map, actualLocation, validGuesses]);
 
-  // Draw polyline only if guessLocation exists
+  // Draw dashed lines from each guess to actual location
   useEffect(() => {
-    if (!map || !actualLocation || !guessLocation) return;
+    if (!map || !actualLocation || validGuesses.length === 0) return;
 
-    const path = [actualLocation, guessLocation];
-    const polyline = new window.google.maps.Polyline({
-      path: path,
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
+    const polylines = validGuesses.map((guess) => {
+      const isCurrentUser = guess.userId === user.id;
+      const path = [
+        actualLocation,
+        {
+          lat: parseFloat(guess.guessedLat),
+          lng: parseFloat(guess.guessedLng),
+        },
+      ];
+
+      const polyline = new window.google.maps.Polyline({
+        path,
+        strokeOpacity: 0,
+        strokeWeight: isCurrentUser ? 4 : 2,
+        icons: [
+          {
+            icon: {
+              path: "M 0,-1 0,1",
+              strokeOpacity: 1,
+              scale: 4,
+              strokeWeight: isCurrentUser ? 4 : 2,
+            },
+            offset: "0",
+            repeat: "17px",
+          },
+        ],
+        strokeColor: "#FF0000",
+      });
+
+      polyline.setMap(map);
+      return polyline;
     });
-    polyline.setMap(map);
 
-    return () => polyline.setMap(null);
-  }, [map, actualLocation, guessLocation]);
+    return () => {
+      polylines.forEach((p) => p.setMap(null));
+    };
+  }, [map, actualLocation, validGuesses, user.id]);
 
-  // Show loading only if actualLocation missing (which should not happen)
   if (!actualLocation) {
     return <div className="w-full h-full bg-gray-300">Loading map...</div>;
   }
 
   return (
     <>
-      {/* Always show Actual Location marker */}
+      {/* Marker for actual location */}
       <AdvancedMarker position={actualLocation} title="Actual Location" />
 
-      {/* Show Guess marker only if guessLocation exists */}
-      {guessLocation && (
-        <AdvancedMarker position={guessLocation} title="Your Guess">
-          <span className="text-blue-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              stroke="white"
-              strokeWidth="1.5"
-            >
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-          </span>
-        </AdvancedMarker>
-      )}
+      {/* Markers for valid guesses only */}
+      {validGuesses.map((guess) => {
+        const position = {
+          lat: parseFloat(guess.guessedLat),
+          lng: parseFloat(guess.guessedLng),
+        };
+
+        const matchedUser = room?.players?.find(
+          (player) => player.userId === guess.userId
+        );
+        const userImage = matchedUser?.user.image;
+
+        return (
+          <AdvancedMarker
+            key={guess.userId}
+            position={position}
+            title={`Guess by ${guess.userId}`}
+          >
+            {userImage ? (
+              <img
+                src={userImage}
+                alt={`Guess by ${guess.userId}`}
+                className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+              />
+            ) : (
+              <span className="text-blue-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  stroke="white"
+                  strokeWidth="1.5"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+              </span>
+            )}
+          </AdvancedMarker>
+        );
+      })}
     </>
   );
 }

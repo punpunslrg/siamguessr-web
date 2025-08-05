@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { MapPin, Users } from 'lucide-react';
-import SingleplayerHistory from '../components/SingleplayerHistory';
-import MultiplayerHistory from '../components/MultiplayerHistory';
+import React, { useState } from "react";
+import { MapPin, Users } from "lucide-react";
+import SingleplayerHistory from "../components/SingleplayerHistory";
+import MultiplayerHistory from "../components/MultiplayerHistory";
 
 export default function GameHistory() {
   const [activeTab, setActiveTab] = useState("multiplayer");
@@ -21,18 +21,18 @@ export default function GameHistory() {
   );
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen font-sans p-4 sm:p-8">
+    <div className="bg-primary-full min-h-screen font-sans p-4 sm:p-8 ">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-5xl text-yellow-400 font-extrabold  mb-2">
             Match History
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400">
+          <p className="text-lg  text-gray-300">
             Review your performance and your adventures.
           </p>
         </header>
 
-        <div className="flex flex-col sm:flex-row border-b border-gray-300 dark:border-gray-700 mb-[-1px]">
+        <div className="flex flex-col gap-2 sm:flex-row border-b border-gray-300  mb-[-1px]">
           <TabButton
             tabName="multiplayer"
             label="Multiplayer"
@@ -45,7 +45,7 @@ export default function GameHistory() {
           />
         </div>
 
-        <main className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-b-xl rounded-tr-xl shadow-lg">
+        <main className="bg-white  p-4 sm:p-6 rounded-b-xl rounded-tr-xl shadow-lg">
           {activeTab === "singleplayer" ? (
             <SingleplayerHistory />
           ) : (

@@ -20,55 +20,12 @@ import ProtectRoute from "./ProtectRoute";
 import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
+import TestLatLng from "../pages/TestLatLng.jsx";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
 import SuccessPage from "../pages/payment/SuccessPage";
 import CanceledPage from "../pages/payment/CanceledPage";
-import PublicRoute from "./PublicRoute";
-
-// function AppRouter() {
-//   return (
-//     <Routes>
-//       <Route path="/" element={<ProtectRoute el={<Layout />} allows={["user", "admin"]} />}>
-//         <Route path="/homepagefree" element={<HomePageFree />} />
-//         <Route path="/subscription" element={<Subscription />} />
-//         <Route path="/profile" element={<Profile />} />
-//         <Route path="/lobby/:roomId" element={<Lobby />} />
-//         <Route path="/gamemode" element={<GameMode />} />
-//         <Route path="/leaderboard" element={<Leaderboard />} />
-//         <Route path="/gamebreakdown" element={<GameBreakdown />} />
-//         <Route path="/homepageforsub" element={<HomePageForSub />} />
-//         <Route path="/gamehistory" element={<GameHistory />} />
-//         <Route path="/calculatepoints" element={<CalculatePoints />} />
-//         <Route path="/singlescore" element={<SingleScore />} />
-//       </Route>
-
-//       <Route path="/" element={<Layout />}>
-//         <Route index element={<Home />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/register" element={<Register />} />
-//       </Route>
-
-//       <Route path="/" element={<ProtectRoute el={<LayoutWithoutNav />} allows={["user", "admin"]} />}>
-//         <Route path="/gameplay" element={<Gameplay />} />
-//         <Route path="/round" element={<RoundScore />} />
-//       </Route>
-
-//       <Route path="/success" element={<SuccessPage />} />
-//       <Route path="/canceled" element={<CanceledPage />} />
-//       <Route path="/admin/login" element={<LoginAdmin />} />
-
-//       <Route
-//         path="/admin"
-//         element={<ProtectRoute el={<AdminLayout />} allows={["admin"]} />}
-//       >
-//         <Route index element={<Navigate to="dashboard" replace />} />
-//         <Route path="dashboard" element={<Dashboard />} />
-//       </Route>
-//     </Routes>
-//   );
-// }
-// export default AppRouter;
-
+import GameLayout from "../layouts/GameLayout.jsx";
+import SelectMode from "../pages/SelectMode";
 
 function AppRouter() {
   return (
@@ -90,7 +47,6 @@ function AppRouter() {
         <Route path="/" element={<Layout />}>
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/lobby/:roomId" element={<Lobby />} />
           <Route path="/gamemode" element={<GameMode />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/gamebreakdown" element={<GameBreakdown />} />
@@ -98,7 +54,12 @@ function AppRouter() {
           <Route path="/gamehistory" element={<GameHistory />} />
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
+        <Route path="/selectmode" element={<SelectMode />} />
+        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
         </Route>
+
+        {/* only for testing lat lng */}
+        <Route path="/test" element={<TestLatLng />} />
       </Route>
 
       {/* --- Group 3: Protected Routes ที่ใช้ Layout พิเศษ (ไม่มี Nav) --- */}

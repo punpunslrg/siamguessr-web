@@ -14,10 +14,12 @@ import { loginSchema } from "../utils/validator";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
 import { Link, useNavigate } from "react-router";
+import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
   const login = useUserStore((state) => state.login);
+  const token = useUserStore((state) => state.token);
 
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(loginSchema),
@@ -39,6 +41,15 @@ function Login() {
       toast.error(errMsg);
     }
   };
+
+  useEffect(() => {
+    // ถ้ามี token อยู่แล้ว ให้ redirect ไปหน้าหลัก
+    if (token) {
+      navigate('/', { replace: true });
+    }
+  }, [token, navigate]);
+
+
   return (
     <div className=" flex items-center justify-center bg-primary">
       <Card className="w-full max-w-sm ">

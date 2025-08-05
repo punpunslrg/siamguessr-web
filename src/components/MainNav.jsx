@@ -22,8 +22,8 @@ function MainNav() {
           <Link to="/" className="font-bold ">
             <img src={Logo7} className="w-40" />
           </Link>
-          <Link to="/">Home</Link>
-          <Link to="/gameplay">Gameplay</Link>
+          <Link to="/gamemode">Gameplay</Link>
+          <Link to="/leaderboard">Leaderboard</Link>
           {/* ใช้เลือกหน้าชั่วคราว */}
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn m-1">
@@ -59,11 +59,11 @@ function MainNav() {
           </div>
         ) : (
           <div className="dropdown dropdown-end cursor-pointer">
-            <div tabIndex={0}>
+            <div tabIndex={0} className=" bg-orange-500 w-12 h-12 rounded-full">
               <img
                 src={user.image}
                 alt={`${user.username}'s profile`}
-                className="w-12 h-12 object-cover"
+                className="w-12 h-12 object-cover rounded-full"
               />
               <div
                 aria-label="success"

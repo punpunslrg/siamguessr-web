@@ -1,6 +1,7 @@
 import { Calendar, Swords, Trophy } from "lucide-react";
 import useGameHistoryStore from "../stores/gameHistoryStore";
 import { useEffect } from "react";
+import useGameStore from "../stores/game-store";
 
 const HistoryCard = ({ children }) => (
   <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-lg w-full">
@@ -23,11 +24,11 @@ const MultiplayerHistory = () => {
   const fetchMultiplayerHistory = useGameHistoryStore(
     (state) => state.fetchMultiplayerHistory
   );
+  console.log("multiplayerHistory", multiplayerHistory);
 
   useEffect(() => {
     fetchMultiplayerHistory();
   }, [fetchMultiplayerHistory]);
-
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
@@ -37,6 +38,7 @@ const MultiplayerHistory = () => {
         <p>No multiplayer games played yet.</p>
       ) : (
         multiplayerHistory.map((game) => {
+          console.log("game", game);
           return (
             <HistoryCard key={game.id}>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center">
@@ -61,6 +63,21 @@ const MultiplayerHistory = () => {
                     icon={<Calendar className="w-4 h-4 mr-2 text-gray-500" />}
                     label="Date"
                     value={new Date(game.playedAt).toLocaleDateString()}
+                  />
+                  <InfoLine
+                    icon={<Calendar className="w-4 h-4 mr-2 text-gray-500" />}
+                    label="Results"
+                    value={
+                      <span
+                        className={
+                          game.rank === 1
+                            ? "text-green-500 font-bold"
+                            : "text-red-500 font-bold"
+                        }
+                      >
+                        {game.rank === 1 ? "WIN" : "LOSS"}
+                      </span>
+                    }
                   />
                 </div>
               </div>

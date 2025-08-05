@@ -276,11 +276,11 @@ const useGameStore = create(
           set({ playersData: data });
         });
         socket.on("leaveRoom", () => {
-          const room = useGameStore.getState().room;
-          if (room) {
-            console.log("leave room from actionListenEvents");
-            useGameStore.getState().actionLeave(room);
-          }
+          // const room = useGameStore.getState().room;
+          // if (room) {
+          //   console.log("leave room from actionListenEvents");
+          //   useGameStore.getState().actionLeave(room);
+          // }
           navigate("/gamemode");
         });
         socket.on("gameStarted", (updatedRoom) => {
@@ -343,7 +343,7 @@ const useGameStore = create(
         socket.emit("joinRoom", { roomName, room });
       },
 
-      actionLeave: (roomOverride) => {
+      actionLeave: (roomOverride, navigate) => {
         const { socket } = useSocketStore.getState();
         const roomToLeave = roomOverride || useGameStore.getState().room;
 
@@ -353,7 +353,9 @@ const useGameStore = create(
           console.warn("🚨 Tried to leave room, but no room was set.");
           return;
         }
-
+        if(roomToLeave.mode === "single"){
+          navigate("/gamemode")
+        }
         socket?.emit("leaveRoom", roomToLeave);
         set({
           room: null,

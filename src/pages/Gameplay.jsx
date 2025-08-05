@@ -104,18 +104,8 @@ function Gameplay() {
     navigate("/round");
   };
 
-  const handleLeave = async () => {
-    isLeavingRef.current = true;
-    const resultRoom = await actionForfeitGame();
-    console.log("resultRoom", resultRoom.id)
-    if (resultRoom?.id) {
-      await actionGetRoomResult(resultRoom.id);
-    }
-    if (room.mode === "single") {
-      navigate("/singlescore");
-    } else {
-      navigate("/gamemode");
-    }
+  const handleLeave = () => {
+    actionLeave(room,navigate);
   };
 
   const handleMouseEnter = () => {

@@ -59,6 +59,8 @@ function Lobby() {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [copied, setCopied] = useState(false);
+
   const { token, user } = useUserStore();
   const {
     room,
@@ -79,38 +81,17 @@ function Lobby() {
   const EmptySlot = () => (
     <div className="bg-gray-200 bg-opacity-50 p-6 rounded-2xl shadow-inner flex flex-col items-center justify-center w-48 h-48 border-2 border-dashed border-gray-400 gap-4">
       <button
-        className="btn btn-secondary border-0"
+        className={`bg-green-500 text-white text-lg font-bold px-10 py-3 rounded-full shadow-lg transition-all mb-3 ${
+          copied ? "bg-green-700" : ""
+        }`}
+        disabled={copied}
         onClick={() => hdlInvite()}
       >
-        Invite
+        {copied ? "Copied!" : "Invite"}
       </button>
       <span className="text-gray-500 text-lg">Waiting...</span>
     </div>
   );
-
-  // useEffect(() => {
-  //   if (!isConnected && !isCallingToConnect) {
-  //     connect();
-  //   }
-  //   // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
-  //   return () => {
-  //     if (isConnected && !isCallingToConnect) {
-  //       disconnect();
-  //     }
-  //   };
-  // }, [isConnected, connect, disconnect, isCallingToConnect]);
-
-  // useEffect(() => {
-  //   if (isConnected && room) {
-  //     actionListenEvents(navigate);
-  //     setIsLoading(false);
-  //   }
-  //   return () => {
-  //     if (isConnected && room) {
-  //       actionRemoveEvents();
-  //     }
-  //   };
-  // }, [isConnected, room]);
 
   const getLobby = async (roomId) => {
     try {
@@ -144,35 +125,6 @@ function Lobby() {
     }
   }, [isConnected, roomId]);
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     navigate("/login");
-  //     return;
-  //   }
-
-  //   if (isConnected && !room) {
-  //     // เมื่อ Socket เชื่อมต่อแล้ว และยังไม่มีข้อมูล Lobby ให้ดึงข้อมูลมา
-  //     const fetchRoom = async () => {
-  //       try {
-  //         setIsLoading(true);
-  //         await actionGetLobby(roomId, token);
-  //       } catch (error) {
-  //         console.error("Failed to fetch room data.", error);
-  //         navigate("/gamemode");
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     };
-  //     fetchRoom();
-  //   }
-  // }, [roomId, token, user, isConnected, room, actionGetLobby, navigate]);
-
-  // useEffect(() => {
-  //   if (isConnected) {
-  //     actionListenEvents(navigate);
-  //   }
-  // }, [isConnected, actionListenEvents, navigate]);
-
   const handlePlay = () => {
     actionPlay(room);
   };
@@ -185,7 +137,8 @@ function Lobby() {
     // Simple copy to clipboard functionality
     const inviteLink = `${window.location.origin}/lobby/${room.id}`;
     navigator.clipboard.writeText(inviteLink).then(() => {
-      alert("Invite link copied to clipboard!");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
     });
   };
 

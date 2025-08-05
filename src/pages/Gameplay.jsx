@@ -1,9 +1,9 @@
-import { useEffect, useState, useRef, useCallback } from "react";
-import useGameStore from "../stores/game-store.js";
-import StreetView from "../components/StreetView.jsx";
-import GuessMap from "../components/GuessMap.jsx";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import GuessMap from "../components/GuessMap.jsx";
 import RoundTimer from "../components/RoundTimer.jsx";
+import StreetView from "../components/StreetView.jsx";
+import useGameStore from "../stores/game-store.js";
 import { useSocketStore } from "../stores/socketStore.js";
 
 // Configuration for the map sizes
@@ -29,17 +29,9 @@ function Gameplay() {
   const {
     room,
     currentRoundIndex,
-    actionGetLobby,
-    actionStartNewGame,
     actionSubmitGuess,
     actionForfeitGame,
     actionGetRoomResult,
-    actionLeave,
-    actionPlay,
-    actionJoin,
-    actionListenEvents,
-    actionRemoveEvents,
-    playersData,
   } = useGameStore();
 
   // Get the current round and location from the store's state
@@ -47,33 +39,6 @@ function Gameplay() {
   const currentLocation = currentRound?.location;
 
   const isLeavingRef = useRef(false);
-
-  const { isConnected, connect, disconnect, isCallingToConnect } =
-    useSocketStore();
-
-  // useEffect(() => {
-  //   if (!isConnected && !isCallingToConnect) {
-  //     connect();
-  //   }
-  //   // Cleanup: ตัดการเชื่อมต่อเมื่อ component unmounts
-  //   return () => {
-  //     if (isConnected && !isCallingToConnect) {
-  //       disconnect();
-  //     }
-  //   };
-  // }, [isConnected, connect, disconnect, isCallingToConnect]);
-
-  // useEffect(() => {
-  //   if (isConnected && room) {
-  //     actionListenEvents();
-  //     setIsLoading(false);
-  //   }
-  //   return () => {
-  //     if (isConnected && room) {
-  //       actionRemoveEvents();
-  //     }
-  //   };
-  // }, [isConnected, room]);
 
   useEffect(() => {
     if (currentLocation && !streetViewPosition) {
@@ -93,6 +58,12 @@ function Gameplay() {
     setStreetViewPosition(newPos);
   };
 
+  const handleTimeout = async () => {
+    console.log("⏱ Timeout reached, submitting null guess");
+    await actionSubmitGuess(null);
+    navigate("/round");
+  };
+
   const handleGuess = async () => {
     console.log("Submitting guess...");
     if (!playerGuess) {
@@ -107,7 +78,7 @@ function Gameplay() {
   const handleLeave = async () => {
     isLeavingRef.current = true;
     const resultRoom = await actionForfeitGame();
-    console.log("resultRoom", resultRoom.id)
+    console.log("resultRoom", resultRoom.id);
     if (resultRoom?.id) {
       await actionGetRoomResult(resultRoom.id);
     }
@@ -169,7 +140,7 @@ function Gameplay() {
 
           {/* Timer centered at top */}
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white px-6 py-2 rounded-full shadow-lg text-xl font-bold z-10">
-            <RoundTimer />
+            <RoundTimer onTimeout={handleTimeout} />
           </div>
 
           <div className="flex-grow"></div>

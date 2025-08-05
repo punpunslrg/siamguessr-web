@@ -44,7 +44,6 @@ export default function LocationPreviewWithStreetView() {
     loadGoogleMapsScript(apiKey)
       .then(() => {
         if (!window.google) return;
-
         const position = {
           lat: parseFloat(lat),
           lng: parseFloat(lng),
@@ -55,7 +54,7 @@ export default function LocationPreviewWithStreetView() {
         }
 
         serviceRef.current.getPanorama(
-          { location: position, radius: 50 },
+          { location: position, radius: 200 },
           (data, status) => {
             if (status === window.google.maps.StreetViewStatus.OK) {
               if (!panoramaRef.current) {

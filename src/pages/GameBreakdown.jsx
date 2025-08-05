@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Cartoon from "../assets/cartoon.png";
 import useGameStore from "../stores/game-store.js";
 import { useNavigate } from "react-router";
@@ -13,33 +13,16 @@ const GameBreakdown = () => {
   const users = useGameStore((state) => state.playersData);
 
   const room = useGameStore((state) => state.room);
-  const actionGetRoomResult = useGameStore(
-    (state) => state.actionGetRoomResult
-  );
+
   const roomResult = useGameStore((state) => state.roomResult);
   // const actionForfeitGame = useGameStore((state) => state.actionForfeitGame);
   const actionLeave = useGameStore((state) => state.actionLeave);
+  console.log(roomResult)
 
   const handleLeave = async () => {
-    actionLeave(room);
+    await actionLeave(room);
     navigate("/gamemode")
   };
-
-  useEffect(() => {
-    const fetchResult = async () => {
-      if (!room?.id) return;
-
-      setLoading(true);
-      try {
-        await actionGetRoomResult(room.id);
-      } catch (err) {
-        console.error("Failed to fetch result:", err);
-      }
-      setLoading(false);
-    };
-
-    fetchResult();
-  }, [room?.id]);
 
   const me = roomResult?.find((r) => r.userId === user?.id);
   const friend = roomResult?.find((r) => r.userId !== user?.id);
@@ -119,7 +102,7 @@ const GameBreakdown = () => {
       <div className="flex justify-center mt-20">
         <button
           className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto text-2xl py-6 px-12"
-          onClick={handleLeave}
+          onClick={() => handleLeave()}
         >
           Leave
         </button>

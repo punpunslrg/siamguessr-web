@@ -2,9 +2,19 @@ import { useEffect, useState } from "react";
 import useUserStore from "../stores/userStore";
 import { Pencil } from "lucide-react";
 import EditProfileModal from "../components/form/EditProfileModal";
+import SubscriptionStatusCard from "../components/payment/SubscriptionStatusCard";
+import useSubscriptionStore from "../stores/subscriptionStore";
 
 const Profile = () => {
   const user = useUserStore((state) => state.user);
+  const {
+    subscription,
+    isLoading,
+    isCanceling,
+    error,
+    fetchSubscriptionStatus,
+    cancelSubscription,
+  } = useSubscriptionStore();
   const getProfile = useUserStore((state) => state.getProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -13,6 +23,28 @@ const Profile = () => {
   useEffect(() => {
     getProfile();
   }, [getProfile]);
+
+  useEffect(() => {
+    fetchSubscriptionStatus();
+  }, [fetchSubscriptionStatus]);
+
+  const renderSubscriptionSection = () => {
+    if (isLoading) {
+      return <div className="skeleton h-32 w-full"></div>;
+    }
+    if (error) {
+      return (
+        <div className="text-error">Error loading subscription: {error}</div>
+      );
+    }
+    return (
+      <SubscriptionStatusCard
+        subscription={subscription}
+        onCancel={cancelSubscription}
+        isCanceling={isCanceling}
+      />
+    );
+  };
 
   return (
     <div className=" flex justify-center items-center bg-primary">
@@ -44,6 +76,14 @@ const Profile = () => {
               <span>Edit Profile</span>
             </button>
           </div>
+        </div>
+
+        {/* เพิ่ม Section ใหม่สำหรับ Subscription */}
+        <div className="pt-8">
+          <h2 className="text-xl font-bold text-gray-700 mb-6 uppercase tracking-wider">
+            My Subscription
+          </h2>
+          {renderSubscriptionSection()}
         </div>
 
         {/* Statistics Section */}

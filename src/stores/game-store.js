@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { calculateDistance } from "../utils/calculate-distance";
-import { createRoom, getLobby, getRoomResult } from "../api/roomApi.js";
-import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
+import { createRoom, getLobby, getRoomResult } from "../api/roomApi.js";
 import { nextRound } from "../api/roundApi.js";
+import { calculateDistance } from "../utils/calculate-distance";
 import { useSocketStore } from "./socketStore";
+import useUserStore from "./userStore.js";
 import RoundScore from "../pages/RoundScore";
 import { toast } from "react-toastify";
 
@@ -46,6 +46,7 @@ const useGameStore = create(
       actionSubmitGuess: async (playerGuess) => {
         let token = useUserStore.getState().token;
         const user = useUserStore.getState().user;
+        const { socket } = useSocketStore.getState();
 
         const { room, currentRoundIndex, guesses } = get();
         if (!room || room.rounds.length <= currentRoundIndex) return;
@@ -60,6 +61,22 @@ const useGameStore = create(
             gameState: "round-results",
           });
 
+          if (room?.mode !== "multi") {
+            set((state) => ({
+              allGuessed: [
+                ...(state.allGuessed || []),
+                {
+                  userId: user.id,
+                  roundId: currentRound.id,
+                  guessedLat: null,
+                  guessedLng: null,
+                  distance: null,
+                  score: 0,
+                },
+              ],
+            }));
+          }
+
           try {
             const res = await submitGuess(
               {
@@ -70,6 +87,17 @@ const useGameStore = create(
               },
               token
             );
+
+            if (socket && room.mode === "multi") {
+              socket.emit("playerGuessed", {
+                roomCode: room.code,
+                playerId: user.id,
+                roundId: currentRound.id,
+                guess: { lat: null, lng: null },
+                distance: null,
+                score: 0,
+              });
+            }
 
             return res;
           } catch (error) {
@@ -140,7 +168,6 @@ const useGameStore = create(
             token
           );
 
-          const { socket } = useSocketStore.getState();
           if (socket && room.mode === "multi") {
             socket.emit("playerGuessed", {
               roomCode: room.code,

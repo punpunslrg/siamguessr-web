@@ -5,7 +5,6 @@ import { Map } from "@vis.gl/react-google-maps";
 import ResultsMap from "../components/ResultMap.jsx";
 import { LoaderCircle } from "lucide-react";
 import useUserStore from "../stores/userStore.js";
-import { all } from "axios";
 
 function RoundScore() {
   const navigate = useNavigate();

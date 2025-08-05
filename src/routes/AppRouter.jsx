@@ -47,7 +47,7 @@ function AppRouter() {
         <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
 
         {/* only for testing lat lng */}
-        {/* <Route path="/test" element={<TestLatLng />} /> */}
+        <Route path="/test" element={<TestLatLng />} />
       </Route>
 
       <Route path="/" element={<LayoutWithoutNav />}>

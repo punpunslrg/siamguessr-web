@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
-import useUserStore from "../stores/userStore";
 import Logo7 from "../assets/Logo7.png";
+// import authStore from "../stores/authStore";
+import useUserStore from "../stores/userStore";
 import { useEffect } from "react";
 function MainNav() {
   const navigate = useNavigate();

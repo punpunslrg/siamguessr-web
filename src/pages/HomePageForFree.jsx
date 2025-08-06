@@ -1,8 +1,30 @@
 import React, { useEffect, useState } from "react";
 import CountdownTimer from "../components/TimeCountdown";
+import useUserStore from "../stores/userStore";
+import { useLocation, useParams } from "react-router";
 import { Link } from "react-router";
 
 function HomePageFree() {
+
+  const location = useLocation()
+  const token = new URLSearchParams(location.search).get('token')
+  const setToken = useUserStore((state) => state.setToken)
+  const fetchUser = useUserStore((state) => state.fetchUser)
+
+  useEffect(() => {
+    console.log('HomePageFree token:', token);
+    if (token) {
+      setToken(token);
+      // ใช้ setTimeout เพื่อให้ token ถูก set ก่อน
+      setTimeout(() => {
+        fetchUser();
+      }, 100);
+    }
+  }, [token, setToken, fetchUser])
+   
+  const user = useUserStore((state) => state.user);
+  console.log(user)
+
   return (
     <div className="bg-primary  flex items-center justify-center">
       <div className="flex flex-col md:flex-row items-center justify-between gap-32">

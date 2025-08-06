@@ -13,6 +13,22 @@ const userStore = (set, get) => ({
   token: null,
   user: null,
   allUsers: [],
+  
+  setToken: (token) => {
+    set({ token });
+  },
+  
+  fetchUser: async () => {
+    const { token } = get();
+    if (!token) return;
+    
+    try {
+      const res = await getMe(token);
+      set({ user: res.data.user });
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+    }
+  },
   login: async (value) => {
     try {
       const res = await actionLogin(value);
@@ -23,6 +39,7 @@ const userStore = (set, get) => ({
       return { success: false, message: error.response?.data?.message };
     }
   },
+
 
   logout: async () => {
     set({ token: null, user: null });

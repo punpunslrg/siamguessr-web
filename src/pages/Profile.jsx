@@ -4,6 +4,7 @@ import { Pencil } from "lucide-react";
 import EditProfileModal from "../components/form/EditProfileModal";
 import SubscriptionStatusCard from "../components/payment/SubscriptionStatusCard";
 import useSubscriptionStore from "../stores/subscriptionStore";
+import useGameHistoryStore from "../stores/gameHistoryStore";
 
 const Profile = () => {
   const user = useUserStore((state) => state.user);
@@ -16,6 +17,12 @@ const Profile = () => {
     cancelSubscription,
   } = useSubscriptionStore();
   const getProfile = useUserStore((state) => state.getProfile);
+  const {
+    singleplayerHistory,
+    multiplayerHistory,
+    fetchSingleplayerHistory,
+    fetchMultiplayerHistory,
+  } = useGameHistoryStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // เรียก getProfile() เมื่อ component ถูก render ครั้งแรก
@@ -25,8 +32,14 @@ const Profile = () => {
   }, [getProfile]);
 
   useEffect(() => {
-    fetchSubscriptionStatus();
-  }, [fetchSubscriptionStatus]);
+    fetchSubscriptionStatus(),
+      fetchMultiplayerHistory(),
+      fetchSingleplayerHistory();
+  }, [
+    fetchSubscriptionStatus,
+    fetchMultiplayerHistory,
+    fetchSingleplayerHistory,
+  ]);
 
   const renderSubscriptionSection = () => {
     if (isLoading) {
@@ -45,6 +58,46 @@ const Profile = () => {
       />
     );
   };
+
+  // ------------------------ calculation zone ----------------------------------
+  //----------------------- singleplayer ------------------------------------
+  const classicScores = singleplayerHistory
+    .filter(
+      (g) =>
+        g.room?.difficulty === "classic"
+    )
+    .map((g) => g.score);
+
+  const avgClassicScore = classicScores.length
+    ? (
+        classicScores.reduce((sum, user) => sum + user, 0) /
+        classicScores.length
+      ).toFixed(0)
+    : "-";
+
+  const maxClassicScore = classicScores.length
+    ? Math.max(...classicScores)
+    : "-";
+
+  const challengeScores = singleplayerHistory
+    .filter((g) => g.room?.difficulty === "challenge")
+    .map((g) => g.score);
+
+  const avgChallengeScore = challengeScores.length
+    ? (
+        challengeScores.reduce((sum, user) => sum + user, 0) /
+        challengeScores.length
+      ).toFixed(0)
+    : "-";
+
+  const maxChallengeScore = challengeScores.length
+    ? Math.max(...challengeScores)
+    : "-";
+  //----------------------- singleplayer ------------------------------------
+  //----------------------- multiplayer -------------------------------------
+
+  //----------------------- multiplayer -------------------------------------
+  // ------------------------ calculation zone ----------------------------------
 
   return (
     <div className=" flex justify-center items-center bg-primary">
@@ -99,14 +152,20 @@ const Profile = () => {
                 COMPLETED GAMES
               </h3>
               <p className="text-2xl font-bold text-gray-900 mb-4">CLASSIC</p>
-              <p className="text-5xl font-extrabold text-blue-600 mb-4">0</p>
+              <p className="text-5xl font-extrabold text-blue-600 mb-4">
+                {classicScores.length}
+              </p>
               <div className="flex justify-around w-full text-gray-600">
                 <div className="flex flex-col items-center">
-                  <span className="font-semibold text-xl">0</span>
+                  <span className="font-semibold text-xl">
+                    {avgClassicScore}
+                  </span>
                   <span className="text-sm">AVG. SCORE</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="font-semibold text-xl">0</span>
+                  <span className="font-semibold text-xl">
+                    {maxClassicScore}
+                  </span>
                   <span className="text-sm">MAX SCORE</span>
                 </div>
               </div>
@@ -115,15 +174,25 @@ const Profile = () => {
             {/* Card: All Time High Rating */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                ALL TIME HIGH
+                COMPLETED GAMES
               </h3>
-              <p className="text-2xl font-bold text-gray-900 mb-4">RATING</p>
-              <p className="text-5xl font-extrabold text-blue-600 mb-4">-</p>
-              <div className="flex justify-around w-full text-gray-600 text-sm">
-                <span>ALL</span>
-                <span>MOVING</span>
-                <span>NO MOVE</span>
-                <span>HMPZ</span>
+              <p className="text-2xl font-bold text-gray-900 mb-4">CHALLENGE</p>
+              <p className="text-5xl font-extrabold text-blue-600 mb-4">
+                {challengeScores.length}
+              </p>
+              <div className="flex justify-around w-full text-gray-600">
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-xl">
+                    {avgChallengeScore}
+                  </span>
+                  <span className="text-sm">AVG. SCORE</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-xl">
+                    {maxChallengeScore}
+                  </span>
+                  <span className="text-sm">MAX SCORE</span>
+                </div>
               </div>
             </div>
 

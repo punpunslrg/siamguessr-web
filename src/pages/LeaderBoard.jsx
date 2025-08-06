@@ -30,7 +30,7 @@ export default function Leaderboard() {
         <div className="flex flex-col items-center">
           <p>2</p>
           {/* ProfilePic */}
-          <div className="w-20 h-20 bg-gray-500 rounded-full border-4 border-blue-400"><img src={leaderboard[1]?.image} /></div>
+          <div className="w-20 h-20 bg-gray-500 rounded-full border-4 border-blue-400 overflow-hidden"><img src={leaderboard[1]?.image} /></div>
           <p className="mt-1 text-xs">{leaderboard[1]?.username}</p>
           <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
             {leaderboard[1]?.averageTop5}
@@ -40,7 +40,7 @@ export default function Leaderboard() {
         {/* 1st */}
         <div className="flex flex-col items-center">
           {/* ProfilePic */}
-          <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400"><img src={leaderboard[0]?.image} /></div>
+          <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400 overflow-hidden"><img src={leaderboard[0]?.image} /></div>
           <Crown className="absolute top-73"></Crown>
           <p className="mt-1 text-xs">{leaderboard[0]?.username}</p>
           <div className="bg-orange-500 w-16 text-center rounded-t-md py-1 mt-1">
@@ -52,7 +52,7 @@ export default function Leaderboard() {
         <div className="flex flex-col items-center">
           <p>3</p>
           {/* ProfilePic */}
-          <div className="w-18 h-18 bg-gray-600 rounded-full border-4 border-purple-400"><img src={leaderboard[2]?.image} /></div>
+          <div className="w-18 h-18 bg-gray-600 rounded-full border-4 border-purple-400 overflow-hidden"><img src={leaderboard[2]?.image} /></div>
           <p className="mt-1 text-xs">{leaderboard[2]?.username}</p>
           <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
             {leaderboard[2]?.averageTop5}

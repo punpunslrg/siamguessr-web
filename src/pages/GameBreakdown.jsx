@@ -1,42 +1,114 @@
+import { useState } from "react";
 import Cartoon from "../assets/cartoon.png";
+import useGameStore from "../stores/game-store.js";
+import { useNavigate } from "react-router";
+import useUserStore from "../stores/userStore.js";
+
 const GameBreakdown = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  // const isLeavingRef = useRef(false);
+
+  const user = useUserStore((state) => state.user);
+  const users = useGameStore((state) => state.playersData);
+
+  const room = useGameStore((state) => state.room);
+
+  const roomResult = useGameStore((state) => state.roomResult);
+  // const actionForfeitGame = useGameStore((state) => state.actionForfeitGame);
+  const actionLeave = useGameStore((state) => state.actionLeave);
+  console.log(roomResult)
+
+  const handleLeave = async () => {
+    await actionLeave(room);
+    navigate("/gamemode")
+  };
+
+  const me = roomResult?.find((r) => r.userId === user?.id);
+  const friend = roomResult?.find((r) => r.userId !== user?.id);
+
+  const guest = users?.find((r) => r.userId !== user?.id);
+
+  // console.log("user", user)
+  // console.log("room", room)
+  // console.log("roomResult", roomResult);
+  // console.log("me", me);
+  // console.log("friend", friend)
+  // console.log("users", users)
+  // console.log("guest", guest);
+
   return (
-    <div className="bg-primary">
-      <div className="text-center flex flex-col items-center">
-        <h1 className="text-5xl font-bold text-white tracking-tight mb-8 mt-12">
+    <div className="bg-primary ">
+      <div className="text-center flex flex-col items-center p-36">
+        <h1 className="text-5xl text-yellow-400 font-bold  mb-8 mt-12">
           Game Breakdown
         </h1>
-        <div className="overflow-x-auto ">
-          <table className="min-w-full border-separate border-spacing-y-2 ">
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-separate border-spacing-y-2">
             <thead>
-              <tr className="text-sm uppercase  text-left text-white ">
+              <tr className="text-sm uppercase text-left">
                 <th className="px-4">Round</th>
-                <th className="px-4">Your Score</th>
-                <th className="px-4">Friend Score</th>
+                <th className="px-4">{`${me?.username} (You)` || "You"}</th>
+                <th className="px-4">{friend?.username || "Friend"}</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="bg-white text-black shadow-lg ">
-                <td className="px-8 py-3 ">1</td>
-                <td className="px-4 py-3">956789 points</td>
-                <td className="px-4 py-3">434234 points</td>
+              {[1, 2, 3, 4, 5].map((round) => {
+                const myScore =
+                  me?.roundScores.find((r) => r.roundNumber === round)?.score ??
+                  "-";
+                const friendScore =
+                  friend?.roundScores.find((r) => r.roundNumber === round)
+                    ?.score ?? "-";
+
+                return (
+                  <tr key={round} className="bg-white text-black shadow-lg">
+                    <td className="px-8 py-3 font-bold">{round}</td>
+                    <td className="px-4 py-3">{myScore} points</td>
+                    <td className="px-4 py-3">{friendScore} points</td>
+                  </tr>
+                );
+              })}
+              <tr className="bg-gray-800 text-white font-bold">
+                <td className="px-8 py-3">Total</td>
+                <td className="px-4 py-3">{me?.totalScore || 0} points</td>
+                <td className="px-4 py-3">{friend?.totalScore || 0} points</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Character Images */}
       <div className="w-90 absolute top-24 right-80">
         <img src={Cartoon} />
-        {/* หน้า Profile User Friend */}
-        <div className="bg-gray-500  w-28 h-28 rounded-full absolute top-16 right-26"></div>
+        <div className="bg-gray-500 w-28 h-28 rounded-full absolute top-16 right-26 overflow-hidden">
+          <img src={guest?.user?.image} alt="guest" />
+        </div>
       </div>
+
       <div className="w-90 absolute top-23 left-80 transform scale-x-[-1]">
         <img src={Cartoon} />
-        {/* หน้า Profile User Me */}
+        <div className="bg-black w-28 h-28 rounded-full absolute top-16 right-26 overflow-hidden">
+          <img src={user?.image} alt="you" />
+        </div>
+      </div>
 
-        <div className="bg-black  w-28 h-28 rounded-full absolute top-16 right-26"></div>
+      <div className="text-[80px] flex justify-center mt-20">
+        {me?.rank === 1 ? "YOU WIN !!" : "YOU LOSE"}
+      </div>
+
+      <div className="flex justify-center mt-20">
+        <button
+          className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto text-2xl py-6 px-12"
+          onClick={() => handleLeave()}
+        >
+          Leave
+        </button>
       </div>
     </div>
   );
 };
+
 export default GameBreakdown;

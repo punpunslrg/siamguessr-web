@@ -122,11 +122,23 @@
 	}
 }
 
+/* .bg-primary {
+  @apply bg-gradient-to-br from-blue-500 to-indigo-600 h-[calc(100vh-64px)];
+} */
 .bg-primary {
-  @apply bg-gradient-to-br from-blue-500 to-indigo-600 h-[928px];
+  @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 h-[calc(100vh-64px)];
+}
+.bg-primary-full {
+  @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 ;
 }
 .bg-secondary {
-  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white h-[928px];
+  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white ;
+}
+.bg-navbar {
+  @apply bg-[#112D4E] text-white;
+}
+.bg-card-subscription {
+  @apply bg-white p-8 rounded-xl shadow-lg flex-col items-center h-100 text-center transition duration-300 ease-in-out transform hover:scale-115 active:scale-100;
 }
 .btn-primary {
   @apply bg-orange-500 hover:bg-orange-600  rounded-2xl text-white font-bold cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95
@@ -136,6 +148,13 @@
 }
 .btn-round {
   @apply mt-8 px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 active:scale-95
+}
+.btn-none {
+  @apply mt-8 px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-lg cursor-pointer transition duration-300 ease-in-out transform hover:cursor-not-allowed active:scale-95
+}
+
+.map-pin {
+	@apply absolute animate-bounce
 }
 
 

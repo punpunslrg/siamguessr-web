@@ -1,65 +1,118 @@
 import React, { useState, useEffect } from "react";
 
 function RealtimeCountdown() {
-  const calculateTimeLeft = () => {
-    // กำหนดวันเป้าหมาย: เที่ยงคืนของวันพรุ่งนี้
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0); // ตั้งเป็นเวลา 00:00:00
+  const COUNTDOWN_SECONDS = 10;
 
-    const difference = +tomorrow - +new Date(); // ส่วนต่างเวลา (หน่วยเป็นมิลลิวินาที)
-    let timeLeft = {};
+  const getInitialTargetTime = () => {
+    const saved = localStorage.getItem("targetTime");
+    const now = new Date().getTime();
 
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
+    if (saved && !isNaN(saved)) {
+      const savedTime = parseInt(saved, 10);
+      return savedTime > now ? savedTime : now + COUNTDOWN_SECONDS * 1000;
     }
 
-    return timeLeft;
+    return now + COUNTDOWN_SECONDS * 1000;
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [targetTime, setTargetTime] = useState(getInitialTargetTime);
+  const [timeLeft, setTimeLeft] = useState({});
+  const [showButton, setShowButton] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [hasFinished, setHasFinished] = useState(
+    localStorage.getItem("hasFinished") === "true"
+  );
 
+  const calculateTimeLeft = () => {
+    const difference = targetTime - new Date().getTime();
+    return {
+      seconds: difference > 0 ? Math.floor((difference / 1000) % 60) : 0,
+    };
+  };
+
+  // Main countdown loop
   useEffect(() => {
-    // ตั้ง interval ให้คำนวณเวลาใหม่ทุกๆ 1 วินาที
     const timer = setTimeout(() => {
-      setTimeLeft(calculateTimeLeft());
+      const updated = calculateTimeLeft();
+      setTimeLeft(updated);
+
+      if (updated.seconds <= 0) {
+        setShowButton(true);
+      }
     }, 1000);
 
-    // Cleanup interval on component unmount
     return () => clearTimeout(timer);
-  }); // ไม่ต้องใส่ dependency array เพื่อให้ re-render ทุกครั้ง
+  }, [timeLeft, targetTime]);
+
+  // บันทึก targetTime ลง localStorage
+  useEffect(() => {
+    localStorage.setItem("targetTime", targetTime.toString());
+  }, [targetTime]);
+
+  // กันการ refresh โดยไม่ตั้งใจ
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = ""; // สำหรับ Chrome
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []);
+
+  const handleButtonClick = () => {
+    setIsClicked(true);
+    setShowButton(false);
+    const newTarget = new Date().getTime() + COUNTDOWN_SECONDS * 1000;
+    setTargetTime(newTarget);
+    setTimeLeft(calculateTimeLeft());
+    setIsClicked(false);
+    setHasFinished(true);
+    localStorage.setItem("hasFinished", "true");
+
+    // ตัวอย่างการเปลี่ยนหน้า
+    console.log("ไปหน้าต่อไป...");
+    // navigate("/next-page"); // ถ้าใช้ React Router
+  };
 
   return (
-    <div className="grid grid-flow-col gap-5 text-center auto-cols-max ">
-      {/* ชั่วโมง */}
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.hours }}></span>
-        </span>
-        hours
-      </div>
+    <>
+      {!showButton && (
+        <div className="grid grid-flow-col gap-5 text-center auto-cols-max ">
+          {/* ชั่วโมง */}
 
-      {/* นาที */}
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.minutes }}></span>
-        </span>
-        min
-      </div>
+          <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span className="countdown font-mono text-5xl">
+              <span style={{ "--value": timeLeft.hours }}></span>
+            </span>
+            hours
+          </div>
 
-      {/* วินาที */}
-      <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
-        <span className="countdown font-mono text-5xl">
-          <span style={{ "--value": timeLeft.seconds }}></span>
-        </span>
-        sec
-      </div>
-    </div>
+          {/* นาที */}
+          <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span className="countdown font-mono text-5xl">
+              <span style={{ "--value": timeLeft.minutes }}></span>
+            </span>
+            min
+          </div>
+
+          {/* วินาที */}
+          <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+            <span className="countdown font-mono text-5xl">
+              <span style={{ "--value": timeLeft.seconds }}></span>
+            </span>
+            sec
+          </div>
+        </div>
+      )}
+      {hasFinished && showButton && !isClicked && (
+        <button
+          className="btn-primary px-18 py-3  text-xl shadow-lg"
+          onClick={handleButtonClick}
+        >
+          PLAY
+        </button>
+      )}
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-import Crown from "../icons";
+import { Crown } from "../icons";
 
 export default function Leaderboard() {
   return (

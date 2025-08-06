@@ -11,7 +11,6 @@ import Lobby from "../pages/Lobby";
 import GameMode from "../pages/GameMode";
 import RoundScore from "../pages/RoundScore.jsx";
 import AdminLayout from "../layouts/AdminLayout";
-import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
 import Leaderboard from "../pages/LeaderBoard";
 import GameBreakdown from "../pages/GameBreakdown";
@@ -21,6 +20,7 @@ import GameHistory from "../pages/GameHistory";
 import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
+import Dashboard from "../pages/admin/Dashboard";
 
 function AppRouter() {
   return (

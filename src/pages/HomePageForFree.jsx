@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import CountdownTimer from "../components/TimeCountdown";
+import useUserStore from "../stores/userStore";
 
 function HomePageFree() {
+   
+  const user = useUserStore((state) => state.user);
+  console.log(user)
+
   return (
     <div className="bg-primary  flex items-center justify-center">
       <div className="flex flex-col md:flex-row items-center justify-between gap-32">

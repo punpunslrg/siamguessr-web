@@ -1,30 +1,38 @@
 import { useEffect, useState } from "react";
 import Crown from "../icons";
-import useLeaderboardStore from "../stores/leaderboardStore";
+import useLeaderboardStore from "../stores/leaderboardStore.js";
 
 export default function Leaderboard() {
-  const { leaderboard, actionFetchLeaderboard, isLoading, error, difficulty, setDifficulty } =
-    useLeaderboardStore();
+  const {
+    leaderboards,
+    actionFetchLeaderboards,
+    isLoading,
+    error,
+    difficulty,
+    setDifficulty,
+  } = useLeaderboardStore();
 
-  console.log(difficulty);
-
+  // Fetch both leaderboards on mount
   useEffect(() => {
-    actionFetchLeaderboard("single", difficulty);
-  }, [actionFetchLeaderboard, difficulty]);
+    actionFetchLeaderboards("single");
+  }, [actionFetchLeaderboards]);
+
+  const leaderboard = leaderboards[difficulty] || [];
 
   if (isLoading) return <div>Loading leaderboard...</div>;
   if (error) return <div>Error: {error}</div>;
 
-    if (!leaderboard) {
-    return <div className="font-bold text-center mt-20">Not enough data for leaderboard.</div>;
+  if (!leaderboard.length) {
+    return (
+      <div className="font-bold text-center mt-20">
+        Not enough data for leaderboard.
+      </div>
+    );
   }
-
   return (
     <div className="p-36 flex flex-col items-center text-white font-bold bg-primary h-full">
       <div className="flex flex-col mb-10 justify-center items-center gap-2">
-        <h1 className="text-5xl text-yellow-400 font-bold">
-          LEADERBOARD
-        </h1>
+        <h1 className="text-5xl text-yellow-400 font-bold">LEADERBOARD</h1>
         <p className="">*BEST TOP 5 OF YOUR SCORE*</p>
       </div>
 

@@ -1,27 +1,40 @@
 import { create } from "zustand";
-import { postLeaderboard } from "../api/leaderboardApi";
+import { persist } from "zustand/middleware";
+import { getLeaderboard } from "../api/leaderboardApi.js";
 
-const useLeaderboardStore = create((set) => ({
-  leaderboard: [],
-  isLoading: false,
-  error: null,
+const useLeaderboardStore = create(
+  persist(
+    (set) => ({
+      leaderboard: [],
+      isLoading: false,
+      error: null,
+      difficulty: "classic",
 
-  // Action: Fetch & generate leaderboard (call POST API)
-  actionFetchLeaderboard: async () => {
-    set({ isLoading: true, error: null });
-    try {
-      const res = await postLeaderboard();
-      set({ leaderboard: res.data.leaderboard, isLoading: false });
-    } catch (err) {
-      set({
-        error: err?.response?.data?.message || "Failed to load leaderboard",
-        isLoading: false,
-      });
+      actionFetchLeaderboard: async (
+        mode = "single",
+        difficulty = "classic"
+      ) => {
+        set({ isLoading: true, error: null });
+        try {
+          const res = await getLeaderboard(mode, difficulty);
+          set({ leaderboard: res.data.leaderboard, isLoading: false });
+        } catch (err) {
+          set({
+            error: err?.response?.data?.message || "Failed to load leaderboard",
+            isLoading: false,
+          });
+        }
+      },
+
+      setDifficulty: (difficulty) => set({ difficulty }),
+
+      clearLeaderboard: () => set({ leaderboard: [], error: null }),
+    }),
+    {
+      name: "leaderboard-storage", // key name in storage
+      partialize: (state) => ({ difficulty: state.difficulty }), // Only persist difficulty (optional)
     }
-  },
-
-  // Optional: clear leaderboard
-  clearLeaderboard: () => set({ leaderboard: [], error: null }),
-}));
+  )
+);
 
 export default useLeaderboardStore;

@@ -24,7 +24,6 @@ const MultiplayerHistory = () => {
   const fetchMultiplayerHistory = useGameHistoryStore(
     (state) => state.fetchMultiplayerHistory
   );
-  // console.log("multiplayerHistory", multiplayerHistory);
 
   useEffect(() => {
     fetchMultiplayerHistory();

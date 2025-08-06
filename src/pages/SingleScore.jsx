@@ -46,7 +46,7 @@ const SingleScore = () => {
               <img
                 src={user.image}
                 alt={`${user.username}'s profile`}
-                className="w-38 h-38"
+                className="w-38 h-38 object-cover rounded-full"
               />
             </div>
           </div>

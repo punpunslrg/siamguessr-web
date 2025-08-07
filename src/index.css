@@ -137,6 +137,9 @@
 .bg-navbar {
   @apply bg-[#112D4E] text-white;
 }
+.bg-card-opacity {
+  @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-white/20 hover:border-white/40 transition-all duration-500;
+}
 .bg-card-subscription {
   @apply bg-white p-8 rounded-xl shadow-lg flex-col items-center h-100 text-center transition duration-300 ease-in-out transform hover:scale-115 active:scale-100;
 }

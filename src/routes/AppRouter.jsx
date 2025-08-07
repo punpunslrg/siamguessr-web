@@ -26,6 +26,8 @@ import SuccessPage from "../pages/payment/SuccessPage";
 import CanceledPage from "../pages/payment/CanceledPage";
 import GameLayout from "../layouts/GameLayout.jsx";
 import SelectMode from "../pages/SelectMode";
+import Guidebook from "../pages/Guidebook";
+import AboutUs from "../pages/AboutUs";
 
 function AppRouter() {
   return (
@@ -43,7 +45,11 @@ function AppRouter() {
 
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
       {/* Route แม่จะทำหน้าที่เช็คสิทธิ์ ถ้าผ่านถึงจะไปที่ Route ลูก */}
-      <Route element={<ProtectRoute allows={["user", "admin"]} redirectPath="/login" />}>
+      <Route
+        element={
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+        }
+      >
         <Route path="/" element={<Layout />}>
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/profile" element={<Profile />} />
@@ -54,8 +60,15 @@ function AppRouter() {
           <Route path="/gamehistory" element={<GameHistory />} />
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
-        <Route path="/selectmode" element={<SelectMode />} />
-        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
+          <Route path="/selectmode" element={<SelectMode />} />
+          <Route
+            path="/lobby/:roomId"
+            element={
+              <GameLayout>
+                <Lobby />
+              </GameLayout>
+            }
+          />
         </Route>
 
         {/* only for testing lat lng */}
@@ -63,7 +76,11 @@ function AppRouter() {
       </Route>
 
       {/* --- Group 3: Protected Routes ที่ใช้ Layout พิเศษ (ไม่มี Nav) --- */}
-      <Route element={<ProtectRoute allows={["user", "admin"]} redirectPath="/login" />}>
+      <Route
+        element={
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+        }
+      >
         <Route path="/" element={<LayoutWithoutNav />}>
           <Route path="/gameplay" element={<Gameplay />} />
           <Route path="/round" element={<RoundScore />} />
@@ -73,10 +90,15 @@ function AppRouter() {
       {/* --- Group 4: Standalone Routes (ไม่มี Layout ร่วมกับใคร) --- */}
       <Route path="/success" element={<SuccessPage />} />
       <Route path="/canceled" element={<CanceledPage />} />
-      
+
       {/* --- Group 5: Admin Routes --- */}
       <Route path="/admin/login" element={<LoginAdmin />} />
-      <Route path="/admin" element={<ProtectRoute allows={["admin"]} redirectPath="/admin/login" />}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectRoute allows={["admin"]} redirectPath="/admin/login" />
+        }
+      >
         <Route element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />

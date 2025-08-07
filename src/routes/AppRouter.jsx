@@ -11,7 +11,6 @@ import Lobby from "../pages/Lobby";
 import GameMode from "../pages/GameMode";
 import RoundScore from "../pages/RoundScore.jsx";
 import AdminLayout from "../layouts/AdminLayout";
-import Dashboard from "../pages/admin/Dashboard";
 import LoginAdmin from "../pages/admin/LoginAdmin";
 import Leaderboard from "../pages/LeaderBoard";
 import GameBreakdown from "../pages/GameBreakdown";
@@ -22,10 +21,13 @@ import CalculatePoints from "../pages/CalculatePoints";
 import SingleScore from "../pages/SingleScore";
 import TestLatLng from "../pages/TestLatLng.jsx";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
+import Dashboard from "../pages/admin/Dashboard";
 import SuccessPage from "../pages/payment/SuccessPage";
 import CanceledPage from "../pages/payment/CanceledPage";
 import GameLayout from "../layouts/GameLayout.jsx";
 import SelectMode from "../pages/SelectMode";
+import Guidebook from "../pages/Guidebook";
+import AboutUs from "../pages/AboutUs";
 
 function AppRouter() {
   return (
@@ -52,6 +54,8 @@ function AppRouter() {
         <Route path="/selectmode" element={<SelectMode />} />
         <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
         <Route path="/homepagefree" element={<HomePageFree />} />
+        <Route path="/guidebook" element={<Guidebook />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         </Route>
 
         {/* only for testing lat lng */}
@@ -59,7 +63,11 @@ function AppRouter() {
       </Route>
 
       {/* --- Group 3: Protected Routes ที่ใช้ Layout พิเศษ (ไม่มี Nav) --- */}
-      <Route element={<ProtectRoute allows={["user", "admin"]} redirectPath="/login" />}>
+      <Route
+        element={
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+        }
+      >
         <Route path="/" element={<LayoutWithoutNav />}>
           <Route path="/gameplay" element={<Gameplay />} />
           <Route path="/round" element={<RoundScore />} />
@@ -69,10 +77,15 @@ function AppRouter() {
       {/* --- Group 4: Standalone Routes --- */}
       <Route path="/success" element={<SuccessPage />} />
       <Route path="/canceled" element={<CanceledPage />} />
-      
+
       {/* --- Group 5: Admin Routes --- */}
       <Route path="/admin/login" element={<LoginAdmin />} />
-      <Route path="/admin" element={<ProtectRoute allows={["admin"]} redirectPath="/admin/login" />}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectRoute allows={["admin"]} redirectPath="/admin/login" />
+        }
+      >
         <Route element={<AdminLayout />}>
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />

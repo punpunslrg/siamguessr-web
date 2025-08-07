@@ -24,7 +24,6 @@ const MultiplayerHistory = () => {
   const fetchMultiplayerHistory = useGameHistoryStore(
     (state) => state.fetchMultiplayerHistory
   );
-  console.log("multiplayerHistory", multiplayerHistory);
 
   useEffect(() => {
     fetchMultiplayerHistory();
@@ -37,9 +36,7 @@ const MultiplayerHistory = () => {
       {multiplayerHistory.length === 0 ? (
         <p>No multiplayer games played yet.</p>
       ) : (
-        multiplayerHistory.map((game) => {
-          console.log("game", game);
-          return (
+        multiplayerHistory.map((game) => (
             <HistoryCard key={game.id}>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center">
                 <div className="flex-grow mb-4 sm:mb-0">
@@ -82,8 +79,7 @@ const MultiplayerHistory = () => {
                 </div>
               </div>
             </HistoryCard>
-          );
-        })
+          ))
       )}
     </div>
   );

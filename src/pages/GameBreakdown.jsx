@@ -17,11 +17,11 @@ const GameBreakdown = () => {
   const roomResult = useGameStore((state) => state.roomResult);
   // const actionForfeitGame = useGameStore((state) => state.actionForfeitGame);
   const actionLeave = useGameStore((state) => state.actionLeave);
-  console.log(roomResult)
+  console.log(roomResult);
 
   const handleLeave = async () => {
     await actionLeave(room);
-    navigate("/gamemode")
+    navigate("/gamemode");
   };
 
   const me = roomResult?.find((r) => r.userId === user?.id);
@@ -39,14 +39,14 @@ const GameBreakdown = () => {
 
   return (
     <div className="bg-primary ">
-      <div className="text-center flex flex-col items-center p-36">
-        <h1 className="text-5xl text-yellow-400 font-bold  mb-8 mt-12">
+      <div className="text-center flex flex-col items-center ">
+        <h1 className="text-5xl text-yellow-400 font-bold mt-12 mb-8 ">
           Game Breakdown
         </h1>
 
         <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-2">
-            <thead>
+            <thead className="text-white">
               <tr className="text-sm uppercase text-left">
                 <th className="px-4">Round</th>
                 <th className="px-4">{`${me?.username} (You)` || "You"}</th>
@@ -65,15 +65,23 @@ const GameBreakdown = () => {
                 return (
                   <tr key={round} className="bg-white text-black shadow-lg">
                     <td className="px-8 py-3 font-bold">{round}</td>
-                    <td className="px-4 py-3">{myScore} points</td>
-                    <td className="px-4 py-3">{friendScore} points</td>
+                    <td className="px-4 py-3">
+                      {myScore.toLocaleString()} points
+                    </td>
+                    <td className="px-4 py-3">
+                      {friendScore.toLocaleString()} points
+                    </td>
                   </tr>
                 );
               })}
               <tr className="bg-gray-800 text-white font-bold">
                 <td className="px-8 py-3">Total</td>
-                <td className="px-4 py-3">{me?.totalScore || 0} points</td>
-                <td className="px-4 py-3">{friend?.totalScore || 0} points</td>
+                <td className="px-4 py-3">
+                  {me?.totalScore.toLocaleString() || 0} points
+                </td>
+                <td className="px-4 py-3">
+                  {friend?.totalScore.toLocaleString() || 0} points
+                </td>
               </tr>
             </tbody>
           </table>
@@ -81,25 +89,25 @@ const GameBreakdown = () => {
       </div>
 
       {/* Character Images */}
-      <div className="w-90 absolute top-24 right-80">
+      <div className="w-90 absolute top-50 right-80 hidden 2xl:block">
         <img src={Cartoon} />
         <div className="bg-gray-500 w-28 h-28 rounded-full absolute top-16 right-26 overflow-hidden">
           <img src={guest?.user?.image} alt="guest" />
         </div>
       </div>
 
-      <div className="w-90 absolute top-23 left-80 transform scale-x-[-1]">
+      <div className="w-90 absolute top-49 left-80 transform scale-x-[-1] hidden 2xl:block">
         <img src={Cartoon} />
         <div className="bg-black w-28 h-28 rounded-full absolute top-16 right-26 overflow-hidden">
           <img src={user?.image} alt="you" />
         </div>
       </div>
 
-      <div className="text-[80px] flex justify-center mt-20">
+      <div className="text-[80px] text-white flex justify-center mt-10">
         {me?.rank === 1 ? "YOU WIN !!" : "YOU LOSE"}
       </div>
 
-      <div className="flex justify-center mt-20">
+      <div className="flex justify-center mt-10">
         <button
           className="btn btn-error btn-sm shadow-lg text-white pointer-events-auto text-2xl py-6 px-12"
           onClick={() => handleLeave()}

@@ -56,7 +56,7 @@ function Subscription() {
   return (
     <div className="bg-primary flex flex-col items-center justify-center h-full">
       {/* Heading */}
-      <h1 className="text-5xl text-yellow-400 font-bold  mb-2 ">
+      <h1 className="text-5xl text-yellow-400 font-bold  mb-4 ">
         Choose your preferred plan
       </h1>
       <p className=" mb-10 text-sm text-white">

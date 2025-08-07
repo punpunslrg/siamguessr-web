@@ -14,6 +14,7 @@ import { actionRegister } from "../api/authApi";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
 import { useNavigate } from "react-router";
+import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 import useUserStore from "../stores/userStore";
 import Homebg from '../assets/homepagebg-1.jpg'
@@ -97,12 +98,13 @@ function Register() {
               <Button type="submit" className="w-full">
                 Sign Up
               </Button>
-              <Button variant="outline" className="w-full">
+              <SocialLogins role="user" pageType="register" />
+              {/* <Button variant="outline" className="w-full">
                 Continue with Google
               </Button>
               <Button variant="outline" className="w-full">
                 Continue with Facebook
-              </Button>
+              </Button> */}
             </CardFooter>
           </form>
         </CardContent>

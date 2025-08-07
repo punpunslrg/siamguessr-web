@@ -14,11 +14,27 @@ const userStore = (set, get) => ({
   token: null,
   user: null,
   allUsers: [],
+  
+  setToken: (token) => {
+    set({ token });
+  },
+  
+  fetchUser: async () => {
+    const { token } = get();
+    if (!token) return;
+    
+    try {
+      const res = await getMe(token);
+      set({ user: res.data.user });
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+    }
+  },
   login: async (value) => {
     try {
       const res = await actionLogin(value);
-      const { user, token } = res.data;
-      set({ token: token, user: user });
+      const { user, accessToken } = res.data;
+      set({ token: accessToken, user: user });
 
       // เรียก API เพื่อเช็คสถานะ Subscription
       let subscriptionIsActive = false;
@@ -31,12 +47,15 @@ const userStore = (set, get) => ({
           console.log("Could not retrieve subscription status after login:", subError.message);
           subscriptionIsActive = false;
       }
-
+      console.log('res.data', res.data)
       return { success: true, role: user.role, isSubscribed: subscriptionIsActive };
+
+
     } catch (error) {
       return { success: false, message: error.response?.data?.message, isSubscribed: false };
     }
   },
+
 
   logout: async () => {
     set({ token: null, user: null });

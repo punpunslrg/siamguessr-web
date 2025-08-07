@@ -53,7 +53,8 @@ function ProtectRoute({ allows, redirectPath = "/login"}) {
   const user = useUserStore((state) => state.user);
 
   // เช็คว่ามี token หรือไม่
-  if (!token) {
+  if (!user) {
+
     return <Navigate to={redirectPath} replace />
   }
 

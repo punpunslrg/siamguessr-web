@@ -14,6 +14,7 @@ import { loginSchema } from "../utils/validator";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
 import { Link, useNavigate } from "react-router";
+import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 import Homebg from '../assets/homepagebg-1.jpg'
 import Logo from '../assets/Logo7.png'
@@ -42,7 +43,6 @@ function Login() {
           // ถ้าไม่มี Subscription, ไปที่หน้าสำหรับผู้ใช้ฟรี
           navigate('/homepagefree', { replace: true });
         }
-
       } else {
         toast.error(res.message || "Login failed");
       }
@@ -99,12 +99,13 @@ function Login() {
               <Button type="submit" className="w-full  ">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
+              <SocialLogins role="user" pageType="login" />
+              {/* <Button variant="outline" className="w-full">
                 Login with Google
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Facebook
-              </Button>
+              </Button> */}
               <Link
                 to="/register"
                 className="mt-4 text-center text-sm hover:underline cursor-pointer"

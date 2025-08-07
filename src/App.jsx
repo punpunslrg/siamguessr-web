@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import AppRouter from "./routes/AppRouter";
 import { ToastContainer } from "react-toastify";
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { fetchCsrfToken } from "./config/axios";
+// import { fetchCsrfToken } from "./config/axios";
 
 function App() {
 
-  useEffect(() => {
-    fetchCsrfToken();
-  }, []);
+  // useEffect(() => {
+  //   fetchCsrfToken();
+  // }, []);
 
 
   return (

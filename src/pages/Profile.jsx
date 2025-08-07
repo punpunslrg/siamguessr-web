@@ -221,7 +221,7 @@ const Profile = () => {
               </h3>
               <p className="text-2xl font-bold text-gray-900 mb-4">CLASSIC</p>
               <p className="text-5xl font-extrabold text-green-600 mb-4">
-                {winRateMultiClassicScore?.toFixed(1)}%
+                {winRateMultiClassicScore !== undefined && winRateMultiClassicScore !== null ? `${winRateMultiClassicScore?.toFixed(1)} %` : "-"}
               </p>
               <div className="flex flex-col items-center w-full text-gray-600">
                 <div className="flex justify-around w-full text-sm mb-2">
@@ -248,7 +248,7 @@ const Profile = () => {
               </h3>
               <p className="text-2xl font-bold text-gray-900 mb-4">CHALLENGE</p>
               <p className="text-5xl font-extrabold text-green-600 mb-4">
-                {winRateMultiChallengeScore?.toFixed(1)}%
+                {winRateMultiChallengeScore !== undefined && winRateMultiClassicScore !== null ? `${winRateMultiChallengeScore?.toFixed(1)} %` : "-"}
               </p>
               <div className="flex flex-col items-center w-full text-gray-600">
                 <div className="flex justify-around w-full text-sm mb-2">

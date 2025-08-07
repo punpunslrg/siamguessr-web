@@ -22,13 +22,13 @@ export default function Leaderboard() {
   if (isLoading) return <div>Loading leaderboard...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  if (!leaderboard.length) {
-    return (
-      <div className="font-bold text-center mt-20">
-        Not enough data for leaderboard.
-      </div>
-    );
-  }
+  // if (!leaderboard.length) {
+  //   return (
+  //     <div className="font-bold text-center mt-20">
+  //       Not enough data for leaderboard.
+  //     </div>
+  //   );
+  // }
   return (
     <div className="p-36 flex flex-col items-center text-white font-bold bg-primary h-full">
       <div className="flex flex-col mb-10 justify-center items-center gap-2 -mt-20">

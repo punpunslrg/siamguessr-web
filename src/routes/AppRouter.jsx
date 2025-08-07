@@ -39,6 +39,7 @@ function AppRouter() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/homepagefree" element={<HomePageFree />} />
+        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
       </Route>
 
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
@@ -55,7 +56,6 @@ function AppRouter() {
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
         <Route path="/selectmode" element={<SelectMode />} />
-        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
         </Route>
 
         {/* only for testing lat lng */}

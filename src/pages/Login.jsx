@@ -22,7 +22,6 @@ function Login() {
   const login = useUserStore((state) => state.login);
   const token = useUserStore((state) => state.token);
 
-
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(loginSchema),
   });

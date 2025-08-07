@@ -132,7 +132,7 @@
   @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 ;
 }
 .bg-secondary {
-  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white ;
+  @apply bg-gradient-to-br from-gray-900 to-gray-950 text-white h-[100vh] ;
 }
 .bg-navbar {
   @apply bg-[#112D4E] text-white;
@@ -160,6 +160,23 @@
 	@apply absolute animate-bounce
 }
 
+.londrina-solid-regular {
+  font-family: "Londrina Solid", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.londrina-solid-black {
+  font-family: "Londrina Solid", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+.dm-sans{
+  font-family: "DM Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
 
 
 

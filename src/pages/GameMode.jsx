@@ -51,7 +51,7 @@ function GameMode() {
     <div className="bg-primary ">
       <div className=" text-white p-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-5xl font-bold mb-8 text-yellow-500">
+          <h1 className="text-7xl londrina-solid-regular mb-8 text-yellow-500">
             Classic Maps
           </h1>
 

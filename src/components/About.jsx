@@ -38,9 +38,11 @@ export default function About() {
         viewport={{ once: true }}
         variants={sectionVariant}
       >
-        <div className=" mb-8">
+        <div className=" mb-4">
           <img src={Logo} />
-          <p className="text-white text-5xl text-center">About Us</p>
+          <p className="text-white text-7xl londrina-solid-regular text-center mt-2">
+            About Us
+          </p>
         </div>
       </motion.section>
       <motion.section

@@ -61,6 +61,8 @@ function AppRouter() {
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
           <Route path="/selectmode" element={<SelectMode />} />
+          <Route path="/guidebook" element={<Guidebook />} />
+          <Route path="/aboutus" element={<AboutUs />} />
           <Route
             path="/lobby/:roomId"
             element={

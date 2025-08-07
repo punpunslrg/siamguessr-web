@@ -5,7 +5,6 @@ import { Map } from "@vis.gl/react-google-maps";
 import ResultsMap from "../components/ResultMap.jsx";
 import { LoaderCircle } from "lucide-react";
 import useUserStore from "../stores/userStore.js";
-import { all } from "axios";
 
 function RoundScore() {
   const navigate = useNavigate();
@@ -17,6 +16,7 @@ function RoundScore() {
     currentRoundIndex,
     actionNextRound,
     allGuessed,
+    endRound,
     playersData: users,
   } = useGameStore();
 
@@ -45,14 +45,17 @@ function RoundScore() {
 
   const handleNext = async () => {
     if (currentRoundIndex === 4) {
-      navigate(room?.mode === "single" ? "/singlescore" : "/gamebreakdown");
+      if (room?.mode === "single") {
+        return navigate("/singlescore");
+      }
+      endRound();
     } else {
       await actionNextRound(nextRound.id, navigate);
       navigate("/gameplay");
     }
   };
 
-  console.log("allGuessed", allGuessed)
+  console.log("allGuessed", allGuessed);
 
   const progress = lastGuess?.score ? (lastGuess.score / 5000) * 100 : 0;
 
@@ -123,8 +126,10 @@ function RoundScore() {
         </p>
       </div>
 
-      {(owner?.isHost && allGuessed.length === 0) && (
-        <p className="-mb-5 mt-3 text-gray-400">Waiting for another player...</p>
+      {owner?.isHost && allGuessed.length === 0 && (
+        <p className="-mb-5 mt-3 text-gray-400">
+          Waiting for another player...
+        </p>
       )}
 
       {!owner?.isHost && (
@@ -134,7 +139,9 @@ function RoundScore() {
       <button
         onClick={handleNext}
         disabled={!owner?.isHost}
-        className={`${(owner?.isHost && allGuessed.length !== 0) ? "btn-round" : "btn-none"}`}
+        className={`${
+          owner?.isHost && allGuessed.length !== 0 ? "btn-round" : "btn-none"
+        }`}
       >
         {currentRoundIndex === 4 ? "VIEW FINAL RESULTS" : "START NEXT ROUND"}
       </button>

@@ -2,10 +2,27 @@ import { useEffect, useState } from "react";
 import useUserStore from "../stores/userStore";
 import { Pencil } from "lucide-react";
 import EditProfileModal from "../components/form/EditProfileModal";
+import SubscriptionStatusCard from "../components/payment/SubscriptionStatusCard";
+import useSubscriptionStore from "../stores/subscriptionStore";
+import useGameHistoryStore from "../stores/gameHistoryStore";
 
 const Profile = () => {
   const user = useUserStore((state) => state.user);
+  const {
+    subscription,
+    isLoading,
+    isCanceling,
+    error,
+    fetchSubscriptionStatus,
+    cancelSubscription,
+  } = useSubscriptionStore();
   const getProfile = useUserStore((state) => state.getProfile);
+  const {
+    singleplayerHistory,
+    multiplayerHistory,
+    fetchSingleplayerHistory,
+    fetchMultiplayerHistory,
+  } = useGameHistoryStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // เรียก getProfile() เมื่อ component ถูก render ครั้งแรก
@@ -13,6 +30,92 @@ const Profile = () => {
   useEffect(() => {
     getProfile();
   }, [getProfile]);
+
+  useEffect(() => {
+    fetchSubscriptionStatus(),
+      fetchMultiplayerHistory(),
+      fetchSingleplayerHistory();
+  }, [
+    fetchSubscriptionStatus,
+    fetchMultiplayerHistory,
+    fetchSingleplayerHistory,
+  ]);
+
+  const renderSubscriptionSection = () => {
+    if (isLoading) {
+      return <div className="skeleton h-32 w-full"></div>;
+    }
+    if (error) {
+      return (
+        <div className="text-error">Error loading subscription: {error}</div>
+      );
+    }
+    return (
+      <SubscriptionStatusCard
+        subscription={subscription}
+        onCancel={cancelSubscription}
+        isCanceling={isCanceling}
+      />
+    );
+  };
+
+  // ------------------------ calculation zone ----------------------------------
+  //----------------------- singleplayer ------------------------------------
+  const singleClassicScore = singleplayerHistory
+    .filter((g) => g.room?.difficulty === "classic")
+    .map((g) => g.score);
+
+  const avgSingleClassicScore = singleClassicScore.length
+    ? (
+        singleClassicScore.reduce((sum, user) => sum + user, 0) /
+        singleClassicScore.length
+      ).toFixed(0)
+    : "-";
+
+  const maxSingleClassicScore = singleClassicScore.length
+    ? Math.max(...singleClassicScore)
+    : "-";
+
+  const singleChallengeScores = singleplayerHistory
+    .filter((g) => g.room?.difficulty === "challenge")
+    .map((g) => g.score);
+
+  const avgSingleChallengeScore = singleChallengeScores.length
+    ? (
+        singleChallengeScores.reduce((sum, user) => sum + user, 0) /
+        singleChallengeScores.length
+      ).toFixed(0)
+    : "-";
+
+  const maxSingleChallengeScore = singleChallengeScores.length
+    ? Math.max(...singleChallengeScores)
+    : "-";
+  //----------------------- singleplayer ------------------------------------
+  //----------------------- multiplayer -------------------------------------
+  const multiClassicScore = multiplayerHistory
+    .filter((g) => g.room?.difficulty === "classic")
+    .map((g) => g.user);
+
+  const multiChallengeScore = multiplayerHistory
+    .filter((g) => g.room?.difficulty === "challenge")
+    .map((g) => g.user);
+
+  const winRateMultiClassicScore =
+    multiClassicScore[0]?.winRate[0]?.winPercentage;
+
+    const winMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.wins
+    const lossMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.losses
+    const drawMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.draws
+    
+    const winRateMultiChallengeScore =
+    multiChallengeScore[0]?.winRate[1]?.winPercentage;
+
+    const winMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.wins
+    const lossMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.losses
+    const drawMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.draws
+    
+  //----------------------- multiplayer -------------------------------------
+  // ------------------------ calculation zone ----------------------------------
 
   return (
     <div className=" flex justify-center items-center bg-primary">
@@ -46,6 +149,14 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* เพิ่ม Section ใหม่สำหรับ Subscription */}
+        <div className="pt-8">
+          <h2 className="text-xl font-bold text-gray-700 mb-6 uppercase tracking-wider">
+            My Subscription
+          </h2>
+          {renderSubscriptionSection()}
+        </div>
+
         {/* Statistics Section */}
         <div className="pt-8">
           <h2 className="text-xl font-bold text-gray-700 mb-6 uppercase tracking-wider">
@@ -56,17 +167,23 @@ const Profile = () => {
             {/* Card: Completed Games Classic */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                COMPLETED GAMES
+                SINGLEPLAYER
               </h3>
               <p className="text-2xl font-bold text-gray-900 mb-4">CLASSIC</p>
-              <p className="text-5xl font-extrabold text-blue-600 mb-4">0</p>
+              <p className="text-5xl font-extrabold text-blue-600 mb-4">
+                {singleClassicScore.length}
+              </p>
               <div className="flex justify-around w-full text-gray-600">
                 <div className="flex flex-col items-center">
-                  <span className="font-semibold text-xl">0</span>
+                  <span className="font-semibold text-xl">
+                    {avgSingleClassicScore}
+                  </span>
                   <span className="text-sm">AVG. SCORE</span>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="font-semibold text-xl">0</span>
+                  <span className="font-semibold text-xl">
+                    {maxSingleClassicScore}
+                  </span>
                   <span className="text-sm">MAX SCORE</span>
                 </div>
               </div>
@@ -75,40 +192,50 @@ const Profile = () => {
             {/* Card: All Time High Rating */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                ALL TIME HIGH
+                SINGLEPLAYER
               </h3>
-              <p className="text-2xl font-bold text-gray-900 mb-4">RATING</p>
-              <p className="text-5xl font-extrabold text-blue-600 mb-4">-</p>
-              <div className="flex justify-around w-full text-gray-600 text-sm">
-                <span>ALL</span>
-                <span>MOVING</span>
-                <span>NO MOVE</span>
-                <span>HMPZ</span>
+              <p className="text-2xl font-bold text-gray-900 mb-4">CHALLENGE</p>
+              <p className="text-5xl font-extrabold text-blue-600 mb-4">
+                {singleChallengeScores.length}
+              </p>
+              <div className="flex justify-around w-full text-gray-600">
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-xl">
+                    {avgSingleChallengeScore}
+                  </span>
+                  <span className="text-sm">AVG. SCORE</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="font-semibold text-xl">
+                    {maxSingleChallengeScore}
+                  </span>
+                  <span className="text-sm">MAX SCORE</span>
+                </div>
               </div>
             </div>
 
             {/* Card: Win Ratio Duels */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                WIN RATIO
+                MULTIPLAYER
               </h3>
-              <p className="text-2xl font-bold text-gray-900 mb-4">DUELS</p>
+              <p className="text-2xl font-bold text-gray-900 mb-4">CLASSIC</p>
               <p className="text-5xl font-extrabold text-green-600 mb-4">
-                0.00%
+                {winRateMultiClassicScore?.toFixed(1)}%
               </p>
               <div className="flex flex-col items-center w-full text-gray-600">
                 <div className="flex justify-around w-full text-sm mb-2">
-                  <span>ALL</span>
-                  <span>MOVING</span>
-                  <span>NO MOVE</span>
-                  <span>HMPZ</span>
+                  <span>WINRATE</span>
                 </div>
                 <div className="flex justify-around w-full text-lg font-semibold">
                   <span>
-                    0 <span className="text-sm font-normal">PLAYER</span>
+                    {winMultiClassicScore} <span className="text-sm font-normal">WINS</span> /&nbsp;
                   </span>
                   <span>
-                    0 <span className="text-sm font-normal">WINS</span>
+                    {lossMultiClassicScore} <span className="text-sm font-normal">LOSS</span> /&nbsp;
+                  </span>
+                  <span>
+                    {drawMultiClassicScore} <span className="text-sm font-normal">DRAW</span>
                   </span>
                 </div>
               </div>
@@ -117,27 +244,25 @@ const Profile = () => {
             {/* Card: Win Ratio Team Duels */}
             <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200 flex flex-col items-center text-center hover:shadow-lg transition-shadow duration-300">
               <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                WIN RATIO
+                MULTIPLAYER
               </h3>
-              <p className="text-2xl font-bold text-gray-900 mb-4">
-                TEAM DUELS
-              </p>
+              <p className="text-2xl font-bold text-gray-900 mb-4">CHALLENGE</p>
               <p className="text-5xl font-extrabold text-green-600 mb-4">
-                0.00%
+                {winRateMultiChallengeScore?.toFixed(1)}%
               </p>
               <div className="flex flex-col items-center w-full text-gray-600">
                 <div className="flex justify-around w-full text-sm mb-2">
-                  <span>ALL</span>
-                  <span>MOVING</span>
-                  <span>NO MOVE</span>
-                  <span>HMPZ</span>
+                  <span>WINRATE</span>
                 </div>
                 <div className="flex justify-around w-full text-lg font-semibold">
                   <span>
-                    0 <span className="text-sm font-normal">PLAYER</span>
+                    {winMultiChallengeScore} <span className="text-sm font-normal">WINS</span> /&nbsp;
                   </span>
                   <span>
-                    0 <span className="text-sm font-normal">WINS</span>
+                    {lossMultiChallengeScore} <span className="text-sm font-normal">LOSS</span> /&nbsp;
+                  </span>
+                  <span>
+                    {drawMultiChallengeScore} <span className="text-sm font-normal">DRAW</span>
                   </span>
                 </div>
               </div>

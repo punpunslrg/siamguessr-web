@@ -5,19 +5,28 @@ import useUserStore from "../stores/userStore.js";
 
 function ResultsMap({ actualLocation, allGuesses = [] }) {
   const map = useMap();
-  const users = useGameStore(state => state.playersData)
-  const room = useGameStore(state => state.room)
-  const user = useUserStore(state => state.user)
-  console.log("allGuesses from ResultMap",allGuesses)
+  const room = useGameStore((state) => state.room);
+  const user = useUserStore((state) => state.user);
 
-  // Fit bounds to include all guesses and actual location
+  const validGuesses = allGuesses.filter(
+    (guess) => guess.guessedLat !== null && guess.guessedLng !== null
+  );
+
+  // Fit bounds to include actual location and only valid guesses
   useEffect(() => {
     if (!map || !actualLocation) return;
+
+    if (validGuesses.length === 0) {
+      // If no guesses, just center and zoom out a bit
+      map.setCenter(actualLocation);
+      map.setZoom(8);
+      return;
+    }
 
     const bounds = new window.google.maps.LatLngBounds();
     bounds.extend(new window.google.maps.LatLng(actualLocation));
 
-    allGuesses.forEach((guess) => {
+    validGuesses.forEach((guess) => {
       bounds.extend(
         new window.google.maps.LatLng({
           lat: parseFloat(guess.guessedLat),
@@ -27,13 +36,13 @@ function ResultsMap({ actualLocation, allGuesses = [] }) {
     });
 
     map.fitBounds(bounds, 100);
-  }, [map, actualLocation, allGuesses]);
+  }, [map, actualLocation, validGuesses]);
 
-  // Draw polyline from each guess to actual location
+  // Draw dashed lines from each guess to actual location
   useEffect(() => {
-    if (!map || !actualLocation || allGuesses.length === 0) return;
+    if (!map || !actualLocation || validGuesses.length === 0) return;
 
-    const polylines = allGuesses.map((guess) => {
+    const polylines = validGuesses.map((guess) => {
       const isCurrentUser = guess.userId === user.id;
       const path = [
         actualLocation,
@@ -69,36 +78,29 @@ function ResultsMap({ actualLocation, allGuesses = [] }) {
     return () => {
       polylines.forEach((p) => p.setMap(null));
     };
-  }, [map, actualLocation, allGuesses]);
+  }, [map, actualLocation, validGuesses, user.id]);
 
-  // Show loading if no actual location
   if (!actualLocation) {
     return <div className="w-full h-full bg-gray-300">Loading map...</div>;
   }
-
-  // console.log("allGuesses from map", allGuesses)
-  // console.log("users", users)
-  // console.log("room", room)
-  // console.log("user", user)
 
   return (
     <>
       {/* Marker for actual location */}
       <AdvancedMarker position={actualLocation} title="Actual Location" />
 
-      {/* Markers for all guesses */}
-      {allGuesses.map((guess) => {
+      {/* Markers for valid guesses only */}
+      {validGuesses.map((guess) => {
         const position = {
           lat: parseFloat(guess.guessedLat),
           lng: parseFloat(guess.guessedLng),
         };
 
-        // const matchedUser = room?.players?.find((find) => find.userId === user.id);
-        const matchedUser = room?.players?.find((player) => player.userId === guess.userId);
+        const matchedUser = room?.players?.find(
+          (player) => player.userId === guess.userId
+        );
         const userImage = matchedUser?.user.image;
 
-        console.log("room players", room.players)
-        
         return (
           <AdvancedMarker
             key={guess.userId}

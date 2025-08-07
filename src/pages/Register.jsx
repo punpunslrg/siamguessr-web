@@ -14,9 +14,13 @@ import { actionRegister } from "../api/authApi";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
 import { useNavigate } from "react-router";
+import SocialLogins from "../components/SocialLogins";
+import { useEffect } from "react";
+import useUserStore from "../stores/userStore";
 
 function Register() {
   const navigate = useNavigate();
+  const token = useUserStore((state) => state.token);
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(registerSchema),
   });
@@ -33,6 +37,14 @@ function Register() {
       toast.error(errMsg);
     }
   };
+
+  useEffect(() => {
+    // ถ้ามี token อยู่แล้ว ให้ redirect ไปหน้าหลัก
+    if (token) {
+      navigate("/", { replace: true });
+    }
+  }, [token, navigate]);
+
   return (
     <div className="flex items-center justify-center bg-primary">
       <Card className="w-full max-w-sm">
@@ -79,12 +91,13 @@ function Register() {
               <Button type="submit" className="w-full">
                 Sign Up
               </Button>
-              <Button variant="outline" className="w-full">
+              <SocialLogins role="user" pageType="register" />
+              {/* <Button variant="outline" className="w-full">
                 Continue with Google
               </Button>
               <Button variant="outline" className="w-full">
                 Continue with Facebook
-              </Button>
+              </Button> */}
             </CardFooter>
           </form>
         </CardContent>

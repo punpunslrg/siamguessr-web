@@ -1,59 +1,63 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useGameStore from "../stores/game-store";
-import { useNavigate } from "react-router";
 
-function RoundTimer() {
+function RoundTimer({ onTimeout }) {
   const room = useGameStore((state) => state.room);
   const currentRoundIndex = useGameStore((state) => state.currentRoundIndex);
   const gameState = useGameStore((state) => state.gameState);
-  const actionSubmitGuess = useGameStore((state) => state.actionSubmitGuess);
-  const navigate = useNavigate();
+  const hasSubmittedRef = useRef(false);
 
-  // Calculate initial timeLeft immediately
+  const TEST_TIMER = false; // ✅ toggle this to true for local testing 
+
   const calculateInitialTimeLeft = () => {
-    if (!room || !room.rounds[currentRoundIndex]) return 90; // default to 1:30
-
-    const round = room.rounds[currentRoundIndex];
-    const TEST_TIMER = false;
+    if (!room || !room.rounds[currentRoundIndex]) return 90;
 
     const endTime = TEST_TIMER
       ? Date.now() + 10 * 1000
-      : new Date(round.endedAt).getTime() + 1000;
+      : new Date(room.rounds[currentRoundIndex].endedAt).getTime() + 1000;
 
     const now = Date.now();
-    const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
-
-    return remaining > 0 ? remaining : 0;
+    return Math.max(0, Math.floor((endTime - now) / 1000));
   };
 
   const [timeLeft, setTimeLeft] = useState(calculateInitialTimeLeft);
 
   useEffect(() => {
-    if (!room || !room.rounds[currentRoundIndex]) return;
+    hasSubmittedRef.current = false;
+    setTimeLeft(calculateInitialTimeLeft());
+  }, [room, currentRoundIndex]);
 
-    const round = room.rounds[currentRoundIndex];
-    const TEST_TIMER = false;
+  useEffect(() => {
+    if (!room || !room.rounds[currentRoundIndex]) return;
 
     const endTime = TEST_TIMER
       ? Date.now() + 10 * 1000
-      : new Date(round.endedAt).getTime() + 2000;
+      : new Date(room.rounds[currentRoundIndex].endedAt).getTime() + 2000;
 
     const interval = setInterval(() => {
       const now = Date.now();
       const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
       setTimeLeft(remaining);
 
-      if (remaining === 0) {
+      // if (
+      //   remaining === 0 &&
+      //   !hasSubmittedRef.current &&
+      //   gameState === "playing"
+      // ) {
+      //   hasSubmittedRef.current = true;
+      //   onTimeout?.();
+      //   clearInterval(interval);
+      // }
+
+      if (remaining === 0 && !hasSubmittedRef.current) {
+        hasSubmittedRef.current = true;
+        onTimeout?.();
         clearInterval(interval);
-        if (gameState === "playing") {
-          actionSubmitGuess(null);
-        }
-        navigate("/round");
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [room, currentRoundIndex, gameState]);
+  }, [room, currentRoundIndex, gameState, onTimeout]);
 
   const formatTime = (seconds) => {
     const mins = String(Math.floor(seconds / 60)).padStart(2, "0");

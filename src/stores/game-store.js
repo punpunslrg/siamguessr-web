@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { calculateDistance } from "../utils/calculate-distance";
-import { createRoom, getLobby, getRoomResult } from "../api/roomApi.js";
-import useUserStore from "./userStore.js";
 import { submitGuess } from "../api/guessApi.js";
+import { createRoom, getLobby, getRoomResult } from "../api/roomApi.js";
 import { nextRound } from "../api/roundApi.js";
+import { calculateDistance } from "../utils/calculate-distance";
 import { useSocketStore } from "./socketStore";
+import useUserStore from "./userStore.js";
 import RoundScore from "../pages/RoundScore";
+import { toast } from "react-toastify";
 
 const useGameStore = create(
   persist(
@@ -45,6 +46,7 @@ const useGameStore = create(
       actionSubmitGuess: async (playerGuess) => {
         let token = useUserStore.getState().token;
         const user = useUserStore.getState().user;
+        const { socket } = useSocketStore.getState();
 
         const { room, currentRoundIndex, guesses } = get();
         if (!room || room.rounds.length <= currentRoundIndex) return;
@@ -59,6 +61,22 @@ const useGameStore = create(
             gameState: "round-results",
           });
 
+          if (room?.mode !== "multi") {
+            set((state) => ({
+              allGuessed: [
+                ...(state.allGuessed || []),
+                {
+                  userId: user.id,
+                  roundId: currentRound.id,
+                  guessedLat: null,
+                  guessedLng: null,
+                  distance: null,
+                  score: 0,
+                },
+              ],
+            }));
+          }
+
           try {
             const res = await submitGuess(
               {
@@ -69,6 +87,17 @@ const useGameStore = create(
               },
               token
             );
+
+            if (socket && room.mode === "multi") {
+              socket.emit("playerGuessed", {
+                roomCode: room.code,
+                playerId: user.id,
+                roundId: currentRound.id,
+                guess: { lat: null, lng: null },
+                distance: null,
+                score: 0,
+              });
+            }
 
             return res;
           } catch (error) {
@@ -139,7 +168,6 @@ const useGameStore = create(
             token
           );
 
-          const { socket } = useSocketStore.getState();
           if (socket && room.mode === "multi") {
             socket.emit("playerGuessed", {
               roomCode: room.code,
@@ -159,7 +187,14 @@ const useGameStore = create(
           console.error("Failed to submit guess", error);
         }
       },
+      endRound: () =>{
+            const { socket } = useSocketStore.getState();
 
+            const {room, roomResult}= get()
+            console.log({room, roomResult})
+            socket.emit("gamebreakdown",  {room, roomResult})
+      
+      } ,
       actionNextRound: async (roundId, navigate) => {
         const token = useUserStore.getState().token;
         const { room, currentRoundIndex } = get();
@@ -268,11 +303,11 @@ const useGameStore = create(
           set({ playersData: data });
         });
         socket.on("leaveRoom", () => {
-          const room = useGameStore.getState().room;
-          if (room) {
-            console.log("leave room from actionListenEvents");
-            useGameStore.getState().actionLeave(room);
-          }
+          // const room = useGameStore.getState().room;
+          // if (room) {
+          //   console.log("leave room from actionListenEvents");
+          //   useGameStore.getState().actionLeave(room);
+          // }
           navigate("/gamemode");
         });
         socket.on("gameStarted", (updatedRoom) => {
@@ -315,8 +350,9 @@ const useGameStore = create(
           console.log("Leave room from disconnect");
           useGameStore.getState().actionLeave(room);
         });
-        socket.on("game-finished", ({ data }) => {
-          set({roomResult: data})
+        socket.on("game-finished", ({ roomResult }) => {
+          console.log("------------------------------------------------------------------------------------------------------",roomResult)
+          set({roomResult: roomResult})
           navigate("/gamebreakdown")
         })
       },
@@ -334,7 +370,7 @@ const useGameStore = create(
         socket.emit("joinRoom", { roomName, room });
       },
 
-      actionLeave: (roomOverride) => {
+      actionLeave: (roomOverride, navigate) => {
         const { socket } = useSocketStore.getState();
         const roomToLeave = roomOverride || useGameStore.getState().room;
 
@@ -344,7 +380,9 @@ const useGameStore = create(
           console.warn("🚨 Tried to leave room, but no room was set.");
           return;
         }
-
+        if(roomToLeave.mode === "single"){
+          navigate("/gamemode")
+        }
         socket?.emit("leaveRoom", roomToLeave);
         set({
           room: null,

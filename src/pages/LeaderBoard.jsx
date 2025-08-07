@@ -73,19 +73,6 @@ export default function Leaderboard() {
         </table>
         <div></div>
       </div>
-
-      {/* Player List */}
-      {/* <div className="bg-white w-xl  rounded-xl p-2 space-y-2 shadow-2xl"> */}
-      {/* <div className=" text-black flex justify-between items-center  p-3 rounded-lg">
-          <div className="flex items-center gap-2">
-            <div className="w-12 h-12 bg-gray-600 rounded-full" />
-            <span className="text-sm">play1</span>
-          </div>
-          <div className="flex items-center gap-4 ">
-            <span className="text-sm">100 score</span>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }

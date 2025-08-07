@@ -24,6 +24,8 @@ import TestLatLng from "../pages/TestLatLng.jsx";
 import LayoutWithoutNav from "../layouts/LayoutWithoutNav";
 import GameLayout from "../layouts/GameLayout.jsx";
 import SelectMode from "../pages/SelectMode";
+import Guidebook from "../pages/Guidebook";
+import AboutUs from "../pages/AboutUs";
 
 function AppRouter() {
   return (
@@ -43,16 +45,39 @@ function AppRouter() {
         <Route path="/calculatepoints" element={<CalculatePoints />} />
         <Route path="/singlescore" element={<SingleScore />} />
         <Route path="/selectmode" element={<SelectMode />} />
+        <Route path="/guidebook" element={<Guidebook />} />
+        <Route path="/Aboutus" element={<AboutUs />} />
 
-        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
+        <Route
+          path="/lobby/:roomId"
+          element={
+            <GameLayout>
+              <Lobby />
+            </GameLayout>
+          }
+        />
 
         {/* only for testing lat lng */}
         {/* <Route path="/test" element={<TestLatLng />} /> */}
       </Route>
 
       <Route path="/" element={<LayoutWithoutNav />}>
-        <Route path="/gameplay" element={<GameLayout><Gameplay /></GameLayout>} />
-        <Route path="/round" element={<GameLayout><RoundScore /></GameLayout>} />
+        <Route
+          path="/gameplay"
+          element={
+            <GameLayout>
+              <Gameplay />
+            </GameLayout>
+          }
+        />
+        <Route
+          path="/round"
+          element={
+            <GameLayout>
+              <RoundScore />
+            </GameLayout>
+          }
+        />
       </Route>
 
       <Route path="/admin/login" element={<LoginAdmin />} />

@@ -86,14 +86,14 @@ const SingleScore = () => {
                           "-"
                         )}
                       </td>
-                      <td>{round.score}</td>
+                      <td>{round.score.toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               <div className="font-bold text-green-400 border-t border-yellow-400 flex justify-center">
                 <span className="pt-8 text-3xl">
-                  Total {currentUserResult?.totalScore}
+                  Total {currentUserResult?.totalScore.toLocaleString()}
                 </span>
               </div>
             </div>

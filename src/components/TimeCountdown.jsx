@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router";
 
 function RealtimeCountdown() {
   const COUNTDOWN_SECONDS = 10;
@@ -105,12 +106,14 @@ function RealtimeCountdown() {
         </div>
       )}
       {hasFinished && showButton && !isClicked && (
-        <button
-          className="btn-primary px-18 py-3  text-xl shadow-lg"
-          onClick={handleButtonClick}
-        >
-          PLAY
-        </button>
+        <Link to="/gameplay">
+          <button
+            className="btn-primary px-18 py-3  text-xl shadow-lg"
+            onClick={handleButtonClick}
+          >
+            PLAY
+          </button>
+        </Link>
       )}
     </>
   );

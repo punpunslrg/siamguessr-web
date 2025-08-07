@@ -62,7 +62,7 @@ function RoundScore() {
   return (
     <div className="bg-secondary flex flex-col items-center justify-center px-4 py-10">
       <div className="flex justify-center w-full max-w-3xl mb-4">
-        <h2 className="text-3xl font-bold">
+        <h2 className="text-7xl font-bold londrina-solid-regular">
           Round {currentRoundIndex + 1} of {room?.rounds.length || 5}
         </h2>
       </div>

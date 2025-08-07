@@ -17,9 +17,8 @@ import { useNavigate } from "react-router";
 import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 import useUserStore from "../stores/userStore";
-import Homebg from '../assets/homepagebg-1.jpg'
-import Logo from '../assets/Logo7.png'
-
+import Homebg from "../assets/homepagebg-1.jpg";
+import Logo from "../assets/Logo7.png";
 
 function Register() {
   const navigate = useNavigate();
@@ -49,11 +48,19 @@ function Register() {
   }, [token, navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom" style={{ backgroundImage: `url(${Homebg})` }}>
-       <div className="mb-12">
-              <img src={Logo} />
-              <p className="text-white">“Explore Thailand and test how well you really know the Land of Smiles.”</p>
-            </div>
+    <div
+      className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom"
+      style={{ backgroundImage: `url(${Homebg})` }}
+    >
+      <div className="mb-8 flex flex-col justify-center items-center ">
+        <img className="w-70" src={Logo} />
+
+        <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xl ">
+          <p className="text-[66px] ">EXPLORE THAILAND!</p>
+
+          <p>And test how well you really know the Land of Smiles.</p>
+        </div>
+      </div>
       <Card className="w-full max-w-sm ring-1 ring-purple-600 shadow-[0_0_20px_4px_rgb(106,90,205)]">
         <CardHeader>
           <CardTitle className="text-2xl text-center">

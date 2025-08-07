@@ -126,7 +126,7 @@
   @apply bg-gradient-to-br from-blue-500 to-indigo-600 h-[calc(100vh-64px)];
 } */
 .bg-primary {
-  @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 h-[calc(100vh-64px)];
+  @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 h-[calc(100vh-88px)];
 }
 .bg-primary-full {
   @apply bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 ;

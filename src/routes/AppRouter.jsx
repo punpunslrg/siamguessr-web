@@ -32,24 +32,15 @@ import AboutUs from "../pages/AboutUs";
 function AppRouter() {
   return (
     <Routes>
-      {/* --- Group 1: Public Routes (ทุกคนเข้าได้) --- */}
+      {/* --- Group 1: Public Routes --- */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        {/* --- ใช้ PublicRoute ครอบหน้าที่ไม่ต้องการให้คน Login แล้วเข้า --- */}
-        {/* <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/homepagefree" element={<HomePageFree />} />
       </Route>
 
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
-      {/* Route แม่จะทำหน้าที่เช็คสิทธิ์ ถ้าผ่านถึงจะไปที่ Route ลูก */}
-      <Route
-        element={
-          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
-        }
-      >
+      <Route element={<ProtectRoute allows={["user", "admin"]} redirectPath="/login" />}>
         <Route path="/" element={<Layout />}>
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/profile" element={<Profile />} />
@@ -60,15 +51,11 @@ function AppRouter() {
           <Route path="/gamehistory" element={<GameHistory />} />
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
-          <Route path="/selectmode" element={<SelectMode />} />
-          <Route
-            path="/lobby/:roomId"
-            element={
-              <GameLayout>
-                <Lobby />
-              </GameLayout>
-            }
-          />
+        <Route path="/selectmode" element={<SelectMode />} />
+        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
+        <Route path="/homepagefree" element={<HomePageFree />} />
+        <Route path="/guidebook" element={<Guidebook />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         </Route>
 
         {/* only for testing lat lng */}
@@ -87,7 +74,7 @@ function AppRouter() {
         </Route>
       </Route>
 
-      {/* --- Group 4: Standalone Routes (ไม่มี Layout ร่วมกับใคร) --- */}
+      {/* --- Group 4: Standalone Routes --- */}
       <Route path="/success" element={<SuccessPage />} />
       <Route path="/canceled" element={<CanceledPage />} />
 

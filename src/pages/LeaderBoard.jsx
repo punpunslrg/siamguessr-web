@@ -1,6 +1,5 @@
 import { Crown } from "../icons";
 import { useEffect, useState } from "react";
-import Crown from "../icons";
 import useLeaderboardStore from "../stores/leaderboardStore.js";
 
 export default function Leaderboard() {

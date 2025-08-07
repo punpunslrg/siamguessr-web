@@ -30,8 +30,8 @@ function Subscription() {
     // ในแอปพลิเคชันจริง คุณต้องมีวิธีเลือก Tier และรู้ว่าใคร Login อยู่
     // เช่น ดึง userId จาก Zustand Store หรือ Context API
     const checkoutData = {
-      priceId: "price_1RrDvkGrzg3Hq6W5zImzX34N", // Price ID ของ Pro Plan จาก Stripe
-      userId: user.id,
+      priceId: "price_1RtPmYJvFVWyYIUhMzVZ00NY", // Price ID ของ Pro Plan จาก Stripe
+      userId: user.id, 
     };
 
     try {

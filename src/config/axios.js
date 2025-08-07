@@ -5,23 +5,23 @@ import useUserStore from '../stores/userStore.js';
 
 const axiosInstance = axios.create({
     // baseURL: import.meta.env.VITE_API_BASE_URL,
-    baseURL: "http://localhost:8890"
-    // withCredentials: true,
+    baseURL: "http://localhost:8890",
+    withCredentials: true,
 });
 
 
 let csrfToken = null;
 
 
-export const fetchCsrfToken = async () => {
-    try {
-        const { data } = await axiosInstance.get('/csrf-token');
-        csrfToken = data.csrfToken;
-        console.log('CSRF Token has been fetched.');
-    } catch (error) {
-        console.error('Could not fetch CSRF token:', error);
-    }
-};
+// export const fetchCsrfToken = async () => {
+//     try {
+//         const { data } = await axiosInstance.get('/csrf-token');
+//         csrfToken = data.csrfToken;
+//         console.log('CSRF Token has been fetched.');
+//     } catch (error) {
+//         console.error('Could not fetch CSRF token:', error);
+//     }
+// };
 
 
 

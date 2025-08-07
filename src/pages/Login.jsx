@@ -14,6 +14,7 @@ import { loginSchema } from "../utils/validator";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
 import { Link, useNavigate } from "react-router";
+import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 
 function Login() {
@@ -33,6 +34,7 @@ function Login() {
       if (res.success) {
         toast.success("Login Successfully!");
         navigate("/");
+        
       } else {
         toast.error(res.message || "Login failed");
       }
@@ -85,12 +87,13 @@ function Login() {
               <Button type="submit" className="w-full  ">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
+              <SocialLogins role="user" pageType="login" />
+              {/* <Button variant="outline" className="w-full">
                 Login with Google
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Facebook
-              </Button>
+              </Button> */}
               <Link
                 to="/register"
                 className="mt-4 text-center text-sm hover:underline cursor-pointer"

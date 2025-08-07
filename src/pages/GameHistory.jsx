@@ -24,7 +24,7 @@ export default function GameHistory() {
     <div className="bg-primary-full min-h-screen font-sans p-4 sm:p-8 ">
       <div className="max-w-4xl mx-auto">
         <header className="mb-6">
-          <h1 className="text-5xl text-yellow-400 font-extrabold  mb-2">
+          <h1 className="text-7xl text-yellow-400 londrina-solid-regular  mb-2">
             Match History
           </h1>
           <p className="text-lg  text-gray-300">

@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import { toast } from "react-toastify";
-import { cancelSubscriptionApi, getSubscriptionStatusApi } from "../api/subscriptionApi";
+import {
+  cancelSubscriptionApi,
+  getSubscriptionStatusApi,
+} from "../api/subscriptionApi";
 
 const subscriptionStore = (set, get) => ({
-  subscription: null,   // { isActive: boolean, tierName: string, willCancel: boolean, periodEndDate: Date }
+  subscription: null, // { isActive: boolean, tierName: string, willCancel: boolean, periodEndDate: Date }
   isLoading: true,
   isCanceling: false,
   error: null,
@@ -19,15 +22,25 @@ const subscriptionStore = (set, get) => ({
     }
   },
 
-  // ยกเลิก Subscription และดึงข้อมูลสถานะล่าสุดมาอัปเดต
   cancelSubscription: async () => {
     set({ isCanceling: true });
     try {
-      const response = await cancelSubscriptionApi();
-      toast.success(response.message || "Subscription cancellation scheduled.");
+      // 1. เรียก API และรับข้อมูลที่อัปเดตแล้วกลับมา
+      const { message, subscription: updatedStripeSubscription } = await cancelSubscriptionApi();
+      toast.success(message || "Subscription cancellation scheduled.");
 
-      // หลังจากยกเลิกสำเร็จ, ให้เรียก fetch ใหม่เพื่อดึงข้อมูลล่าสุด
-      await get().fetchSubscriptionStatus();
+      // 2. แปลงข้อมูลที่ได้จาก Stripe ให้เป็นรูปแบบเดียวกับ state ของเรา
+      const currentSubscription = get().subscription;
+      const newSubscriptionState = {
+        ...currentSubscription, // เก็บข้อมูลเก่าไว้
+        isActive: updatedStripeSubscription.status === 'active', // ยัง Active อยู่
+        willCancel: !!updatedStripeSubscription.canceled_at, // <-- เช็คจาก canceled_at จริง
+        periodEndDate: new Date(updatedStripeSubscription.current_period_end * 1000).toISOString(), 
+      };
+      
+      // 3. อัปเดต State ด้วยข้อมูลล่าสุดโดยตรง
+      set({ subscription: newSubscriptionState });
+
     } catch (err) {
       toast.error(err.message);
     } finally {

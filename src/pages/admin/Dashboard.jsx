@@ -33,7 +33,7 @@ export default function Dashboard() {
   const deleteUserByAdmin = useUserStore((state) => state.deleteUserByAdmin);
 
   const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [userToBan, setUserToBan] = useState(null);
   const [userToEdit, setUserToEdit] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
@@ -212,7 +212,7 @@ export default function Dashboard() {
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-          <span>Showing 1-10 of {users.length} users</span>
+          <span>Showing 1-10 of {allUsers.length} users</span>
           <div className="flex items-center space-x-2">
             <button className="p-2 hover:bg-gray-200 rounded-md">
               <ChevronLeft size={16} />

@@ -31,7 +31,7 @@ function Subscription() {
     // เช่น ดึง userId จาก Zustand Store หรือ Context API
     const checkoutData = {
       priceId: "price_1RrDvkGrzg3Hq6W5zImzX34N", // Price ID ของ Pro Plan จาก Stripe
-      userId: user.id, 
+      userId: user.id,
     };
 
     try {
@@ -56,10 +56,10 @@ function Subscription() {
   return (
     <div className="bg-primary flex flex-col items-center justify-center h-full">
       {/* Heading */}
-      <h1 className="text-5xl text-yellow-400 font-bold  mb-2 ">
+      <h1 className="text-6xl text-yellow-400 londrina-solid-regular  mb-4 ">
         Choose your preferred plan
       </h1>
-      <p className=" mb-10 text-sm text-white">
+      <p className=" mb-10 text-2xl text-white">
         Unlock all game modes. Cancel at any time.
       </p>
 
@@ -69,7 +69,7 @@ function Subscription() {
         <p className="text-2xl font-bold text-black mb-1">119 BATH / MONTH</p>
         <p className="text-xs text-gray-500 mb-4">BILLED MONTHLY</p>
 
-        <div className="space-y-4 text-sm text-gray-800">
+        <div className="space-y-4 text-lg text-gray-800">
           <div className="flex items-start gap-2">
             <span>🌍</span>
             <span>

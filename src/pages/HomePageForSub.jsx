@@ -18,9 +18,6 @@ const HomePageForSub = () => {
             <button className="btn-primary py-4 px-22 text-2xl ">Play</button>
           </div>
           <div>
-            <button className="bg-gray-500 hover:bg-gray-600  rounded-2xl text-white font-bold cursor-pointer transition-all duration-200 ease-in-out transform hover:scale-105 active:scale-95 py-4 px-16 text-2xl ">
-              Multiplayer
-            </button>
           </div>
           <div>
             <div className="map-pin top-30 left-16  delay-500">

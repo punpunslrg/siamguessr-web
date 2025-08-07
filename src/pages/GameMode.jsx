@@ -10,7 +10,7 @@ function GameMode() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("classic");
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = useUserStore((state) => state.user)
+  const user = useUserStore((state) => state.user);
   const actionStartNewGame = useGameStore((state) => state.actionStartNewGame);
 
   const handlePlay = async () => {
@@ -28,7 +28,7 @@ function GameMode() {
         maxPlayers: selectedMode === "multi" ? 2 : 1,
         hostId: user.id,
       };
-      
+
       // 2. Call the backend to create the room
       const newRoom = await actionStartNewGame(roomData);
       // console.log("Created room:", newRoom);
@@ -48,10 +48,12 @@ function GameMode() {
   };
 
   return (
-    <div className="bg-primary">
+    <div className="bg-primary ">
       <div className=" text-white p-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">Classic Maps</h1>
+          <h1 className="text-7xl londrina-solid-regular mb-8 text-yellow-500">
+            Classic Maps
+          </h1>
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Map Card */}
@@ -59,7 +61,7 @@ function GameMode() {
               <img
                 src={GameModePic}
                 alt="Thailand"
-                className="w-full h-56 object-cover"
+                className="w-full h-80 object-cover"
               />
               <div className="p-4">
                 <h2 className="text-2xl font-semibold">Thailand</h2>
@@ -72,22 +74,22 @@ function GameMode() {
             {/* Stats Card */}
             <div className="col-span-2 bg-gray-800 rounded-lg p-4 shadow-lg space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 text-accent" />
+                <div className="w-5 h-8 text-accent " />
                 <span>413,032 plays</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 text-accent" />
+                <div className="w-5 h-8 text-accent" />
                 <span>10K+ locations</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 text-red-500" />
+                <div className="w-5 h-8 text-red-500" />
                 <span>4,100 liked this map</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 text-yellow-400" />
+                <div className="w-5 h-8 text-yellow-400" />
                 <span>11,885 average score</span>
               </div>
-              <p className="mt-3 text-sm">
+              <p className="mt-8 text-sm">
                 A kingdom in Southeast Asia – the Land of a Thousand Smiles,
                 this country attracts tourists from all over the world. White
                 sand beaches, snorkeling and festivals are some of the
@@ -99,14 +101,6 @@ function GameMode() {
           </div>
 
           {/* Slider for Medals */}
-          <div className="bg-gray-800 rounded-lg p-4 mt-8 shadow-lg">
-            <h2 className="text-xl mb-2">Your Medals</h2>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Bronze: 5,000</span>
-              <span className="text-gray-400">Silver: 15,000</span>
-              <span className="text-gray-400">Gold: 22,500</span>
-            </div>
-          </div>
 
           {/* Mode and Play Buttons */}
           <div className="mt-8 bg-gray-800 p-4 rounded-lg shadow-lg flex flex-wrap gap-4 items-center justify-between">

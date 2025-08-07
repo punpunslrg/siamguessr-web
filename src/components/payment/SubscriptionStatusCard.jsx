@@ -1,42 +1,6 @@
 import { Link } from "react-router";
 import CancelSubscriptionButton from "./CancelSubscriptionButton";
 
-// const SubscriptionStatusCard = ({ subscription, onCancel, isCanceling }) => {
-//   if (!subscription) return null; // หรือแสดง UI อื่นๆ
-
-//   if (subscription.isActive) {
-//     return (
-//       <div className="card bg-base-200 shadow-xl p-6">
-//         <p>Status: <span className="badge badge-success">Active</span></p>
-//         <p className="mt-2">
-//           Your current plan: 
-//           <span className="font-bold capitalize ml-2">{subscription.tierName}</span>
-//         </p>
-//         <CancelSubscriptionButton onConfirm={onCancel} isCanceling={isCanceling} />
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="card bg-base-200 shadow-xl p-6">
-//       <p className="font-semibold">Status: <span className="text-red-500">Inactive</span></p>
-//       <p className="mt-2">You do not have an active subscription.</p>
-
-//       <Link to="/subscription" className="btn-primary p-1 mt-2 w-fit">Upgrade Now</Link>
-
-//     </div>
-//   );
-// };
-
-// export default SubscriptionStatusCard;
-
-
-
-
-
-
-
-
 const SubscriptionStatusCard = ({ subscription, onCancel, isCanceling }) => {
   if (!subscription) return null;
 

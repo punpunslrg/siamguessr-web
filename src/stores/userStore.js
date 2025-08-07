@@ -8,6 +8,7 @@ import {
   actionUpdateUserByAdmin,
   getMe,
 } from "../api/userApi";
+import { getSubscriptionStatusApi } from "../api/subscriptionApi";
 
 const userStore = (set, get) => ({
   token: null,
@@ -18,9 +19,22 @@ const userStore = (set, get) => ({
       const res = await actionLogin(value);
       const { user, token } = res.data;
       set({ token: token, user: user });
-      return { success: true, role: user.role };
+
+      // เรียก API เพื่อเช็คสถานะ Subscription
+      let subscriptionIsActive = false;
+      try {
+        const subStatus = await getSubscriptionStatusApi();
+        subscriptionIsActive = subStatus.isActive;
+      } catch (subError) {
+          // ถ้าเกิด error (เช่น user ไม่เคยมี subscription มาก่อน)
+          // ให้ถือว่าไม่มี subscription ที่ active อยู่
+          console.log("Could not retrieve subscription status after login:", subError.message);
+          subscriptionIsActive = false;
+      }
+
+      return { success: true, role: user.role, isSubscribed: subscriptionIsActive };
     } catch (error) {
-      return { success: false, message: error.response?.data?.message };
+      return { success: false, message: error.response?.data?.message, isSubscribed: false };
     }
   },
 

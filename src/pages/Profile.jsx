@@ -18,8 +18,6 @@ const Profile = () => {
   const getProfile = useUserStore((state) => state.getProfile);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // เรียก getProfile() เมื่อ component ถูก render ครั้งแรก
-  // เพื่อให้แน่ใจว่าเราได้ข้อมูล user ล่าสุดเสมอ
   useEffect(() => {
     getProfile();
   }, [getProfile]);

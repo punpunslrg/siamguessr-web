@@ -32,6 +32,7 @@ function Gameplay() {
     actionSubmitGuess,
     actionForfeitGame,
     actionGetRoomResult,
+    actionLeave,
   } = useGameStore();
 
   // Get the current round and location from the store's state

@@ -40,14 +40,14 @@ const GameBreakdown = () => {
   return (
     <div className="bg-primary ">
       <div className="text-center flex flex-col items-center ">
-        <h1 className="text-5xl text-yellow-400 font-bold mt-12 mb-8 ">
+        <h1 className="text-7xl text-yellow-400 londrina-solid-regular mt-12 mb-8 ">
           Game Breakdown
         </h1>
 
         <div className="overflow-x-auto">
           <table className="min-w-full border-separate border-spacing-y-2">
             <thead className="text-white">
-              <tr className="text-sm uppercase text-left">
+              <tr className="text-lg uppercase text-left">
                 <th className="px-4">Round</th>
                 <th className="px-4">{`${me?.username} (You)` || "You"}</th>
                 <th className="px-4">{friend?.username || "Friend"}</th>
@@ -103,7 +103,7 @@ const GameBreakdown = () => {
         </div>
       </div>
 
-      <div className="text-[80px] text-white flex justify-center mt-10">
+      <div className="text-9xl londrina-solid-regular text-white flex justify-center mt-10">
         {me?.rank === 1 ? "YOU WIN !!" : "YOU LOSE"}
       </div>
 

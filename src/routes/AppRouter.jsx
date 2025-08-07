@@ -40,7 +40,11 @@ function AppRouter() {
       </Route>
 
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
-      <Route element={<ProtectRoute allows={["user", "admin"]} redirectPath="/login" />}>
+      <Route
+        element={
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+        }
+      >
         <Route path="/" element={<Layout />}>
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/profile" element={<Profile />} />
@@ -51,11 +55,18 @@ function AppRouter() {
           <Route path="/gamehistory" element={<GameHistory />} />
           <Route path="/calculatepoints" element={<CalculatePoints />} />
           <Route path="/singlescore" element={<SingleScore />} />
-        <Route path="/selectmode" element={<SelectMode />} />
-        <Route path="/lobby/:roomId" element={<GameLayout><Lobby /></GameLayout>} />
-        <Route path="/homepagefree" element={<HomePageFree />} />
-        <Route path="/guidebook" element={<Guidebook />} />
-        <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/selectmode" element={<SelectMode />} />
+          <Route
+            path="/lobby/:roomId"
+            element={
+              <GameLayout>
+                <Lobby />
+              </GameLayout>
+            }
+          />
+          <Route path="/homepagefree" element={<HomePageFree />} />
+          <Route path="/guidebook" element={<Guidebook />} />
+          <Route path="/aboutus" element={<AboutUs />} />
         </Route>
 
         {/* only for testing lat lng */}

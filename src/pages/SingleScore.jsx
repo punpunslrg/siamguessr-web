@@ -62,7 +62,7 @@ const SingleScore = () => {
 
         {/* RIGHT: Leaderboard + Victory Summary */}
         <div>
-          <h3 className="text-5xl text-yellow-400 font-bold flex justify-center mt-12">
+          <h3 className="text-7xl text-yellow-400 londrina-solid-regular flex justify-center mt-4">
             Your Score
           </h3>
           <div className="bg-gray-700 p-8 rounded-2xl shadow-xl border-orange-500 border-8 h-fit mt-8">

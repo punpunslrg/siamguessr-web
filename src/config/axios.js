@@ -1,5 +1,6 @@
 import axios from 'axios';
 import authStore from '../stores/authStore.js';
+import useUserStore from '../stores/userStore.js';
 
 
 const axiosInstance = axios.create({
@@ -26,7 +27,13 @@ export const fetchCsrfToken = async () => {
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = authStore.getState().token;
+        let token = authStore.getState().token;
+
+        console.log("first token",token)
+        if(!token) {
+         token = useUserStore.getState().token;           
+        }
+        console.log("second token",token)
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }

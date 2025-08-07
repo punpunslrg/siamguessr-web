@@ -16,8 +16,8 @@ import FormInput from "../components/form/FormInput";
 import { Link, useNavigate } from "react-router";
 import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
-import Homebg from '../assets/homepagebg-1.jpg'
-import Logo from '../assets/Logo7.png'
+import Homebg from "../assets/homepagebg-1.jpg";
+import Logo from "../assets/Logo7.png";
 
 function Login() {
   const navigate = useNavigate();
@@ -38,10 +38,10 @@ function Login() {
 
         if (res.isSubscribed) {
           // ถ้ามี Subscription, ไปที่หน้าสำหรับสมาชิก
-          navigate('/homepageforsub', { replace: true });
+          navigate("/homepageforsub", { replace: true });
         } else {
           // ถ้าไม่มี Subscription, ไปที่หน้าสำหรับผู้ใช้ฟรี
-          navigate('/homepagefree', { replace: true });
+          navigate("/homepagefree", { replace: true });
         }
       } else {
         toast.error(res.message || "Login failed");
@@ -55,16 +55,23 @@ function Login() {
   useEffect(() => {
     // ถ้ามี token อยู่แล้ว ให้ redirect ไปหน้าหลัก
     if (token) {
-      navigate('/', { replace: true });
+      navigate("/", { replace: true });
     }
   }, [token, navigate]);
 
-
   return (
-    <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom" style={{ backgroundImage: `url(${Homebg})` }}>
-      <div className="mb-12">
-        <img src={Logo} />
-        <p className="text-white">“Explore Thailand and test how well you really know the Land of Smiles.”</p>
+    <div
+      className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom"
+      style={{ backgroundImage: `url(${Homebg})` }}
+    >
+      <div className="mb-8 flex flex-col justify-center items-center ">
+        <img className="w-70" src={Logo} />
+
+        <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xl p-6  ">
+          <p className="text-[66px] ">EXPLORE THAILAND!</p>
+
+          <p>And test how well you really know the Land of Smiles.</p>
+        </div>
       </div>
       <Card className="w-full max-w-sm ring-1 ring-purple-600 shadow-[0_0_20px_4px_rgb(106,90,205)]">
         <CardHeader>

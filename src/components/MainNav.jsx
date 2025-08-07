@@ -18,38 +18,14 @@ function MainNav() {
   return (
     <>
       <></>
-      <div className="flex justify-between bg-navbar px-12 py-2 sticky top-0 z-1000">
+      <div className="flex justify-between bg-navbar px-12 py-5 sticky top-0 z-1000">
         <div className="flex gap-4 items-center ">
           <Link to="/" className="font-bold ">
             <img src={Logo7} className="w-40" />
           </Link>
           <Link to="/gamemode">Gameplay</Link>
           <Link to="/leaderboard">Leaderboard</Link>
-          {/* ใช้เลือกหน้าชั่วคราว */}
-          <div className="dropdown">
-            <div tabIndex={0} role="button" className="btn m-1">
-              Page
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-navbar rounded-box z-1 w-52 p-2 shadow-sm"
-            >
-              <li>
-                <Link to="/round">Round</Link>
-                <Link to="/homepagefree">HomePageFree</Link>
-                <Link to="/subscription">Subscription</Link>
-                <Link to="/profile">Profile</Link>
-                <Link to="/lobby">Lobby</Link>
-                <Link to="/gamemode">GameMode</Link>
-                <Link to="/leaderboard">Leaderboard</Link>
-                <Link to="/gamebreakdown">GameBreakdown</Link>
-                <Link to="/homepageforsub">HomePageForSub</Link>
-                <Link to="/gamehistory">GameHistory</Link>
-                <Link to="/singlescore">SingleScore</Link>
-                <Link to="/selectmode">SelectMode</Link>
-              </li>
-            </ul>
-          </div>
+          <Link to="/aboutus">About Us</Link>
         </div>
 
         {/* Right */}

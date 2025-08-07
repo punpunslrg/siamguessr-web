@@ -61,7 +61,7 @@ function Login() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom"
+      className="flex flex-col items-center justify-center w-full h-[calc(100vh-66px)] bg-cover bg-bottom"
       style={{ backgroundImage: `url(${Homebg})` }}
     >
       <div className="mb-8 flex flex-col justify-center items-center ">

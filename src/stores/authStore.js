@@ -8,25 +8,21 @@ const authStore = create(
       user: null,
       token: null, 
       isLoggedIn: false,
-      isLoading: true, 
-
-     
+      isLoading: true,
       setAuth: (data) => {
         const { user, accessToken } = data;
         set({ user, token: accessToken, isLoggedIn: true, isLoading: false });
       },
-      
-     
+
       logout: () => {
         set({ user: null, token: null, isLoggedIn: false, isLoading: false });
       },
 
-     
       checkAuth: async () => {
         const token = get().token;
+
         if (token) {
           try {
-           
             const resp = await authApi.getMe();
             set({ user: resp.data.user, isLoggedIn: true, isLoading: false });
           } catch (error) {

@@ -34,7 +34,7 @@ function AppRouter() {
     <Routes>
       {/* --- Group 1: Public Routes --- */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        {<Route index element={<Home />} />}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>

@@ -32,7 +32,6 @@ function MainNav() {
         {!user ? (
           <div className="flex gap-4 items-center ">
             <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
           </div>
         ) : (
           <div className="dropdown dropdown-end cursor-pointer">

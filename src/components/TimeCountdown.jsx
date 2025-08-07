@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router";
 
 function RealtimeCountdown() {
   const COUNTDOWN_SECONDS = 10;
@@ -50,14 +51,14 @@ function RealtimeCountdown() {
   }, [targetTime]);
 
   // กันการ refresh โดยไม่ตั้งใจ
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = ""; // สำหรับ Chrome
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, []);
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     event.preventDefault();
+  //     event.returnValue = ""; // สำหรับ Chrome
+  //   };
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  // }, []);
 
   const handleButtonClick = () => {
     setIsClicked(true);
@@ -105,12 +106,14 @@ function RealtimeCountdown() {
         </div>
       )}
       {hasFinished && showButton && !isClicked && (
-        <button
-          className="btn-primary px-18 py-3  text-xl shadow-lg"
-          onClick={handleButtonClick}
-        >
-          PLAY
-        </button>
+        <Link to="/gameplay">
+          <button
+            className="btn-primary px-18 py-3  text-xl shadow-lg"
+            onClick={handleButtonClick}
+          >
+            PLAY
+          </button>
+        </Link>
       )}
     </>
   );

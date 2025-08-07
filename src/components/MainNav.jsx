@@ -19,13 +19,31 @@ function MainNav() {
     <>
       <></>
       <div className="flex justify-between bg-navbar px-12 py-5 sticky top-0 z-1000">
-        <div className="flex gap-4 items-center ">
+        <div className="flex gap-6 items-center ">
           <Link to="/" className="font-bold ">
             <img src={Logo7} className="w-40" />
           </Link>
-          <Link to="/gamemode">Gameplay</Link>
-          <Link to="/leaderboard">Leaderboard</Link>
-          <Link to="/aboutus">About Us</Link>
+          <Link to="/guidebook">
+            <p class="text-xl group relative w-max cursor-pointer ">
+              <span>Guides</span>
+              <span class="hover-line-l"></span>
+              <span class="hover-line-r"></span>
+            </p>
+          </Link>
+          <Link to="/leaderboard">
+            <p class="text-xl group relative w-max cursor-pointer ">
+              <span>Leaderboard</span>
+              <span class="hover-line-l"></span>
+              <span class="hover-line-r"></span>
+            </p>
+          </Link>
+          <Link to="/aboutus">
+            <p class="text-xl group relative w-max cursor-pointer ">
+              <span>About Us</span>
+              <span class="hover-line-l"></span>
+              <span class="hover-line-r"></span>
+            </p>
+          </Link>
         </div>
 
         {/* Right */}
@@ -57,10 +75,14 @@ function MainNav() {
               </div>
               <hr className="border-gray-400" />
               <li>
-                <Link to="/profile">Profile</Link>
+                <Link to="/profile" className="hover:bg-gray-600">
+                  Profile
+                </Link>
               </li>
               <li>
-                <Link to="/gamehistory">GameHistory</Link>
+                <Link to="/gamehistory" className="hover:bg-gray-600">
+                  GameHistory
+                </Link>
               </li>
               <button
                 className="btn-primary font-semibold mt-2"

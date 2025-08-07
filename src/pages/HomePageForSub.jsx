@@ -1,24 +1,26 @@
 import { MapPin } from "lucide-react";
 import Logo7 from "../assets/Logo7.png";
 import Hero from "../components/Hero";
+import { Link } from "react-router";
 
 const HomePageForSub = () => {
   return (
-    <div className="bg-primary-full">
-      <div className="min-h-screen  text-white flex flex-col items-center justify-center space-y-8  ">
+    <div className="bg-primary flex justify-center">
+      <div className=" text-white flex flex-col items-center justify-center space-y-8  ">
         {/* Logo / Game Name */}
         {/* <div className=" animate-pulse"> */}
-        <div className="">
+        <div>
           <img src={Logo7} />
         </div>
         {/* <img src="" alt="" /> */}
         {/* ปุ่มเมนู */}
         <div className="flex gap-4">
           <div>
-            <button className="btn-primary py-4 px-22 text-2xl ">Play</button>
+            <Link to="/selectmode">
+              <button className="btn-primary py-4 px-22 text-2xl ">Play</button>
+            </Link>
           </div>
-          <div>
-          </div>
+          <div></div>
           <div>
             <div className="map-pin top-30 left-16  delay-500">
               <MapPin className="w-10 h-10 text-red-400" />
@@ -35,10 +37,6 @@ const HomePageForSub = () => {
           </div>
         </div>
       </div>
-      <div>
-        <Hero />
-      </div>
-      <div>{/* <PicsSide /> */}</div>
     </div>
   );
 };

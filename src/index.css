@@ -159,6 +159,12 @@
 .map-pin {
 	@apply absolute animate-bounce
 }
+.hover-line-l {
+	@apply absolute -bottom-1 left-1/2 w-0 transition-all h-0.5 bg-orange-500 group-hover:w-3/6
+}
+.hover-line-r {
+	@apply absolute -bottom-1  right-1/2 w-0 transition-all h-0.5 bg-orange-500 group-hover:w-3/6
+}
 
 .londrina-solid-regular {
   font-family: "Londrina Solid", sans-serif;

@@ -13,7 +13,7 @@ import { registerSchema } from "../utils/validator";
 import { actionRegister } from "../api/authApi";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 import useUserStore from "../stores/userStore";
@@ -52,14 +52,8 @@ function Register() {
       className="flex flex-col items-center justify-center w-full h-[calc(100vh-64px)] bg-cover bg-bottom"
       style={{ backgroundImage: `url(${Homebg})` }}
     >
-      <div className="mb-8 flex flex-col justify-center items-center ">
-        <img className="w-70" src={Logo} />
-
-        <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xl ">
-          <p className="text-[66px] ">EXPLORE THAILAND!</p>
-
-          <p>And test how well you really know the Land of Smiles.</p>
-        </div>
+      <div className="-mt-10 mb-8 flex flex-col justify-center items-center ">
+        <img className="w-100" src={Logo} />
       </div>
       <Card className="w-full max-w-sm ring-1 ring-purple-600 shadow-[0_0_20px_4px_rgb(106,90,205)]">
         <CardHeader>
@@ -106,12 +100,12 @@ function Register() {
                 Sign Up
               </Button>
               <SocialLogins role="user" pageType="register" />
-              {/* <Button variant="outline" className="w-full">
-                Continue with Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                Continue with Facebook
-              </Button> */}
+              <Link
+                to="/"
+                className="text-center text-sm hover:underline cursor-pointer text-gray-400"
+              >
+                Back to Homepage
+              </Link>
             </CardFooter>
           </form>
         </CardContent>

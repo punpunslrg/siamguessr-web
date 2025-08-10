@@ -15,7 +15,7 @@ function Layout() {
     //     <Outlet />
     //   </main>
     // </div>
-    <div>
+    <div className="flex flex-col">
       <MainNav />
       <Outlet />
     </div>

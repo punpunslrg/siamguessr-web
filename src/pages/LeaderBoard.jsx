@@ -17,6 +17,8 @@ export default function Leaderboard() {
     actionFetchLeaderboards("single");
   }, [actionFetchLeaderboards]);
 
+  console.log(difficulty);
+
   const leaderboard = leaderboards[difficulty] || [];
 
   if (isLoading) return <div>Loading leaderboard...</div>;
@@ -30,14 +32,14 @@ export default function Leaderboard() {
   //   );
   // }
   return (
-    <div className="p-36 flex flex-col items-center text-white font-bold bg-primary h-full">
+    <div className="p-30 flex flex-col items-center text-white font-bold bg-primary h-screen">
       <div className="flex flex-col mb-10 justify-center items-center gap-2 -mt-20">
         <h1 className="text-5xl text-yellow-400 font-bold">LEADERBOARD</h1>
         <p className="">*BEST TOP 5 OF YOUR SCORE*</p>
       </div>
 
       {/* button */}
-      <div className="flex gap-4 mb-20">
+      <div className="flex gap-4 mb-20 -mt-5">
         <button
           onClick={() => setDifficulty("classic")}
           className={`px-4 py-2 w-40 rounded hover:cursor-pointer ${
@@ -97,95 +99,233 @@ export default function Leaderboard() {
         </div>
       </div> */}
 
-
-
-      <div className="flex justify-center items-end mb-6 gap-8 mt-7">
-
-        <div className="flex flex-col items-center">
-          <p>2</p>
-          <div className="w-20 h-20 bg-gray-500 rounded-full border-4 border-blue-400 overflow-hidden">
-            <img src="https://i.pravatar.cc/150?img=70" />
+      {difficulty === "classic" ? (
+        <div className="flex justify-center items-end mb-6 gap-8 mt-7">
+          <div className="flex flex-col items-center">
+            <p>2</p>
+            <div className="w-20 h-20 bg-gray-500 rounded-full border-4 border-blue-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=70" />
+            </div>
+            <p className="mt-1 text-xs">Somchai</p>
+            <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
+              22122
+            </div>
           </div>
-          <p className="mt-1 text-xs">Somchai</p>
-          <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
-            22122
+
+          <div className="flex flex-col items-center relative">
+            <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=22" />
+            </div>
+            <Crown className="absolute -top-16"></Crown>
+            <p className="mt-1 text-xs">Sompong</p>
+            <div className="bg-orange-500 w-16 text-center rounded-t-md py-1 mt-1">
+              24889
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <p>3</p>
+            <div className="w-18 h-18 bg-gray-600 rounded-full border-4 border-purple-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=15" />
+            </div>
+            <p className="mt-1 text-xs">Somsak</p>
+            <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
+              22004
+            </div>
           </div>
         </div>
-
-        <div className="flex flex-col items-center relative">
-          <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400 overflow-hidden">
-            <img src="https://i.pravatar.cc/150?img=22" />
+      ) : (
+        <div className="flex justify-center items-end mb-6 gap-8 mt-7">
+          <div className="flex flex-col items-center">
+            <p>2</p>
+            <div className="w-20 h-20 bg-gray-500 rounded-full border-4 border-blue-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=55" />
+            </div>
+            <p className="mt-1 text-xs">Mali</p>
+            <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
+              21402
+            </div>
           </div>
-          <Crown className="absolute -top-16"></Crown>
-          <p className="mt-1 text-xs">Sompong</p>
-          <div className="bg-orange-500 w-16 text-center rounded-t-md py-1 mt-1">
-            24889
+
+          <div className="flex flex-col items-center relative">
+            <div className="w-28 h-28 bg-gray-300 rounded-full border-4 border-yellow-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=23" />
+            </div>
+            <Crown className="absolute -top-16"></Crown>
+            <p className="mt-1 text-xs">Sakda</p>
+            <div className="bg-orange-500 w-16 text-center rounded-t-md py-1 mt-1">
+              22322
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center">
+            <p>3</p>
+            <div className="w-18 h-18 bg-gray-600 rounded-full border-4 border-purple-400 overflow-hidden">
+              <img src="https://i.pravatar.cc/150?img=33" />
+            </div>
+            <p className="mt-1 text-xs">Morgan</p>
+            <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
+              21200
+            </div>
           </div>
         </div>
+      )}
 
-        <div className="flex flex-col items-center">
-          <p>3</p>
-          <div className="w-18 h-18 bg-gray-600 rounded-full border-4 border-purple-400 overflow-hidden">
-            <img src="https://i.pravatar.cc/150?img=15" />
-          </div>
-          <p className="mt-1 text-xs">Somsak</p>
-          <div className="bg-red-600 w-14 text-center rounded-t-md py-1 mt-1">
-            22004
-          </div>
-        </div>
-      </div>
       {/* table */}
       <div>
-        <table className="border-separate border-spacing-y-2">
-          <thead>
-            <tr className="text-sm uppercase  text-left ">
-              <th className="px-4">Ranking</th>
-              <th className="px-4">Name</th>
-              <th className="px-4">Matches</th>
-              <th className="px-4">{`Points ( average top 5 )`}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leaderboard.splice(3, 8).map((e) => (
-              <tr className="bg-white text-black shadow-lg ">
-                <td className="px-12 py-3 ">{e.rank}</td>
-                <td className="px-4 py-3">{e.username}</td>
-                <td className="px-12 py-3">{e.totalGames}</td>
-                <td className="px-10 py-3">{e.averageTop5} points</td>
+        {difficulty === "classic" ? (
+          <table className="border-separate border-spacing-y-2">
+            <thead>
+              <tr className="text-sm uppercase  text-left ">
+                <th className="px-4">Ranking</th>
+                <th className="px-4">Name</th>
+                <th className="px-4">Matches</th>
+                <th className="px-4">{`Points ( average top 5 )`}</th>
               </tr>
-            ))}
-            <tr className="bg-white text-black shadow-lg">
+            </thead>
+            <tbody>
+              {leaderboard.splice(3, 8).map((e) => (
+                <tr className="bg-white text-black shadow-lg ">
+                  <td className="px-12 py-3 ">{e.rank}</td>
+                  <td className="px-4 py-3">{e.username}</td>
+                  <td className="px-12 py-3">{e.totalGames}</td>
+                  <td className="px-10 py-3">{e.averageTop5} points</td>
+                </tr>
+              ))}
+              <tr className="bg-white text-black shadow-lg">
                 <td className="px-12 py-3 ">4</td>
                 <td className="px-4 py-3">John</td>
                 <td className="px-12 py-3">24</td>
                 <td className="px-10 py-3">21922 points</td>
               </tr>
-            <tr className="bg-white text-black shadow-lg">
+              <tr className="bg-white text-black shadow-lg">
                 <td className="px-12 py-3 ">5</td>
                 <td className="px-4 py-3">Chao</td>
                 <td className="px-12 py-3">12</td>
                 <td className="px-10 py-3">20322 points</td>
               </tr>
-            <tr className="bg-white text-black shadow-lg">
+              <tr className="bg-white text-black shadow-lg">
                 <td className="px-12 py-3 ">6</td>
                 <td className="px-4 py-3">Rai</td>
                 <td className="px-12 py-3">7</td>
                 <td className="px-10 py-3">18223 points</td>
               </tr>
-            <tr className="bg-white text-black shadow-lg">
+              <tr className="bg-white text-black shadow-lg">
                 <td className="px-12 py-3 ">7</td>
                 <td className="px-4 py-3">Munsum</td>
                 <td className="px-12 py-3">2</td>
                 <td className="px-10 py-3">14399 points</td>
               </tr>
-            <tr className="bg-white text-black shadow-lg">
+              <tr className="bg-white text-black shadow-lg">
                 <td className="px-12 py-3 ">8</td>
                 <td className="px-4 py-3">Palung</td>
                 <td className="px-12 py-3">18</td>
                 <td className="px-10 py-3">12102 points</td>
               </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        ) : (
+          <table className="border-separate border-spacing-y-2">
+            <thead>
+              <tr className="text-sm uppercase  text-left ">
+                <th className="px-4">Ranking</th>
+                <th className="px-4">Name</th>
+                <th className="px-4">Matches</th>
+                <th className="px-4">{`Points ( average top 5 )`}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leaderboard.splice(3, 8).map((e) => (
+                <tr className="bg-white text-black shadow-lg ">
+                  <td className="px-12 py-3 ">{e.rank}</td>
+                  <td className="px-4 py-3">{e.username}</td>
+                  <td className="px-12 py-3">{e.totalGames}</td>
+                  <td className="px-10 py-3">{e.averageTop5} points</td>
+                </tr>
+              ))}
+              <tr className="bg-white text-black shadow-lg">
+                <td className="px-12 py-3 ">4</td>
+                <td className="px-4 py-3">Danny</td>
+                <td className="px-12 py-3">12</td>
+                <td className="px-10 py-3">18044 points</td>
+              </tr>
+              <tr className="bg-white text-black shadow-lg">
+                <td className="px-12 py-3 ">5</td>
+                <td className="px-4 py-3">Methee</td>
+                <td className="px-12 py-3">6</td>
+                <td className="px-10 py-3">16772 points</td>
+              </tr>
+              <tr className="bg-white text-black shadow-lg">
+                <td className="px-12 py-3 ">6</td>
+                <td className="px-4 py-3">Sompol</td>
+                <td className="px-12 py-3">7</td>
+                <td className="px-10 py-3">15223 points</td>
+              </tr>
+              <tr className="bg-white text-black shadow-lg">
+                <td className="px-12 py-3 ">7</td>
+                <td className="px-4 py-3">Amanda</td>
+                <td className="px-12 py-3">5</td>
+                <td className="px-10 py-3">14399 points</td>
+              </tr>
+              <tr className="bg-white text-black shadow-lg">
+                <td className="px-12 py-3 ">8</td>
+                <td className="px-4 py-3">Jane</td>
+                <td className="px-12 py-3">12</td>
+                <td className="px-10 py-3">12102 points</td>
+              </tr>
+            </tbody>
+          </table>
+        )}
+        {/* // <table className="border-separate border-spacing-y-2">
+        //   <thead>
+        //     <tr className="text-sm uppercase  text-left ">
+        //       <th className="px-4">Ranking</th>
+        //       <th className="px-4">Name</th>
+        //       <th className="px-4">Matches</th>
+        //       <th className="px-4">{`Points ( average top 5 )`}</th>
+        //     </tr>
+        //   </thead>
+        //   <tbody>
+        //     {leaderboard.splice(3, 8).map((e) => (
+        //       <tr className="bg-white text-black shadow-lg ">
+        //         <td className="px-12 py-3 ">{e.rank}</td>
+        //         <td className="px-4 py-3">{e.username}</td>
+        //         <td className="px-12 py-3">{e.totalGames}</td>
+        //         <td className="px-10 py-3">{e.averageTop5} points</td>
+        //       </tr>
+        //     ))}
+        //     <tr className="bg-white text-black shadow-lg">
+        //       <td className="px-12 py-3 ">4</td>
+        //       <td className="px-4 py-3">John</td>
+        //       <td className="px-12 py-3">24</td>
+        //       <td className="px-10 py-3">21922 points</td>
+        //     </tr>
+        //     <tr className="bg-white text-black shadow-lg">
+        //       <td className="px-12 py-3 ">5</td>
+        //       <td className="px-4 py-3">Chao</td>
+        //       <td className="px-12 py-3">12</td>
+        //       <td className="px-10 py-3">20322 points</td>
+        //     </tr>
+        //     <tr className="bg-white text-black shadow-lg">
+        //       <td className="px-12 py-3 ">6</td>
+        //       <td className="px-4 py-3">Rai</td>
+        //       <td className="px-12 py-3">7</td>
+        //       <td className="px-10 py-3">18223 points</td>
+        //     </tr>
+        //     <tr className="bg-white text-black shadow-lg">
+        //       <td className="px-12 py-3 ">7</td>
+        //       <td className="px-4 py-3">Munsum</td>
+        //       <td className="px-12 py-3">2</td>
+        //       <td className="px-10 py-3">14399 points</td>
+        //     </tr>
+        //     <tr className="bg-white text-black shadow-lg">
+        //       <td className="px-12 py-3 ">8</td>
+        //       <td className="px-4 py-3">Palung</td>
+        //       <td className="px-12 py-3">18</td>
+        //       <td className="px-10 py-3">12102 points</td>
+        //     </tr>
+        //   </tbody>
+        // </table> */}
       </div>
     </div>
   );

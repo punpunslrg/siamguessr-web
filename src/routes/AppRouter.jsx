@@ -34,7 +34,7 @@ function AppRouter() {
     <Routes>
       {/* --- Group 1: Public Routes --- */}
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
+        {<Route index element={<Home />} />}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
@@ -42,7 +42,7 @@ function AppRouter() {
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
       <Route
         element={
-          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/" />
         }
       >
         <Route path="/" element={<Layout />}>

@@ -117,10 +117,10 @@ const useGameStore = create(
         let score = 0;
         if (distanceInKm <= 5) {
           score = 5000;
-        } else if (distanceInKm >= 2000) {
+        } else if (distanceInKm >= 1200) {
           score = 0;
         } else {
-          const maxDistance = 2000;
+          const maxDistance = 1200;
           const dropoff = Math.pow(
             (maxDistance - distanceInKm) / maxDistance,
             2
@@ -240,7 +240,6 @@ const useGameStore = create(
         const room = useGameStore.getState().room;
         const { socket } = useSocketStore.getState();
 
-        console.log("roomId from actionGetRoomResult", roomId);
         const res = await getRoomResult(roomId, token);
         set({ roomResult: res.data.results });
         if (room?.mode === "multi") {

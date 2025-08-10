@@ -15,7 +15,7 @@ const userStore = (set, get) => ({
   user: null,
   allUsers: [],
   
-  setToken: (token) => {
+  setToken: async (token) => {
     set({ token });
   },
   

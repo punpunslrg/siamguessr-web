@@ -163,7 +163,7 @@ function Lobby() {
   // console.log("room", room);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 to-indigo-600">
+    <div className="flex flex-col items-center justify-center bg-primary">
       {/* Room Code */}
       <div className="absolute top-8 left-0 w-full flex justify-center">
         <span className="bg-white bg-opacity-80 px-6 py-2 rounded-xl text-gray-800 text-lg font-mono tracking-widest shadow-md mt-50">

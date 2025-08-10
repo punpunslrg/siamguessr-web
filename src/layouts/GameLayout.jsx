@@ -30,7 +30,7 @@ export default function GameLayout({ children }) {
   }, [isMultiplayer, isConnected, room]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="bg-black text-white">
       {children ? children : <Outlet />}
     </div>
   );

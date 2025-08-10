@@ -101,17 +101,16 @@ const Profile = () => {
   const winRateMultiClassicScore =
     multiClassicScore[0]?.winRate[0]?.winPercentage;
 
-    const winMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.wins
-    const lossMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.losses
-    const drawMultiClassicScore = multiChallengeScore[0]?.winRate[0]?.draws
-    
+    const winMultiClassicScore = multiClassicScore[0]?.winRate[0]?.wins
+    const lossMultiClassicScore = multiClassicScore[0]?.winRate[0]?.losses
+    const drawMultiClassicScore = multiClassicScore[0]?.winRate[0]?.draws
+
     const winRateMultiChallengeScore =
     multiChallengeScore[0]?.winRate[1]?.winPercentage;
 
-    const winMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.wins
-    const lossMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.losses
-    const drawMultiChallengeScore = multiChallengeScore[0]?.winRate[0]?.draws
-    
+    const winMultiChallengeScore = multiChallengeScore[0]?.winRate[1]?.wins
+    const lossMultiChallengeScore = multiChallengeScore[0]?.winRate[1]?.losses
+    const drawMultiChallengeScore = multiChallengeScore[0]?.winRate[1]?.draws
   //----------------------- multiplayer -------------------------------------
   // ------------------------ calculation zone ----------------------------------
 
@@ -227,13 +226,13 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-around w-full text-lg font-semibold">
                   <span>
-                    {winMultiClassicScore} <span className="text-sm font-normal">WINS</span> /&nbsp;
+                    {winMultiClassicScore !== undefined && winRateMultiClassicScore !== null ? `${winMultiClassicScore}` : "-"} <span className="text-sm font-normal">WINS</span> /&nbsp;
                   </span>
                   <span>
-                    {lossMultiClassicScore} <span className="text-sm font-normal">LOSS</span> /&nbsp;
+                    {lossMultiClassicScore !== undefined && lossMultiClassicScore !== null ? `${lossMultiClassicScore}` : "-"} <span className="text-sm font-normal">LOSS</span> /&nbsp;
                   </span>
                   <span>
-                    {drawMultiClassicScore} <span className="text-sm font-normal">DRAW</span>
+                    {drawMultiClassicScore !== undefined && drawMultiClassicScore !== null ? `${drawMultiClassicScore}` : "-"} <span className="text-sm font-normal">DRAW</span>
                   </span>
                 </div>
               </div>
@@ -254,13 +253,13 @@ const Profile = () => {
                 </div>
                 <div className="flex justify-around w-full text-lg font-semibold">
                   <span>
-                    {winMultiChallengeScore} <span className="text-sm font-normal">WINS</span> /&nbsp;
+                    {winMultiChallengeScore !== undefined && winMultiChallengeScore !== null ? `${winMultiChallengeScore}` : "-"} <span className="text-sm font-normal">WINS</span> /&nbsp;
                   </span>
                   <span>
-                    {lossMultiChallengeScore} <span className="text-sm font-normal">LOSS</span> /&nbsp;
+                    {lossMultiChallengeScore !== undefined && lossMultiChallengeScore !== null ? `${lossMultiChallengeScore}` : "-"} <span className="text-sm font-normal">LOSS</span> /&nbsp;
                   </span>
                   <span>
-                    {drawMultiChallengeScore} <span className="text-sm font-normal">DRAW</span>
+                    {drawMultiChallengeScore !== undefined && drawMultiChallengeScore !== null ? `${drawMultiChallengeScore}` : "-"} <span className="text-sm font-normal">DRAW</span>
                   </span>
                 </div>
               </div>

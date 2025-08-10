@@ -13,7 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "../utils/validator";
 import { toast } from "react-toastify";
 import FormInput from "../components/form/FormInput";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogins from "../components/SocialLogins";
 import { useEffect } from "react";
 import Homebg from "../assets/homepagebg-1.jpg";
@@ -21,21 +21,21 @@ import Logo from "../assets/Logo7.png";
 
 function Login() {
   const navigate = useNavigate();
-  const login = useUserStore((state) => state.login);
-  const token = useUserStore((state) => state.token);
+  const location = useLocation();
+  const { setToken, token, getProfile, login } = useUserStore();
 
   const { handleSubmit, register, formState, reset } = useForm({
     resolver: yupResolver(loginSchema),
   });
   const { isSubmitting, errors } = formState;
-
+  
   const hdlSubmit = async (value) => {
     try {
       const res = await login(value);
-
+      
       if (res.success) {
         toast.success("Login Successfully!");
-
+        
         if (res.isSubscribed) {
           // ถ้ามี Subscription, ไปที่หน้าสำหรับสมาชิก
           navigate("/homepageforsub", { replace: true });
@@ -52,26 +52,41 @@ function Login() {
     }
   };
 
-  useEffect(() => {
-    // ถ้ามี token อยู่แล้ว ให้ redirect ไปหน้าหลัก
-    if (token) {
-      navigate("/", { replace: true });
+    useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("token");
+
+    if (accessToken) {
+      setToken(accessToken);
     }
-  }, [token, navigate]);
+  }, []);
+  
+  useEffect(() => {
+    (async () => {
+      await getProfile();
+    })();
+  }, [getProfile]);
+  
+  // useEffect(() => {
+  //   // ถ้ามี token อยู่แล้ว ให้ redirect ไปหน้าหลัก
+  //   if (token) {
+  //     navigate("/", { replace: true });
+  //   }
+  // }, [token, navigate]);
 
   return (
     <div
-      className="flex flex-col items-center justify-center w-full h-[calc(100vh-66px)] bg-cover bg-bottom"
+      className="flex flex-col items-center justify-center w-full h-[calc(100vh-66px)] bg-cover bg-bottom "
       style={{ backgroundImage: `url(${Homebg})` }}
     >
       <div className="mb-8 flex flex-col justify-center items-center ">
-        <img className="w-70" src={Logo} />
+        <img className="w-100" src={Logo} />
 
-        <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xl p-6  ">
+        {/* <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xl p-6  ">
           <p className="text-[66px] ">EXPLORE THAILAND!</p>
 
           <p>And test how well you really know the Land of Smiles.</p>
-        </div>
+        </div> */}
       </div>
       <Card className="w-full max-w-sm ring-1 ring-purple-600 shadow-[0_0_20px_4px_rgb(106,90,205)]">
         <CardHeader>
@@ -103,7 +118,7 @@ function Login() {
               </div>
             </div>
             <CardFooter className="flex-col gap-2 mt-4">
-              <Button type="submit" className="w-full  ">
+              <Button type="submit" className="w-full">
                 Login
               </Button>
               <SocialLogins role="user" pageType="login" />
@@ -119,6 +134,7 @@ function Login() {
               >
                 Create an account
               </Link>
+              <Link to="/" className="text-center text-sm hover:underline cursor-pointer text-gray-400">Back to Homepage</Link>
             </CardFooter>
           </form>
         </CardContent>

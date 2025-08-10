@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 });
 
 
-let csrfToken = null;
+// let csrfToken = null;
 
 
 // export const fetchCsrfToken = async () => {
@@ -27,7 +27,7 @@ let csrfToken = null;
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        let token = authStore.getState().token;
+        let token = useUserStore.getState().token;
 
         console.log("first token",token)
         if(!token) {
@@ -38,10 +38,10 @@ axiosInstance.interceptors.request.use(
             config.headers['Authorization'] = `Bearer ${token}`;
         }
 
-        const methodsToProtect = ['post', 'put', 'patch', 'delete'];
-        if (csrfToken && methodsToProtect.includes(config.method.toLowerCase())) {
-            config.headers['X-CSRF-Token'] = csrfToken;
-        }
+        // const methodsToProtect = ['post', 'put', 'patch', 'delete'];
+        // if (csrfToken && methodsToProtect.includes(config.method.toLowerCase())) {
+        //     config.headers['X-CSRF-Token'] = csrfToken;
+        // }
         return config;
     },
     (error) => {
@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
                 const { accessToken } = data;
 
 
-                authStore.getState().setAuth({ accessToken, user: authStore.getState().user });
+                useUserStore.getState().setAuth({ accessToken, user: useUserStore.getState().user });
                 console.log('Token refreshed successfully.');
 
 
@@ -77,7 +77,7 @@ axiosInstance.interceptors.response.use(
             } catch (refreshError) {
 
                 console.error('Session expired. Could not refresh token. Logging out.', refreshError);
-                authStore.getState().logout();
+                useUserStore.getState().logout();
                 return Promise.reject(refreshError);
             }
         }

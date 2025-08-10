@@ -1,33 +1,58 @@
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import Globe from "../components/Globe.jsx";
+import { useEffect } from "react";
+import useUserStore from "../stores/userStore.js";
+import Logo from "../assets/Logo7.png";
+import Homebg from "../assets/homepagebg-1.jpg";
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { setToken, token, getProfile } = useUserStore();
+
+  const hdlRegister = () =>{
+    navigate("/register")
+  }
+
+  const hdlLogin = () =>{
+    navigate("/login")
+  }
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("token");
+
+    if (accessToken) {
+      setToken(accessToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      await getProfile();
+    })();
+  }, [getProfile]);
+
+    navigate("/homepagefree");
+  
   return (
-    <div className="flex flex-col items-center justify-center text-white font-sans bg-primary z-1">
-      <header className="mb-10 flex flex-col items-center relative">
-        <h1 className="text-4xl md:text-6xl font-bold drop-shadow-lg tracking-tight mb-2">
-          SiamGuessr
-        </h1>
-        <p className="text-lg md:text-2xl text-sky-200">
-          ทายตำแหน่งจากภาพ Street View ทั่วไทย
-        </p>
-        <Globe />
-      </header>
-      <main className="flex flex-col items-center gap-8 w-full max-w-md">
-        <button
-          onClick={() => navigate("/gamemode")}
-          className="bg-orange-500 btn-primary  py-4 px-20 rounded-full text-xl shadow-lg "
-        >
-          START
-        </button>
-        <div className="mt-8 text-center text-sky-100 text-base md:text-lg">
-          <p>ล็อกอินด้วย Google เพื่อบันทึกคะแนนและดู Leaderboard</p>
+    <div
+      className="flex flex-col items-center justify-center w-full h-[calc(100vh-66px)] bg-cover bg-bottom "
+      style={{ backgroundImage: `url(${Homebg})` }}
+    >
+      <div className="mb-8 flex flex-col justify-center items-center">
+        <img className="w-100" src={Logo} />
+
+        <div className="text-white flex flex-col justify-center items-center text-shadow-lg text-shadow-black mt-2 text-3xl font-extrabold backdrop-blur-xs p-6 rounded-2xl ">
+          <p className="text-[66px] ">EXPLORE THAILAND!</p>
+
+          <p>And test how well you really know the Land of Smiles.</p>
         </div>
-      </main>
-      <footer className="absolute bottom-4 text-sky-200 text-xs w-full text-center">
-        &copy; {new Date().getFullYear()} SiamGuessr Tailwind CSS
-      </footer>
+      </div>
+      <div className="flex gap-6">
+        <button className="btn-primary bg-gradient-to-br from-emerald-900 via-blue-900 to-purple-900 py-4 px-22 text-2xl" onClick={()=>hdlRegister()}>Register</button>
+        <button className="btn-primary bg-gradient-to-br from-yellow-500 via-orange-500 to-red-500 py-4 px-22 text-2xl" onClick={()=>hdlLogin()}>Login</button>
+      </div>
     </div>
   );
 }

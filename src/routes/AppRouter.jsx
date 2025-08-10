@@ -42,7 +42,7 @@ function AppRouter() {
       {/* --- Group 2: Protected Routes ที่ใช้ Layout ปกติ --- */}
       <Route
         element={
-          <ProtectRoute allows={["user", "admin"]} redirectPath="/login" />
+          <ProtectRoute allows={["user", "admin"]} redirectPath="/" />
         }
       >
         <Route path="/" element={<Layout />}>
